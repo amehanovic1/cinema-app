@@ -1,4 +1,4 @@
-# Databse Diagram
+# Database Diagram
 
 The ERD for this project is available at the link below:
 
