@@ -10,15 +10,15 @@ Spring Boot 3.5.7 | Java 21  | PostgreSQL 17.5
 
 **Key Dependencies:**
 - `spring-boot-starter-data-jpa`
-- `spring-boot-strater-web`
+- `spring-boot-starter-web`
 - `spring-boot-starter-validation`
 - `postgresql`
 - `lombok`
-- `srpingdoc-openapi-starter-webmvc-ui`
+- `springdoc-openapi-starter-webmvc-ui`
 - `spring-boot-starter-test`
 
 ---
 
 ## Frontend
 
-React 19.2.0
+React 19.2.0 | TailwindCSS 3.4.18
