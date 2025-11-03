@@ -16,6 +16,8 @@ Spring Boot 3.5.7 | Java 21  | PostgreSQL 17.5
 - `lombok`
 - `springdoc-openapi-starter-webmvc-ui`
 - `spring-boot-starter-test`
+- `flyway-core`
+- `flyway-database-postgresql`
 
 ---
 
