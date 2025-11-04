@@ -24,3 +24,11 @@ Spring Boot 3.5.7 | Java 21  | PostgreSQL 17.5
 ## Frontend
 
 React 19.2.0 | TailwindCSS 3.4.18
+
+---
+
+## Database Diagram
+
+The ERD for this project is available at the link below:
+
+[View ERD on dbdiagram.io](https://dbdiagram.io/d/[ERD]-CinebhApp-68ffc275357668b732db6ea3)
