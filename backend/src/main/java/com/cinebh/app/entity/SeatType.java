@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -15,8 +13,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "countries")
-public class Country {
+@Table(name = "seat_types")
+public class SeatType extends Auditable {
 
     @Id
     @Column(name = "id")
@@ -25,9 +23,9 @@ public class Country {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "iso_2_code")
-    private String iso2Code;
+    @Column(name = "price")
+    private Double price;
 
-    @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<City> cities = new HashSet<>();
+    @Column(name = "description")
+    private String description;
 }
