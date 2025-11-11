@@ -30,4 +30,7 @@ public class Country {
 
     @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<City> cities = new HashSet<>();
+
+    @Column(name = "iso_2_code")
+    private String iso2Code;
 }
