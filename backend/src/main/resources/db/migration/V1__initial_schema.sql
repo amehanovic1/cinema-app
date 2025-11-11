@@ -72,24 +72,11 @@ CREATE TABLE "genres" (
 );
 
 CREATE TABLE "movie_genres" (
-    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     "movie_id" uuid NOT NULL,
     "genre_id" uuid NOT NULL,
-    "created_at" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" timestamptz DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "pk_movie_genres" PRIMARY KEY ("movie_id", "genre_id"),
     CONSTRAINT "fk_movie_genre_movie" FOREIGN KEY ("movie_id")
         REFERENCES "movies" ("id") ON DELETE CASCADE,
     CONSTRAINT "fk_movie_genre_genre" FOREIGN KEY ("genre_id")
         REFERENCES "genres" ("id") ON DELETE CASCADE
 );
-
-CREATE TABLE "seat_types" (
-    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    "name" varchar NOT NULL,
-    "price" decimal(10,2) NOT NULL,
-    "description" varchar NOT NULL,
-    "created_at" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" timestamptz DEFAULT CURRENT_TIMESTAMP
-);
-
-
