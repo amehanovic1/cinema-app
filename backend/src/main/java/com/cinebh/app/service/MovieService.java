@@ -1,12 +1,12 @@
 package com.cinebh.app.service;
 
-import com.cinebh.app.dto.MovieResponse;
-import com.cinebh.app.dto.PaginatedResponse;
+import com.cinebh.app.dto.MovieDto;
+import com.cinebh.app.dto.PageDto;
 import org.springframework.data.domain.Pageable;
 
 public interface MovieService {
 
-    PaginatedResponse<MovieResponse> getCurrentlyShowingMovies(Pageable pageable);
+    PageDto<MovieDto> getCurrentlyShowingMovies(Pageable pageable);
 
-    PaginatedResponse<MovieResponse> getUpcomingMovies(Pageable pageable);
+    PageDto<MovieDto> getUpcomingMovies(Pageable pageable);
 }

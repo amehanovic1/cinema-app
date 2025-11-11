@@ -1,7 +1,7 @@
 package com.cinebh.app.controller;
 
-import com.cinebh.app.dto.PaginatedResponse;
-import com.cinebh.app.dto.VenueResponse;
+import com.cinebh.app.dto.PageDto;
+import com.cinebh.app.dto.VenueDto;
 import com.cinebh.app.service.impl.VenueServiceImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,7 +21,7 @@ public class VenueController {
     }
 
     @GetMapping
-    public PaginatedResponse<VenueResponse> getAllVenues(
+    public PageDto<VenueDto> getAllVenues(
             @PageableDefault(page = 0, size = 5, sort = "name", direction = Sort.Direction.ASC) Pageable pageable
     ) {
         return venueService.getAllVenues(pageable);

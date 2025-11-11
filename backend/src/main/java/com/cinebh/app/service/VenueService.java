@@ -1,10 +1,10 @@
 package com.cinebh.app.service;
 
-import com.cinebh.app.dto.PaginatedResponse;
-import com.cinebh.app.dto.VenueResponse;
+import com.cinebh.app.dto.PageDto;
+import com.cinebh.app.dto.VenueDto;
 import org.springframework.data.domain.Pageable;
 
 public interface VenueService {
 
-    PaginatedResponse<VenueResponse> getAllVenues(Pageable pageable);
+    PageDto<VenueDto> getAllVenues(Pageable pageable);
 }

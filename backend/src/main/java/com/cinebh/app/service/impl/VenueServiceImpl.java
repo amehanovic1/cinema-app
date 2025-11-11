@@ -1,7 +1,7 @@
 package com.cinebh.app.service.impl;
 
-import com.cinebh.app.dto.PaginatedResponse;
-import com.cinebh.app.dto.VenueResponse;
+import com.cinebh.app.dto.PageDto;
+import com.cinebh.app.dto.VenueDto;
 import com.cinebh.app.entity.Venue;
 import com.cinebh.app.mapper.VenueMapper;
 import com.cinebh.app.repository.VenueRepository;
@@ -20,8 +20,8 @@ public class VenueServiceImpl implements VenueService {
     private final VenueMapper venueMapper;
 
     @Override
-    public PaginatedResponse<VenueResponse> getAllVenues(Pageable pageable) {
+    public PageDto<VenueDto> getAllVenues(Pageable pageable) {
         Page<Venue> page = venueRepository.findAll(pageable);
-        return PaginationUtil.buildPaginatedResponse(page.map(venueMapper::toResponse));
+        return PaginationUtil.buildPaginatedResponse(page.map(venueMapper::toDto));
     }
 }

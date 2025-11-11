@@ -1,7 +1,7 @@
 package com.cinebh.app.service.impl;
 
-import com.cinebh.app.dto.MovieResponse;
-import com.cinebh.app.dto.PaginatedResponse;
+import com.cinebh.app.dto.MovieDto;
+import com.cinebh.app.dto.PageDto;
 import com.cinebh.app.entity.Movie;
 import com.cinebh.app.mapper.MovieMapper;
 import com.cinebh.app.repository.MovieRepository;
@@ -22,16 +22,16 @@ public class MovieServiceImpl implements MovieService {
 
 
     @Override
-    public PaginatedResponse<MovieResponse> getCurrentlyShowingMovies(Pageable pageable) {
+    public PageDto<MovieDto> getCurrentlyShowingMovies(Pageable pageable) {
         return mapToPaginatedResponse(movieRepository.findCurrentlyShowing(LocalDate.now(), pageable));
     }
 
     @Override
-    public PaginatedResponse<MovieResponse> getUpcomingMovies(Pageable pageable) {
+    public PageDto<MovieDto> getUpcomingMovies(Pageable pageable) {
         return mapToPaginatedResponse(movieRepository.findByProjectionStartDateAfter(LocalDate.now(), pageable));
     }
 
-    private PaginatedResponse<MovieResponse> mapToPaginatedResponse(Page<Movie> page) {
-        return PaginationUtil.buildPaginatedResponse(page.map(movieMapper::toResponse));
+    private PageDto<MovieDto> mapToPaginatedResponse(Page<Movie> page) {
+        return PaginationUtil.buildPaginatedResponse(page.map(movieMapper::toDto));
     }
 }

@@ -1,7 +1,7 @@
 package com.cinebh.app.controller;
 
-import com.cinebh.app.dto.MovieResponse;
-import com.cinebh.app.dto.PaginatedResponse;
+import com.cinebh.app.dto.MovieDto;
+import com.cinebh.app.dto.PageDto;
 import com.cinebh.app.service.impl.MovieServiceImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -19,14 +19,14 @@ public class MovieController {
     }
 
     @GetMapping("/upcoming")
-    public PaginatedResponse<MovieResponse> getUpcomingMovies(
+    public PageDto<MovieDto> getUpcomingMovies(
             @PageableDefault(page = 0, size = 5, sort = "title", direction = Sort.Direction.ASC) Pageable pageable
     ) {
         return movieService.getUpcomingMovies(pageable);
     }
 
     @GetMapping("/currently-showing")
-    public PaginatedResponse<MovieResponse> getCurrentlyShowingMovies(
+    public PageDto<MovieDto> getCurrentlyShowingMovies(
             @PageableDefault(page = 0, size = 5, sort = "title", direction = Sort.Direction.ASC) Pageable pageable
     ) {
         return movieService.getCurrentlyShowingMovies(pageable);
