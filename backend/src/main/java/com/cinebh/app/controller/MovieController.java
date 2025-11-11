@@ -18,13 +18,6 @@ public class MovieController {
         this.movieService = movieServiceImpl;
     }
 
-    @GetMapping
-    public PaginatedResponse<MovieResponse> getAllMovies(
-            @PageableDefault(page = 0, size = 5, sort = "title", direction = Sort.Direction.ASC) Pageable pageable
-            ) {
-        return movieService.getAllMovies(pageable);
-    }
-
     @GetMapping("/upcoming")
     public PaginatedResponse<MovieResponse> getUpcomingMovies(
             @PageableDefault(page = 0, size = 5, sort = "title", direction = Sort.Direction.ASC) Pageable pageable
