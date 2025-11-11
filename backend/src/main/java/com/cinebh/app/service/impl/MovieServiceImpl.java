@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 import com.cinebh.app.util.PaginationUtil;
 import java.time.LocalDate;
 
-@Service
 @RequiredArgsConstructor
+@Service
 public class MovieServiceImpl implements MovieService {
 
     private final MovieRepository movieRepository;
