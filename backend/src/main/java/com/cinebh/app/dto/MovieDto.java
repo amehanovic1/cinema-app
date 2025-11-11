@@ -10,7 +10,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MovieResponse {
+public class MovieDto {
     private UUID id;
     private String title;
     private String language;
@@ -21,6 +21,6 @@ public class MovieResponse {
     private String pgRating;
     private Integer durationInMinutes;
     private String trailerUrl;
-    private List<GenreResponse> genres;
-    private List<MovieImageResponse> images;
+    private List<GenreDto> genres;
+    private List<MovieImageDto> images;
 }

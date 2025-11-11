@@ -8,12 +8,12 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class VenueResponse {
+public class VenueDto {
     private UUID id;
     private String name;
     private String street;
     private String streetNumber;
     private String phone;
     private String imageUrl;
-    private CityResponse city;
+    private CityDto city;
 }

@@ -1,6 +1,6 @@
 package com.cinebh.app.dto;
 
-import com.cinebh.app.entity.Auditable;
+import com.cinebh.app.enums.ImageType;
 import lombok.*;
 
 import java.util.UUID;
@@ -9,7 +9,8 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CountryResponse {
+public class MovieImageDto {
     private UUID id;
-    private String name;
+    private String url;
+    private ImageType type;
 }

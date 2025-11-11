@@ -8,7 +8,8 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GenreResponse {
+public class CityDto {
     private UUID id;
     private String name;
+    private String timezone;
 }

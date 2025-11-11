@@ -1,6 +1,6 @@
 package com.cinebh.app.util;
 
-import com.cinebh.app.dto.PaginatedResponse;
+import com.cinebh.app.dto.PageDto;
 import org.springframework.data.domain.Page;
 
 
@@ -8,15 +8,15 @@ public class PaginationUtil {
 
     private PaginationUtil() {}
 
-    public static <T> PaginatedResponse<T> buildPaginatedResponse (Page<T> page) {
-        PaginatedResponse<T> paginatedResponse = new PaginatedResponse<>();
-        paginatedResponse.setData(page.getContent());
-        paginatedResponse.setCurrentPage(page.getNumber());
-        paginatedResponse.setTotalPages(page.getTotalPages());
-        paginatedResponse.setTotalItems(page.getTotalElements());
-        paginatedResponse.setPageSize(page.getSize());
-        paginatedResponse.setHasNext(page.hasNext());
-        paginatedResponse.setHasPrevious(page.hasPrevious());
-        return paginatedResponse;
+    public static <T> PageDto<T> buildPaginatedResponse (Page<T> page) {
+        PageDto<T> pageDto = new PageDto<>();
+        pageDto.setContent(page.getContent());
+        pageDto.setNumber(page.getNumber());
+        pageDto.setTotalPages(page.getTotalPages());
+        pageDto.setTotalElements(page.getTotalElements());
+        pageDto.setSize(page.getSize());
+        pageDto.setHasNext(page.hasNext());
+        pageDto.setHasPrevious(page.hasPrevious());
+        return pageDto;
     }
 }
