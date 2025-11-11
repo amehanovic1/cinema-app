@@ -20,10 +20,6 @@ public class MovieServiceImpl implements MovieService {
     private final MovieRepository movieRepository;
     private final MovieMapper movieMapper;
 
-    @Override
-    public PaginatedResponse<MovieResponse> getAllMovies(Pageable pageable) {
-        return mapToPaginatedResponse(movieRepository.findAll(pageable));
-    }
 
     @Override
     public PaginatedResponse<MovieResponse> getCurrentlyShowingMovies(Pageable pageable) {

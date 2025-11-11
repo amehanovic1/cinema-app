@@ -6,8 +6,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface MovieService {
 
-    PaginatedResponse<MovieResponse> getAllMovies(Pageable pageable);
-
     PaginatedResponse<MovieResponse> getCurrentlyShowingMovies(Pageable pageable);
 
     PaginatedResponse<MovieResponse> getUpcomingMovies(Pageable pageable);
