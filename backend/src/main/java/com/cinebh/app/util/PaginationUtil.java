@@ -9,14 +9,14 @@ public class PaginationUtil {
     private PaginationUtil() {}
 
     public static <T> PageDto<T> buildPaginatedResponse (Page<T> page) {
-        PageDto<T> pageDto = new PageDto<>();
-        pageDto.setContent(page.getContent());
-        pageDto.setNumber(page.getNumber());
-        pageDto.setTotalPages(page.getTotalPages());
-        pageDto.setTotalElements(page.getTotalElements());
-        pageDto.setSize(page.getSize());
-        pageDto.setHasNext(page.hasNext());
-        pageDto.setHasPrevious(page.hasPrevious());
-        return pageDto;
+        return new PageDto<>(
+            page.getContent(),
+            page.getNumber(),
+            page.getTotalPages(),
+            page.getTotalElements(),
+            page.getSize(),
+            page.hasNext(),
+            page.hasPrevious()
+        );
     }
 }
