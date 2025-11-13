@@ -13,6 +13,12 @@ function Home() {
     const [upcomingMovies, setUpcomingMovies] = useState({})
     const [venues, setVenues] = useState({})
 
+    useEffect(() => {
+        fetchCurrentlyShowing();
+        fetchUpcoming();
+        fetchVenues();
+    }, []);
+
     const fetchCurrentlyShowing = async (page = 0, size = 4) => {
         try {
             const res = await getCurrentlyShowingMovies(page, size);
@@ -42,12 +48,6 @@ function Home() {
             console.log(error)
         }
     }
-
-    useEffect(() => {
-        fetchCurrentlyShowing();
-        fetchUpcoming();
-        fetchVenues();
-    }, []);
 
     return (
         <>

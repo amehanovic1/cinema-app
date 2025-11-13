@@ -18,8 +18,8 @@ function PricingCards({ seats }) {
                     <button
                         className={`mb-2 border p-1 rounded-lg 
                         ${seat.name === "Love"
-                                ? "bg-red-dark border-neutral-25 text-neutral-25"
-                                : "bg-neutral-25 border-red-dark text-red-dark"
+                                ? "bg-dark-red border-neutral-25 text-neutral-25"
+                                : "bg-neutral-25 border-dark-red text-dark-red"
                             }`}
                     >Explore Movies</button>
                 </div>

@@ -10,7 +10,7 @@ const Header = () => {
 
                 <h1 className="font-urbanist font-bold text-[24px]">
                     <span className="text-neutral-25">Cine</span>
-                    <span className="text-red-dark">bh.</span>
+                    <span className="text-dark-red">bh.</span>
                 </h1>
             </div>
         </header>
