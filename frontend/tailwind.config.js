@@ -6,12 +6,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'dark-grey': '#1A1A1A',
+        'dark-gray': '#1A1A1A',
         'neutral-800': '#1D2939',
         'neutral-500': '#667085',
-        'background': '#FCFCFD',
         'neutral-25': '#FCFCFD',
-        'red-dark': '#B22222',
+        'dark-red': '#B22222',
         'neutral-50': '#F9FAFB',
         'neutral-400': '#98A2B3',
         'neutral-200': '#E4E7EC',

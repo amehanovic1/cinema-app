@@ -6,7 +6,7 @@ function SeatType({ name, price, description }) {
         <>
             <h1 className="heading-h6">{name} Seats</h1>
             <h1 className={`heading-h4 
-                ${name === "Love" ? "text-red-dark" : "text-neutral-800"
+                ${name === "Love" ? "text-dark-red" : "text-neutral-800"
 
                 }`}
             >{price} KM</h1>
@@ -18,7 +18,7 @@ function SeatType({ name, price, description }) {
                     <li key={index} className="flex flex-row justify-start gap-4 items-center">
                         <FontAwesomeIcon
                             icon={faCheck}
-                            className="w-[16px] h-[14px] text-red-dark" />
+                            className="w-[16px] h-[14px] text-dark-red" />
                         <span className="font-regular text-[16px]">{item}</span>
                     </li>
                 ))}

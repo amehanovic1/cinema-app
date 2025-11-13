@@ -18,16 +18,16 @@
     }
 
     .heading-h5 {
-        @apply font-bold text-[24px] text-neutral-800;
+        @apply font-bold text-2xl text-neutral-800;
     }
 
     .heading-h6 {
-        @apply font-bold text-[20px] text-neutral-800;
+        @apply font-bold text-xl text-neutral-800;
     }
 
 
     .body-regular {
-        @apply font-normal text-[14px] text-neutral-800;
+        @apply font-normal text-sm text-neutral-800;
     }
 }
 

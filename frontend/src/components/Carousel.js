@@ -10,7 +10,6 @@ function Carousel() {
             const res = await getCurrentlyShowingMovies(page, size);
             setCurrentlyShowing(res.content);
             setIndex(0);
-            console.log(res);
         } catch (error) {
             console.log(error)
         }
