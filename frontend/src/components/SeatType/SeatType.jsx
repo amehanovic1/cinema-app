@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
-function SeatType({ name, price, description }) {
+const SeatType = ({ name, price, description }) => {
     return (
         <>
             <h1 className="heading-h6">{name} Seats</h1>
