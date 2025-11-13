@@ -1,3 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    body {
+        @apply font-urbanist;
+    }
+
+    .heading-h1 {
+        @apply font-bold text-[64px] text-neutral-800;
+    }
+
+    .heading-h4 {
+        @apply font-bold text-[32px] text-neutral-800;
+    }
+
+    .heading-h5 {
+        @apply font-bold text-[24px] text-neutral-800;
+    }
+
+    .heading-h6 {
+        @apply font-bold text-[20px] text-neutral-800;
+    }
+
+
+    .body-regular {
+        @apply font-normal text-[14px] text-neutral-800;
+    }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none
+}
