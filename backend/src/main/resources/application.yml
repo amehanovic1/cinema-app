@@ -17,3 +17,6 @@ spring:
   flyway:
     enabled: true
     validate-on-migrate: true
+
+frontend:
+  url: ${FRONTEND_URL}
