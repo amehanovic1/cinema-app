@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getAllVenues } from '../services/VenueService';
+import { getAllVenues } from '../services/venueService';
 
 function VenueButtonList() {
 
