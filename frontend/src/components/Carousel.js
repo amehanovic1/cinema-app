@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getCurrentlyShowingMovies } from '../services/MovieService';
+import { getCurrentlyShowingMovies } from '../services/movieService';
 
 function Carousel() {
     const [currentlyShowing, setCurrentlyShowing] = useState([])

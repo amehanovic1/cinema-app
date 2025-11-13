@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { getCurrentlyShowingMovies, getUpcomingMovies } from '../services/MovieService';
+import { getCurrentlyShowingMovies, getUpcomingMovies } from '../services/movieService';
 import ContentSection from "../components/ContentSection";
-import { getAllVenues } from '../services/VenueService';
+import { getAllVenues } from '../services/venueService';
 import Movie from '../components/Movie';
 import Venue from '../components/Venue';
 import Carousel from '../components/Carousel';
