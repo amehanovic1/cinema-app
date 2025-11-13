@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { getAllVenues } from '../services/venueService';
+import { getAllVenues } from '../../services/venueService';
 
-function VenueButtonList() {
+const VenueButtonList = () => {
 
     const [venues, setVenues] = useState({})
 

@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { getCurrentlyShowingMovies, getUpcomingMovies } from '../services/movieService';
-import ContentSection from "../components/ContentSection";
-import { getAllVenues } from '../services/venueService';
-import Movie from '../components/Movie';
-import Venue from '../components/Venue';
-import Carousel from '../components/Carousel';
-import VenueButtonList from '../components/VenueButtonList';
+import { getCurrentlyShowingMovies, getUpcomingMovies } from '../../services/movieService';
+import { getAllVenues } from '../../services/venueService';
+import ContentSection from "../../components/ContentSection/ContentSection";
+import Movie from '../../components/Movie/Movie';
+import Venue from '../../components/Venue/Venue';
+import Carousel from '../../components/Carousel/Carousel';
+import VenueButtonList from '../../components/VenueButtonList/VenueButtonList';
 
-function Home() {
+const Home = () => {
     
     const [nowShowing, setNowShowing] = useState({})
     const [upcomingMovies, setUpcomingMovies] = useState({})

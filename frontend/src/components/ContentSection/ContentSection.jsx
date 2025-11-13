@@ -1,6 +1,6 @@
-import Pagination from "./Pagination";
+import Pagination from "../Pagination/Pagination";
 
-function ContentSection({ title, items, getAll, renderItem }) {
+const ContentSection = ({ title, items, getAll, renderItem }) => {
     return (
         <div className="bg-neutral-25 px-[92px] py-[40px] space-y-[24px]">
             

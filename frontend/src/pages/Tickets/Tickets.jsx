@@ -1,7 +1,7 @@
-import PricingCards from "../components/PricingCards";
-import { seatsData } from "../data/seatsData";
+import PricingCards from "../../components/PricingCards/PricingCards";
+import { seatsData } from "../../data/seatsData";
 
-function Tickets() {
+const Tickets = () => {
     return (
         <>
             <div className="flex flex-col items-center justify-center text-center max-w-[632px] mx-auto p-4 gap-2">

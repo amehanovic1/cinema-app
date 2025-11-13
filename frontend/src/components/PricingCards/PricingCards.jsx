@@ -1,6 +1,6 @@
-import SeatType from "./SeatType";
+import SeatType from "../SeatType/SeatType";
 
-function PricingCards({ seats }) {
+const PricingCards = ({ seats }) => {
     return (
         <div className="flex flex-row gap-4 justify-center m-10 items-center">
             {seats.map((seat, index) => (

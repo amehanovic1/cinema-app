@@ -1,6 +1,6 @@
-import theaterHall from '../assets/denise-jans-the-newbury-boston-fall-theatre.jpg'
+import theaterHall from '../../assets/denise-jans-the-newbury-boston-fall-theatre.jpg'
 
-function AboutUs() {
+const AboutUs = () => {
     return (
         <div>
 

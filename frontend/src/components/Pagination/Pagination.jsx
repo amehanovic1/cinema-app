@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons"
 
-function Pagination({ number, totalElements, size, hasNext, hasPrevious, onPageChange }) {
+const Pagination = ({ number, totalElements, size, hasNext, hasPrevious, onPageChange }) => {
 
     const end = Math.min((number + 1) * size, totalElements)
 

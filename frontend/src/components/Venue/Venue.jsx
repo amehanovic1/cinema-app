@@ -1,4 +1,4 @@
-function Venue({ venue }) {
+const Venue = ({ venue }) => {
     return (
         <div className="h-[395px] w-[300px] bg-neutral-0 border border-neutral-200 rounded-[24px] shadow-card">
 
