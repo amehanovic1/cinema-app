@@ -1,4 +1,4 @@
-function Movie({ movie }) {
+const Movie = ({ movie }) => {
 
     const genre = movie.genres?.[0]?.name || 'Unknown';
     const poster = movie.images?.find(img => img.type === "poster")?.url;
