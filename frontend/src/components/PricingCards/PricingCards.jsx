@@ -2,26 +2,28 @@ import SeatType from "../SeatType/SeatType";
 
 const PricingCards = ({ seats }) => {
     return (
-        <div className="flex flex-row gap-4 justify-center m-10 items-center">
-            {seats.map((seat, index) => (
+        <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center items-center">
+            {seats.map((seat) => (
 
                 <div
                     key={seat.id}
-                    className={`flex flex-col justify-between items-center pt-4 border rounded-lg
+                    className={`relative border rounded-lg w-full max-w-[90%] sm:w-5/12 md:w-1/3 lg:w-1/4
                         ${seat.name === "Love"
-                            ? "h-[500px] w-[350px] shadow-card"
-                            : "h-[450px] w-[300px]"
-                        }`}>
+                            ? "py-8 sm:py-10 shadow-card"
+                            : "py-2 sm:py-3"}`}>
 
-                    <SeatType key={seat.name} {...seat} />
+                    <div className="relative p-4 flex flex-col justify-between items-center gap-4 w-full h-full">
+                        <SeatType  {...seat} />
 
-                    <button
-                        className={`mb-2 border p-1 rounded-lg 
-                        ${seat.name === "Love"
-                                ? "bg-dark-red border-neutral-25 text-neutral-25"
-                                : "bg-neutral-25 border-dark-red text-dark-red"
-                            }`}
-                    >Explore Movies</button>
+                        <button
+                            className={`border p-2 rounded-lg w-1/2 sm:w-40 mt-2 sm:mt-3 md:mt-4 lg:mt-5
+                                ${seat.name === "Love"
+                                    ? "bg-dark-red border-neutral-25 text-neutral-25"
+                                    : "bg-neutral-25 border-dark-red text-dark-red"
+                                }`}
+                        >Explore Movies</button>
+                    </div>
+
                 </div>
             ))}
         </div>
