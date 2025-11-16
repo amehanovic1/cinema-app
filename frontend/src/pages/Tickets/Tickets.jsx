@@ -1,4 +1,4 @@
-import PricingCards from "../../components/PricingCards/PricingCards";
+import PricingCards from "./PricingCards/PricingCards";
 import { seatsData } from "../../data/seatsData";
 
 const Tickets = () => {

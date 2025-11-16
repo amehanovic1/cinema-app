@@ -5,7 +5,7 @@ import ContentSection from "../../components/ContentSection/ContentSection";
 import Movie from '../../components/Movie/Movie';
 import Venue from '../../components/Venue/Venue';
 import Carousel from '../../components/Carousel/Carousel';
-import VenueButtonList from '../../components/VenueButtonList/VenueButtonList';
+import VenueButtonList from './VenueButtonList/VenueButtonList';
 
 const Home = () => {
 
