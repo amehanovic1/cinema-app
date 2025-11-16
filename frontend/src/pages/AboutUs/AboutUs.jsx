@@ -28,6 +28,7 @@ const AboutUs = () => {
                         Join us at Cinebh and discover why we're not just your average movie theater - we're your destination for cinematic excellence and entertainment bliss.
                     </p>
                 </div>
+
             </div>
 
             <img
