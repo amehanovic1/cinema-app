@@ -45,17 +45,28 @@ psql -h <HOST> -U <USER> -c "DROP DATABASE IF EXISTS <DB_NAME>"
 
 ### Backend Setup
 
-Create ```.env``` file in the backend root:
+Configure Environment Variables:
+```
+cd backend
+cp .env.example .env
+```
+Update ```.env``` file:
 
 ```
-DB_URL=jdbc:postgresql://localhost:<PORT>/<DB_NAME>
-DB_USERNAME=<USERNAME>
-DB_PASSWORD=<PASSWORD>
+# Database Configuration
+DB_URL=jdbc:postgresql://localhost:5432/cinebh
+DB_USERNAME=username
+DB_PASSWORD=password
+
+# CORS Configuration
+FRONTEND_URL=http://localhost:3000
 ```
 
 Run the application:
 
 ```
+cd backend
+
 # Using Maven Wrapper
 ./mvnw spring-boot:run
 
@@ -67,24 +78,34 @@ mvn spring-boot:run
 
 ### Seed Database
 
-Navigate to the ```db/seed``` folder and run:
-
 ```
+# Navigate to the seed folder
+cd backend/src/main/resources/db/seed
+
+# Run the seed script
 psql -h <HOST> -U <USER> -d <DB_NAME> -f <SEED_SCRIPT>.sql
 ```
 
 ### Frontend Setup
 
+Configure Environment Variables:
+
+```
+cd frontend
+cp .env.example .env
+```
+
+Update ```.env``` file:
+```
+# Backend API URL
+REACT_APP_API_URL=http://localhost:8080/api
+```
+
+Install dependencies and run:
 ```
 cd frontend
 npm install 
 npm start
-```
-
-Create ```.env``` in frontend root:
-
-```
-REACT_APP_API_URL=http://localhost:<PORT>/api
 ```
 
 
@@ -98,10 +119,12 @@ http://localhost:<PORT>/swagger-ui/index.html
 ### PMD Static Analysis:
 
 ```
+cd backend
+
 # Run analysis
 ./mvnw pmd:check 
 
 # Generate report
 ./mvnw pmd:pmd
 ```
-Reports are generated in ```target/site/pmd.html```
+Reports are generated in ```target/reports/pmd.html```
