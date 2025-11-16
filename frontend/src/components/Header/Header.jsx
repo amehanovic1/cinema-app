@@ -1,18 +1,19 @@
+import { Link } from "react-router-dom";
 import Logo from "../Logo/Logo";
 
 const Header = () => {
     return (
-        <header
-            className="w-full h-[80px] bg-neutral-800 border-b border-neutral-500 flex items-center px-[24px] pl-[92px] sticky top-0 z-50">
-            <div className="flex items-center gap-[4px]">
+        <header className="w-full bg-neutral-800 border-b border-neutral-500 flex items-center sticky top-0 z-50 px-6 md:px-14 py-4 md:py-5">
+            <Link to="/" className="flex items-center gap-2">
 
                 <Logo />
 
-                <h1 className="font-urbanist font-bold text-[24px]">
+                <h1 className="font-urbanist font-bold text-xl md:text-2xl lg:text-3xl">
                     <span className="text-neutral-25">Cine</span>
                     <span className="text-dark-red">bh.</span>
                 </h1>
-            </div>
+
+            </Link>
         </header>
     );
 }

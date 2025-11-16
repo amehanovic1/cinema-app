@@ -4,25 +4,23 @@ const Movie = ({ movie }) => {
     const poster = movie.images?.find(img => img.type === "poster")?.url;
 
     return (
-        <div className="h-[395px] w-[300px] bg-neutral-0 border border-neutral-200 rounded-[24px] shadow-card">
+        <div className="flex flex-col justify-between items-center w-full">
 
-            <div className="flex flex-col justify-center items-center p-2">
-
+            <div className="w-full aspect-square overflow-hidden flex-none rounded-xl">
                 <img
                     src={poster}
                     alt="Movie url"
-                    className="h-[287px] w-[270px] object-cover rounded-[16px]"
+                    className="w-full h-full object-cover rounded-xl"
                 />
+            </div>
 
-                <div className="w-full flex flex-col items-start">
-                    <h1 className="font-bold text-[20px] text-neutral-800">{movie.title}</h1>
-                    <div className="flex justify-start gap-2 font-regular text-[14px] text-neutral-500">
-                        <h2>{movie.durationInMinutes} MIN</h2>
-                        <span className="text-neutral-400">|</span>
-                        <h2>{genre}</h2>
-                    </div>
+            <div className="w-full mt-2 flex flex-col items-start">
+                <h1 className="font-bold text-xs sm:text-sm md:text-base lg:text-lg text-neutral-800 line-clamp-1">{movie.title}</h1>
+                <div className="flex justify-start gap-1 sm:gap-1.5 md:gap-2 text-xs sm:text-sm md:text-base font-regular text-neutral-500">
+                    <h1>{movie.durationInMinutes} MIN</h1>
+                    <span className="text-neutral-400">|</span>
+                    <h1>{genre}</h1>
                 </div>
-
             </div>
 
         </div>
