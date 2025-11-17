@@ -2,7 +2,7 @@ package com.cinebh.app.controller;
 
 import com.cinebh.app.dto.PageDto;
 import com.cinebh.app.dto.VenueDto;
-import com.cinebh.app.service.impl.VenueServiceImpl;
+import com.cinebh.app.service.VenueService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/venues")
 public class VenueController {
 
-    private final VenueServiceImpl venueService;
+    private final VenueService venueService;
 
-    public VenueController(VenueServiceImpl venueServiceImpl) {
-        this.venueService = venueServiceImpl;
+    public VenueController(VenueService venueService) {
+        this.venueService = venueService;
     }
 
     @GetMapping
