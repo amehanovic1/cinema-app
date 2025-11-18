@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react';
 import { getCurrentlyShowingMovies, getUpcomingMovies } from '../../services/movieService';
 import { getAllVenues } from '../../services/venueService';
 import ContentSection from "../../components/ContentSection/ContentSection";
-import Movie from '../../components/Movie/Movie';
-import Venue from '../../components/Venue/Venue';
 import Carousel from '../../components/Carousel/Carousel';
 import VenueButtonList from './VenueButtonList/VenueButtonList';
+import Card from '../../components/Card/Card';
 
 const Home = () => {
 
@@ -48,6 +47,10 @@ const Home = () => {
         }
     }
 
+    const getMovieImage = (movie, type = "poster") => {
+        return movie.images?.find(img => img.type === type)?.url || "";
+    }
+
     const renderCarouselItem = (movie) => {
         return (
             <div className='absolute flex flex-col justify-start top-1/2 left-4 sm:left-6 md:left-8 lg:left-12 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg text-neutral-25 -translate-y-1/2 gap-3'>
@@ -76,7 +79,7 @@ const Home = () => {
             <div className='w-full h-[60vh] sm:h-[70vh] md:h-[80vh] lg:h-[90vh]'>
                 <Carousel
                     items={carouselMovies}
-                    getImage={(movie) => movie.images.find(img => img.type === "backdrop")?.url}
+                    getImage={(movie) => getMovieImage(movie, "backdrop")}
                     renderItem={renderCarouselItem}
                     autoSlide={true}
                     autoSlideInterval={4000}
@@ -89,21 +92,39 @@ const Home = () => {
                 title="Currently Showing"
                 items={currentMovies}
                 getAll={fetchCurrentlyShowing}
-                renderItem={(movie) => <Movie movie={movie} />}
+                renderItem={(movie) =>
+                    <Card
+                        title={movie.title}
+                        imageUrl={getMovieImage(movie)}
+                        details={[`${movie.durationInMinutes} MIN |`, movie.genres?.[0]?.name]}
+                    />
+                }
             />
 
             <ContentSection
                 title="Upcoming Movies"
                 items={upcomingMovies}
                 getAll={fetchUpcoming}
-                renderItem={(movie) => <Movie movie={movie} />}
+                renderItem={(movie) =>
+                    <Card
+                        title={movie.title}
+                        imageUrl={getMovieImage(movie)}
+                        details={[`${movie.durationInMinutes} MIN`, "|", movie.genres?.[0]?.name]}
+                    />
+                }
             />
 
             <ContentSection
                 title="Venues"
                 items={venues}
                 getAll={fetchVenues}
-                renderItem={(venue) => <Venue venue={venue} />}
+                renderItem={(venue) =>
+                     <Card
+                        title={venue.name}
+                        imageUrl={venue.imageUrl}
+                        details={[`${venue.street},`, venue.city.name]}
+                    />
+                }
             />
 
         </>
