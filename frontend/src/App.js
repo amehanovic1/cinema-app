@@ -1,29 +1,20 @@
 import './App.css';
-import Footer from './layouts/Footer/Footer';
-import Header from './layouts/Header/Header';
 import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import AboutUs from './pages/AboutUs/AboutUs';
 import Tickets from './pages/Tickets/Tickets';
-import ScrollToTop from './layouts/ScrollToTop/ScrollToTop';
+import { ROUTES } from './routes/routes';
+import Layout from './layouts/Layout/Layout';
 
 function App() {
   return (
-    <>
-      <Header />
-  
-      <ScrollToTop />
-
-      <main>
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/about-us' element={<AboutUs />} />
-          <Route path='/tickets' element={<Tickets />} />
-        </Routes>
-      </main>
-
-      <Footer />
-    </>
+    <Layout>
+      <Routes>
+        <Route path={ROUTES.HOME} element={<Home />} />
+        <Route path={ROUTES.ABOUT_US} element={<AboutUs />} />
+        <Route path={ROUTES.TICKETS} element={<Tickets />} />
+      </Routes>
+    </Layout>
   );
 }
 

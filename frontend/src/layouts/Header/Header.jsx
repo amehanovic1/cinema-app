@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import Logo from "../../components/Logo/Logo";
+import { ROUTES } from "../../routes/routes";
 
 const Header = () => {
     return (
         <header className="w-full bg-neutral-800 border-b border-neutral-500 flex items-center sticky top-0 z-50 px-6 md:px-14 py-4 md:py-5">
-            <Link to="/" className="flex items-center gap-2">
+            <Link to={ROUTES.HOME} className="flex items-center gap-2">
 
                 <Logo />
 

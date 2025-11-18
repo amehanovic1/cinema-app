@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Logo from "../../components/Logo/Logo";
+import { ROUTES } from "../../routes/routes";
 
 const Footer = () => {
     return (
@@ -12,14 +13,14 @@ const Footer = () => {
 
             <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 md:gap-3 lg:gap-4 font-bold text-xs sm:text-base md:text-lg lg:text-xl text-neutral-25">
                 <Link
-                    to="/about-us"
+                    to={ROUTES.ABOUT_US}
                     className="hover:underline"
                 >
                     ABOUT US
                 </Link>
                 <span className="text-neutral-0">|</span>
                 <Link
-                    to="/tickets"
+                    to={ROUTES.TICKETS}
                     className="hover:underline"
                 >
                     TICKETS
