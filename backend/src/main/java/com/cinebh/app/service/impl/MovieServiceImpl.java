@@ -35,8 +35,7 @@ public class MovieServiceImpl implements MovieService {
                 .and(MovieSpecification.hasCity(city))
                 .and(MovieSpecification.hasVenue(venue))
                 .and(MovieSpecification.hasGenre(genre))
-                .and(MovieSpecification.hasDate(date))
-                .and(MovieSpecification.hasTime(time));
+                .and(MovieSpecification.hasDateTime(date, time));
 
         return mapToPaginatedResponse(movieRepository.findAll(movieSpecification, pageable));
     }

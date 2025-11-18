@@ -21,7 +21,7 @@ public class MovieProjectionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MovieProjectionDto>> getByMovieId(
+    public ResponseEntity<List<MovieProjectionDto>> getByMovieIdAndProjectionDate(
             @RequestParam UUID movieId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  LocalDate projectionDate
             ) {

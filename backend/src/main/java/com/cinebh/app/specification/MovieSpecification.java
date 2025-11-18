@@ -40,27 +40,25 @@ public class MovieSpecification {
     public static Specification<Movie> hasGenre(String genre) {
         if (genre == null || genre.isEmpty()) return null;
         return (root, criteriaQuery,criteriaBuilder) ->
-                criteriaBuilder.equal(
-                        root.join("genres", JoinType.LEFT)
+                criteriaBuilder.equal(root.join("genres", JoinType.LEFT)
                                 .get("name"), genre);
     }
 
-    public static Specification<Movie> hasDate(LocalDate date) {
-        if (date == null) return null;
-        return (root, criteriaQuery,criteriaBuilder) ->
-                criteriaBuilder.equal(
-                        root.join("projections", JoinType.LEFT)
-                        .get("projectionDate"), date);
-    }
-
-
-    public static Specification<Movie> hasTime(LocalTime time) {
-        if (time == null) return null;
+    public static Specification<Movie> hasDateTime(LocalDate date, LocalTime time) {
         return (root, criteriaQuery,criteriaBuilder) -> {
-            criteriaQuery.distinct(true);
-            return criteriaBuilder.equal(
-                    root.join("projections", JoinType.LEFT)
-                            .get("projectionTime"), time);
+
+            var join = root.join("projections", JoinType.INNER);
+            LocalDate newDate = (date != null) ? date : LocalDate.now();
+
+            if (time == null)  {
+                return criteriaBuilder.equal(join.get("projectionDate"), date);
+            }
+            else {
+                return criteriaBuilder.and(
+                        criteriaBuilder.equal(join.get("projectionDate"), newDate),
+                        criteriaBuilder.equal(join.get("projectionTime"), time)
+                );
+            }
         };
     }
 

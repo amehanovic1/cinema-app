@@ -36,7 +36,7 @@ public class MovieController {
             @RequestParam(required = false) String venue,
             @RequestParam(required = false) String genre,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-            @RequestParam(required = false) LocalTime time,
+            @RequestParam(required = false) @DateTimeFormat (pattern = "HH:mm") LocalTime time,
             @PageableDefault(page = 0, size = 5, sort = "title", direction = Sort.Direction.ASC) Pageable pageable
     ) {
         return movieService.getCurrentlyShowingMovies(title, city, venue, genre, date, time, pageable);
