@@ -14,3 +14,9 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: true
+  flyway:
+    enabled: true
+    validate-on-migrate: true
+
+frontend:
+  url: ${FRONTEND_URL}
