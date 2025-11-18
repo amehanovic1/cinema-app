@@ -5,7 +5,7 @@ const Card = ({ title, imageUrl, details }) => {
             <div className="w-full aspect-square overflow-hidden flex-none rounded-xl">
                 <img
                     src={imageUrl}
-                    alt="Movie url"
+                    alt={title}
                     className="w-full h-full object-cover rounded-xl"
                 />
             </div>
