@@ -17,7 +17,8 @@ module.exports = {
         'light-shadow': '#34405414',
         'neutral-0': '#FFFFFF',
         'light-rose': '#fef2f2',
-        'neutral-700': '#344054'
+        'neutral-700': '#344054',
+        'neutral-600': '#475467'
       },
       fontFamily: {
         urbanist: ["Urbanist", "sans-serif"]
