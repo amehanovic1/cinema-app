@@ -5,6 +5,7 @@ import ContentSection from "../../components/ContentSection/ContentSection";
 import Carousel from '../../components/Carousel/Carousel';
 import VenueButtonList from './VenueButtonList/VenueButtonList';
 import Card from '../../components/Card/Card';
+import { ROUTES } from '../../routes/routes';
 
 const Home = () => {
 
@@ -21,7 +22,7 @@ const Home = () => {
 
     const fetchCurrentlyShowing = async (page = 0, size = 4) => {
         try {
-            const res = await getCurrentlyShowingMovies(page, size);
+            const res = await getCurrentlyShowingMovies("", "", "", "", "", "", page, size);
             setCurrentMovies(res);
             if (page === 0) setCarouselMovies(res.content.slice(0, 3))
         } catch (error) {
@@ -90,6 +91,7 @@ const Home = () => {
 
             <ContentSection
                 title="Currently Showing"
+                linkTo={ROUTES.CURRENTLY_SHOWING}
                 items={currentMovies}
                 getAll={fetchCurrentlyShowing}
                 renderItem={(movie) =>

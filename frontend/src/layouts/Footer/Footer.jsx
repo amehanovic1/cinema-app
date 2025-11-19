@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import Logo from "../../components/Logo/Logo";
 import { ROUTES } from "../../routes/routes";
 
@@ -12,19 +12,19 @@ const Footer = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 md:gap-3 lg:gap-4 font-bold text-xs sm:text-base md:text-lg lg:text-xl text-neutral-25">
-                <Link
+                <NavLink
                     to={ROUTES.ABOUT_US}
                     className="hover:underline"
                 >
                     ABOUT US
-                </Link>
+                </NavLink>
                 <span className="text-neutral-0">|</span>
-                <Link
+                <NavLink
                     to={ROUTES.TICKETS}
                     className="hover:underline"
                 >
                     TICKETS
-                </Link>
+                </NavLink>
             </div>
             <p className="font-normal font-[10px] sm:text-xs md:text-sm lg:text-base text-light-rose mt-1 sm:mt-2 md:mt-3 lg:mt-4">
                 Copyright @Cinebh. Built with love in Sarajevo. All rights reserved.
