@@ -1,6 +1,5 @@
 import { NavLink } from "react-router-dom";
 import Pagination from "../Pagination/Pagination";
-import { ROUTES } from "../../routes/routes";
 
 const ContentSection = ({ title, linkTo = null, items, getAll, renderItem }) => {
     return (
