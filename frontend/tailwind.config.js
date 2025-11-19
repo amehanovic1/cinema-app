@@ -16,13 +16,16 @@ module.exports = {
         'neutral-200': '#E4E7EC',
         'light-shadow': '#34405414',
         'neutral-0': '#FFFFFF',
-        'light-rose': '#fef2f2'
+        'light-rose': '#fef2f2',
+        'neutral-700': '#344054'
       },
       fontFamily: {
         urbanist: ["Urbanist", "sans-serif"]
       },
       boxShadow: {
-        'card': '0px 2px 4px -2px #34405414, 0px 4px 6px -1px #34405414'
+        'card': '0px 2px 4px -2px #34405414, 0px 4px 6px -1px #34405414',
+        'text': '0px 25px 50px -16px #34405429',
+        'input': '0px 1px 2px -2px #344054, 0px 1px 3px -1px #344054'
       }
     },
     
