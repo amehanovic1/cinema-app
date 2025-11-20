@@ -147,10 +147,8 @@ const CurrentlyShowing = () => {
         const newParams = new URLSearchParams(searchParams);
         if (value)
             newParams.set(key, value);
-        else
+        else 
             newParams.delete(key)
-
-        newParams.set("page", 0);
         setSearchParams(newParams);
     }
 
