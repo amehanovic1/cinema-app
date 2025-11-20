@@ -29,8 +29,7 @@ public class MovieServiceImpl implements MovieService {
             String title, String city, String venue, String genre,
             LocalDate date, LocalTime time, Pageable pageable) {
 
-        Specification<Movie> movieSpecification =
-                MovieSpecification.isCurrentlyShowing()
+        Specification<Movie> movieSpecification = MovieSpecification.isCurrentlyShowing()
                 .and(MovieSpecification.hasTitleLike(title))
                 .and(MovieSpecification.hasCity(city))
                 .and(MovieSpecification.hasVenue(venue))

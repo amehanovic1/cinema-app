@@ -20,8 +20,7 @@ public class MovieProjectionServiceImpl implements MovieProjectionService {
 
     @Override
     public List<MovieProjectionDto> getByMovieIdAndProjectionDate(UUID movieId, LocalDate projectionDate) {
-        return movieProjectionRepository
-                .findByMovieIdAndProjectionDate(movieId, projectionDate)
+        return movieProjectionRepository.findByMovieIdAndProjectionDate(movieId, projectionDate)
                 .stream()
                 .map(movieProjectionMapper::toDto)
                 .toList();
