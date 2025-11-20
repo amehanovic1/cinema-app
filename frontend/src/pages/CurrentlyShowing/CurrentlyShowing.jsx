@@ -12,7 +12,7 @@ import MovieDetails from "../../components/MovieDetails/MovieDetails";
 import SearchInput from "../../components/SearchInput/SearchInput";
 
 const CurrentlyShowing = () => {
-    const [currentMovies, setCurrentMovies] = useState({  
+    const [currentMovies, setCurrentMovies] = useState({
         content: [],
         number: 0,
         size: 0,
@@ -24,7 +24,7 @@ const CurrentlyShowing = () => {
 
     const [projections, setProjections] = useState({})
     const [page, setPage] = useState(0)
-    
+
     const [venues, setVenues] = useState({ content: [] })
     const [cities, setCities] = useState([])
     const [genres, setGenres] = useState([])
@@ -52,18 +52,26 @@ const CurrentlyShowing = () => {
 
     useEffect(() => {
         fetchCurrentlyShowing(page);
-    },[page]);
+    }, [page]);
 
     const fetchCurrentlyShowing = async (pageNum = page, size = 1) => {
         try {
-            
-            const res = await getCurrentlyShowingMovies(
-                searchTitle, selectedCity, selectedVenue, selectedGenre, selectedDate, selectedTime, pageNum, size
-            );
-        
-            setCurrentMovies(previousMovies => pageNum === 0 
-                ? res 
-                : {...res, content: [...previousMovies.content,...res.content]})
+            const params = {
+                title: searchTitle,
+                city: selectedCity,
+                venue: selectedVenue,
+                genre: selectedGenre,
+                date: selectedDate,
+                time: selectedTime,
+                page: pageNum,
+                size: size
+            }
+
+            const res = await getCurrentlyShowingMovies(params);
+
+            setCurrentMovies(previousMovies => pageNum === 0
+                ? res
+                : { ...res, content: [...previousMovies.content, ...res.content] })
 
             fetchMovieProjections(res.content)
         } catch (error) {
@@ -82,7 +90,7 @@ const CurrentlyShowing = () => {
 
     const fetchVenues = async (page = 0, size = 100) => {
         try {
-            const res = await getAllVenues(page, size);
+            const res = await getAllVenues({ page, size });
             setVenues(res);
         } catch (error) {
             console.log(error)
@@ -160,14 +168,14 @@ const CurrentlyShowing = () => {
 
             <MovieDetails movies={currentMovies.content} projections={projections} />
 
-            {currentMovies.hasNext && currentMovies.content.length > 0  && (
+            {currentMovies.hasNext && currentMovies.content.length > 0 && (
                 <button
                     onClick={handleLoadMore}
                     className="flex justify-center text-urbanist text-dark-red 
                         text-semibold text-sm sm:text-base md:text-lg lg:text-lg underline">
                     Load more
-                </button> 
-                )
+                </button>
+            )
             }
 
         </div>

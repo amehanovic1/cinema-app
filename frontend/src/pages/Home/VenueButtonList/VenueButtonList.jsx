@@ -12,7 +12,7 @@ const VenueButtonList = () => {
 
     const fetchVenues = async (page = 0, size = 10) => {
         try {
-            const res = await getAllVenues(page, size);
+            const res = await getAllVenues({ page, size });
             setVenues(res);
         } catch (error) {
             console.log(error)

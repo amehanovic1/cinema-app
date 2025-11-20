@@ -22,7 +22,13 @@ const Home = () => {
 
     const fetchCurrentlyShowing = async (page = 0, size = 4) => {
         try {
-            const res = await getCurrentlyShowingMovies("", "", "", "", "", "", page, size);
+            const params = {
+                page: page,
+                size: size
+            }
+
+            const res = await getCurrentlyShowingMovies(params);
+
             setCurrentMovies(res);
             if (page === 0) setCarouselMovies(res.content.slice(0, 3))
         } catch (error) {
@@ -32,7 +38,7 @@ const Home = () => {
 
     const fetchUpcoming = async (page = 0, size = 4) => {
         try {
-            const res = await getUpcomingMovies(page, size);
+            const res = await getUpcomingMovies({ page, size });
             setUpcomingMovies(res);
         } catch (error) {
             console.log(error)
@@ -41,7 +47,7 @@ const Home = () => {
 
     const fetchVenues = async (page = 0, size = 4) => {
         try {
-            const res = await getAllVenues(page, size);
+            const res = await getAllVenues({ page, size });
             setVenues(res);
         } catch (error) {
             console.log(error)
@@ -121,7 +127,7 @@ const Home = () => {
                 items={venues}
                 getAll={fetchVenues}
                 renderItem={(venue) =>
-                     <Card
+                    <Card
                         title={venue.name}
                         imageUrl={venue.imageUrl}
                         details={[`${venue.street},`, venue.city.name]}

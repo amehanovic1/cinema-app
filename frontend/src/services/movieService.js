@@ -2,13 +2,9 @@ import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API_URL + "/movies";
 
-export async function getCurrentlyShowingMovies(
-    title = "", city = "", venue = "", genre = "", date="", time="", page = 0, size = 4) 
-    {
+export async function getCurrentlyShowingMovies(params) {
     try {
-        const response = await axios.get(`${API_URL}/currently-showing`, {
-            params: { title, city, venue, genre, date, time, page, size }
-        });
+        const response = await axios.get(`${API_URL}/currently-showing`, { params });
         return response.data;
     }
     catch (error) {
@@ -17,9 +13,9 @@ export async function getCurrentlyShowingMovies(
     }
 }
 
-export async function getUpcomingMovies(page = 0, size = 4) {
+export async function getUpcomingMovies(params) {
     try {
-        const response = await axios.get(`${API_URL}/upcoming?page=${page}&size=${size}`);
+        const response = await axios.get(`${API_URL}/upcoming`, { params });
         return response.data;
     }
     catch (error) {
