@@ -49,21 +49,30 @@ public class MovieSpecification {
     }
 
     public static Specification<Movie> hasDateTime(LocalDate date, LocalTime time) {
-        if (date == null && time == null) return null;
         return (root, criteriaQuery,criteriaBuilder) -> {
-
             var join = root.join("projections", JoinType.INNER);
-            LocalDate newDate = LocalDate.now();
 
-            if (time == null)  {
+            if (date == null && time == null) {
+                return criteriaBuilder.conjunction();
+            }
+
+            if (date != null && time == null) {
                 return criteriaBuilder.equal(join.get("projectionDate"), date);
             }
-            else {
+
+            if (date == null && time != null) {
+                LocalDate today = LocalDate.now();
                 return criteriaBuilder.and(
-                        criteriaBuilder.equal(join.get("projectionDate"), newDate),
+                        criteriaBuilder.equal(join.get("projectionDate"), today),
                         criteriaBuilder.equal(join.get("projectionTime"), time)
                 );
             }
+
+            return criteriaBuilder.and(
+                    criteriaBuilder.equal(join.get("projectionDate"), date),
+                    criteriaBuilder.equal(join.get("projectionTime"), time)
+            );
+
         };
     }
 
