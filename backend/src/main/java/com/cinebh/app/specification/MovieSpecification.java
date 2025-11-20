@@ -18,23 +18,27 @@ public class MovieSpecification {
 
     public static Specification<Movie> hasCity(String city) {
         if (city == null || city.isEmpty()) return null;
-        return (root, criteriaQuery,criteriaBuilder) ->
-                criteriaBuilder.equal(
-                        root.join("projections", JoinType.LEFT)
-                                .join("cinemaHall", JoinType.LEFT)
-                                .join("venue", JoinType.LEFT)
-                                .join("city", JoinType.LEFT)
-                                .get("name"), city);
+        return (root, criteriaQuery,criteriaBuilder) -> {
+            criteriaQuery.distinct(true);
+            return criteriaBuilder.equal(
+                    root.join("projections", JoinType.LEFT)
+                            .join("cinemaHall", JoinType.LEFT)
+                            .join("venue", JoinType.LEFT)
+                            .join("city", JoinType.LEFT)
+                            .get("name"), city);
+        };
     }
 
     public static Specification<Movie> hasVenue(String venue) {
         if (venue == null || venue.isEmpty()) return null;
-        return (root, criteriaQuery,criteriaBuilder) ->
-                criteriaBuilder.equal(
-                        root.join("projections", JoinType.LEFT)
-                                .join("cinemaHall", JoinType.LEFT)
-                                .join("venue", JoinType.LEFT)
-                                .get("name"), venue);
+        return (root, criteriaQuery,criteriaBuilder) -> {
+            criteriaQuery.distinct(true);
+            return criteriaBuilder.equal(
+                    root.join("projections", JoinType.LEFT)
+                            .join("cinemaHall", JoinType.LEFT)
+                            .join("venue", JoinType.LEFT)
+                            .get("name"), venue);
+        };
     }
 
     public static Specification<Movie> hasGenre(String genre) {
@@ -45,11 +49,11 @@ public class MovieSpecification {
     }
 
     public static Specification<Movie> hasDateTime(LocalDate date, LocalTime time) {
-        if (date == null) return null;
+        if (date == null && time == null) return null;
         return (root, criteriaQuery,criteriaBuilder) -> {
 
             var join = root.join("projections", JoinType.INNER);
-            LocalDate newDate = (date != null) ? date : LocalDate.now();
+            LocalDate newDate = LocalDate.now();
 
             if (time == null)  {
                 return criteriaBuilder.equal(join.get("projectionDate"), date);
