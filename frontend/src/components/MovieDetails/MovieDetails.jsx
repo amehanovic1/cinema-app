@@ -43,7 +43,7 @@ const MovieDetails = ({ movies, projections }) => {
                                     </div>
 
                                     <div className="flex gap-4 mt-2 flex-wrap">
-                                        {movie.genres.map(genre => (
+                                        {movie.genres?.map(genre => (
                                             <button
                                                 key={genre.id}
                                                 className="bg-neutral-200 text-sm px-2 py-1 rounded-lg" >
