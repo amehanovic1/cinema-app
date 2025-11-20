@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 
-const SearcInput = ({ text, onChange }) => {
+const SearchInput = ({ text, onChange }) => {
 
     const [searchTitle, setSearchTitle] = useState("")
 
@@ -31,4 +31,4 @@ const SearcInput = ({ text, onChange }) => {
     );
 }
 
-export default SearcInput;
+export default SearchInput;
