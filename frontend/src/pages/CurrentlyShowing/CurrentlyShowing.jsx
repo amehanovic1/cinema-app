@@ -25,7 +25,6 @@ const CurrentlyShowing = () => {
     })
 
     const [projections, setProjections] = useState({})
-
     const [venues, setVenues] = useState({ content: [] })
     const [cities, setCities] = useState([])
     const [genres, setGenres] = useState([])
