@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 
-const DatePicker = ({ numberOfDays = 10, onChange }) => {
+const DatePicker = ({ numberOfDays = 10, selectedValue, onChange }) => {
 
-    const [selectedDate, setSelectedDate] = useState(new Date())
     const [dates, setDates] = useState([])
-    const [todayDate] = useState(new Date())
+    const selectedDate = selectedValue ? new Date(selectedValue) : null
+    const todayDate = new Date()
 
     useEffect(() => {
         createDateRange();
     }, [])
 
     const handleChange = (date) => {
-        setSelectedDate(date);
         if (onChange) onChange(date.toLocaleDateString('sv-SE'));
     }
 
@@ -27,17 +26,16 @@ const DatePicker = ({ numberOfDays = 10, onChange }) => {
     }
 
     const isSameDate = (d1, d2) => {
-       return (
-        d1.getDate() === d2.getDate() &&
-        d1.getMonth() === d2.getMonth() && 
-        d1.getFullYear() === d2.getFullYear()
-       );
+        return (
+            d1.getDate() === d2.getDate() &&
+            d1.getMonth() === d2.getMonth() &&
+            d1.getFullYear() === d2.getFullYear()
+        );
     }
 
     return (
         <div className="flex flex-row flex-wrap items-center justify-between gap-2 sm:gap-4 md:gap-6 lg:gap-8 justify-start">
             {dates.map((date, index) =>
-
                 <button
                     key={index}
                     className={`
@@ -45,7 +43,7 @@ const DatePicker = ({ numberOfDays = 10, onChange }) => {
                         px-3 py-1 sm:px-4 sm:py-2 md:px-5 md:py-3
                         rounded-xl shadow-card
                         text-xs sm:text-sm md:text-base
-                        ${date.getDate() === selectedDate.getDate()
+                        ${isSameDate(date, selectedDate)
                             ? "bg-dark-red text-white font-bold" : "bg-neutral-0"}`}
                     onClick={() => handleChange(date)}>
 
@@ -60,7 +58,8 @@ const DatePicker = ({ numberOfDays = 10, onChange }) => {
                             : date.toLocaleDateString('en-US', { weekday: 'short' })}
                         </h1>
                     </div>
-                </button>)}
+                </button>
+            )}
         </div>
     );
 }

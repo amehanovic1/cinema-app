@@ -10,8 +10,10 @@ import Dropdown from "../../components/Dropdown/Dropdown";
 import DatePicker from "../../components/DatePicker/DatePicker";
 import MovieDetails from "../../components/MovieDetails/MovieDetails";
 import SearchInput from "../../components/SearchInput/SearchInput";
+import { useSearchParams } from "react-router-dom";
 
 const CurrentlyShowing = () => {
+    const [searchParams, setSearchParams] = useSearchParams()
     const [currentMovies, setCurrentMovies] = useState({
         content: [],
         number: 0,
@@ -29,17 +31,19 @@ const CurrentlyShowing = () => {
     const [cities, setCities] = useState([])
     const [genres, setGenres] = useState([])
 
-    const [searchTitle, setSearchTitle] = useState("")
-    const [selectedTime, setSelectedTime] = useState("")
-    const [selectedCity, setSelectedCity] = useState("")
-    const [selectedVenue, setSelectedVenue] = useState("")
-    const [selectedGenre, setSlectedGenre] = useState("")
-    const [selectedDate, setSelectedDate] = useState(() => {
-        const today = new Date()
-        return today.toLocaleDateString('sv-SE')
-    })
+    const searchTitle = searchParams.get("title") || ""
+    const selectedCity = searchParams.get("city") || ""
+    const selectedVenue = searchParams.get("venue") || ""
+    const selectedGenre = searchParams.get("genre") || ""
+    const selectedTime = searchParams.get("time") || ""
+    const selectedDate = searchParams.get("date") || new Date().toLocaleDateString('sv-SE')
 
     useEffect(() => {
+        if(!searchParams.get("date")) {
+            const newParams = new URLSearchParams(searchParams);
+            newParams.set("date", new Date().toLocaleDateString('sv-SE'));
+            setSearchParams(newParams);
+        }
         fetchCities();
         fetchVenues();
         fetchGenres();
@@ -121,6 +125,15 @@ const CurrentlyShowing = () => {
         setPage(currentPage => currentPage + 1);
     }
 
+    const updateParam = (key, value) => {
+        const newParams = new URLSearchParams(searchParams);
+        if (value)
+            newParams.set(key, value);
+        else 
+            newParams.delete(key)
+        setSearchParams(newParams);
+    }
+
     return (
         <div className="flex flex-col gap-4 px-6 md:px-14 py-4 md:py-5 bg-neutral-25">
 
@@ -130,7 +143,10 @@ const CurrentlyShowing = () => {
                 {currentMovies.content.length > 0 ? ("(" + currentMovies.content.length + ")") : ""}
             </h1>
 
-            <SearchInput text={"Search movies"} onChange={setSearchTitle} />
+            <SearchInput
+                text={"Search movies"}
+                selectedValue={searchTitle}
+                onChange={(value) => { updateParam("title", value) }} />
 
             <div
                 className="flex flex-col gap-4 items-center justify-center 
@@ -139,34 +155,44 @@ const CurrentlyShowing = () => {
                     items={cities}
                     selectText="All cities"
                     icon={faLocationDot}
-                    onChange={setSelectedCity}
+                    selectedValue={selectedCity}
+                    onChange={(value) => { updateParam("city", value) }}
                 />
                 <Dropdown
                     items={venues?.content}
                     selectText="All cinemas"
                     icon={faLocationDot}
-                    onChange={setSelectedVenue}
+                    selectedValue={selectedVenue}
+                    onChange={(value) => { updateParam("venue", value) }}
                 />
                 <Dropdown
                     items={genres}
                     selectText="All genres"
                     icon={faLocationDot}
-                    onChange={setSlectedGenre}
+                    selectedValue={selectedGenre}
+                    onChange={(value) => { updateParam("genre", value) }}
                 />
                 <Dropdown
                     items={times.map(time => ({ id: time, name: time }))}
                     selectText="All projections"
                     icon={faClock}
-                    onChange={setSelectedTime} />
+                    selectedValue={selectedTime}
+                    onChange={(value) => { updateParam("time", value) }} />
             </div>
 
-            <DatePicker onChange={setSelectedDate} />
+            <DatePicker
+                selectedValue={selectedDate}
+                onChange={(value) => { updateParam("date", value) }}
+            />
 
             <h1 className="font-normal italic text-neutral-500 text-xs md:text-sm lg:text-base">
                 Quick reminder that our cinema schedule is on a ten-day update cycle.
             </h1>
 
-            <MovieDetails movies={currentMovies.content} projections={projections} />
+            <MovieDetails
+                movies={currentMovies.content}
+                projections={projections}
+            />
 
             {currentMovies.hasNext && currentMovies.content.length > 0 && (
                 <button
@@ -175,8 +201,7 @@ const CurrentlyShowing = () => {
                         text-semibold text-sm sm:text-base md:text-lg lg:text-lg underline">
                     Load more
                 </button>
-            )
-            }
+            )}
 
         </div>
     );
