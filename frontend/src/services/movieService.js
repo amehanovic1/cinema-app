@@ -4,9 +4,7 @@ const API_URL = process.env.REACT_APP_API_URL + "/movies";
 
 export async function getCurrentlyShowingMovies({ title, city, venue, genre, date, time, page, size }) {
     try {
-        const response = await axios.get(`${API_URL}/currently-showing`, {
-            params: { title, city, venue, genre, date, time, page, size }
-        });
+        const response = await axios.get(`${API_URL}/currently-showing`, { params });
         return response.data;
     }
     catch (error) {
