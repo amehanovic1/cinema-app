@@ -14,6 +14,11 @@ const MovieDetails = ({ movies, projections }) => {
         return newTime;
     }
 
+    const getLanguageName = (languageCode) => {
+        const displayNames = new Intl.DisplayNames(['en'], {type: 'language'});
+        return displayNames.of(languageCode);
+    }
+
     return (
         <>
             {movies.length > 0 ? (
@@ -37,7 +42,7 @@ const MovieDetails = ({ movies, projections }) => {
                                     <div className="flex flex-wrap gap-3">
                                         <span>{movie.pgRating}</span>
                                         <span className="text-dark-red">|</span>
-                                        <span>{movie.language}</span>
+                                        <span>{getLanguageName(movie.language)}</span>
                                         <span className="text-dark-red">|</span>
                                         <span>{movie.durationInMinutes} Min </span>
                                     </div>
