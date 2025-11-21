@@ -5,11 +5,6 @@ import { faFilm } from "@fortawesome/free-solid-svg-icons";
 const MovieDetails = ({ movies, projections }) => {
 
     const getLanguageName = (languageCode) => {
-        const displayNames = new Intl.DisplayNames(['en'], { type: 'language' });
-        return displayNames.of(languageCode);
-    }
-
-    const getLanguageName = (languageCode) => {
         const displayNames = new Intl.DisplayNames(['en'], {type: 'language'});
         return displayNames.of(languageCode);
     }
