@@ -25,12 +25,12 @@ const CurrentlyShowing = () => {
     })
 
     const [projections, setProjections] = useState({})
-    const [page, setPage] = useState(0)
 
     const [venues, setVenues] = useState({ content: [] })
     const [cities, setCities] = useState([])
     const [genres, setGenres] = useState([])
 
+    const page = Number(searchParams.get("page") || 0)
     const searchTitle = searchParams.get("title") || ""
     const selectedCity = searchParams.get("city") || ""
     const selectedVenue = searchParams.get("venue") || ""
@@ -39,9 +39,11 @@ const CurrentlyShowing = () => {
     const selectedDate = searchParams.get("date") || new Date().toLocaleDateString('sv-SE')
 
     useEffect(() => {
-        if(!searchParams.get("date")) {
+        if (!searchParams.get("page")) {
             const newParams = new URLSearchParams(searchParams);
             newParams.set("date", new Date().toLocaleDateString('sv-SE'));
+            newParams.set("page", 0);
+            newParams.set("size", 9);
             setSearchParams(newParams);
         }
         fetchCities();
@@ -50,15 +52,10 @@ const CurrentlyShowing = () => {
     }, []);
 
     useEffect(() => {
-        setPage(0);
-        fetchCurrentlyShowing(0);
-    }, [searchTitle, selectedCity, selectedVenue, selectedGenre, selectedDate, selectedTime]);
+        fetchCurrentlyShowing();
+    }, [searchParams]);
 
-    useEffect(() => {
-        fetchCurrentlyShowing(page);
-    }, [page]);
-
-    const fetchCurrentlyShowing = async (pageNum = page, size = 1) => {
+    const fetchCurrentlyShowing = async () => {
         try {
             const params = {
                 title: searchTitle,
@@ -67,13 +64,13 @@ const CurrentlyShowing = () => {
                 genre: selectedGenre,
                 date: selectedDate,
                 time: selectedTime,
-                page: pageNum,
-                size: size
+                page,
+                size: 9
             }
 
             const res = await getCurrentlyShowingMovies(params);
 
-            setCurrentMovies(previousMovies => pageNum === 0
+            setCurrentMovies(previousMovies => page === 0
                 ? res
                 : { ...res, content: [...previousMovies.content, ...res.content] })
 
@@ -114,7 +111,7 @@ const CurrentlyShowing = () => {
         try {
             for (const movie of movies) {
                 const res = await getMovieById(movie.id, selectedDate);
-                setProjections(previousProjections => ({ ...previousProjections, [movie.id]: res }));
+                setProjections(previousProjections => ({ ...previousProjections, [movie.id]: res || [] }));
             }
         } catch (error) {
             console.log(error)
@@ -122,15 +119,21 @@ const CurrentlyShowing = () => {
     }
 
     const handleLoadMore = () => {
-        setPage(currentPage => currentPage + 1);
+        const newParams = new URLSearchParams(searchParams);
+
+        newParams.set("page", page + 1);
+        setSearchParams(newParams);
     }
 
     const updateParam = (key, value) => {
         const newParams = new URLSearchParams(searchParams);
         if (value)
             newParams.set(key, value);
-        else 
+        else
             newParams.delete(key)
+
+        newParams.set("page", 0);
+
         setSearchParams(newParams);
     }
 
