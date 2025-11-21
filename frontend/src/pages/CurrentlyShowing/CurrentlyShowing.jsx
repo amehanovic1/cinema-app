@@ -118,7 +118,7 @@ const CurrentlyShowing = () => {
                 const params = { 
                     movieId: movie.id, 
                     projectionDate: selectedDate, 
-                    venue: venue?.id || null
+                    venueId: venue?.id || null
                 }
 
                 const res = await filterMovieProjections(params);
@@ -147,8 +147,11 @@ const CurrentlyShowing = () => {
         const newParams = new URLSearchParams(searchParams);
         if (value)
             newParams.set(key, value);
-        else 
+        else
             newParams.delete(key)
+
+        newParams.set("page", 0);
+
         setSearchParams(newParams);
     }
 
