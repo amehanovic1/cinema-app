@@ -151,7 +151,6 @@ const CurrentlyShowing = () => {
             newParams.delete(key)
 
         newParams.set("page", 0);
-
         setSearchParams(newParams);
     }
 
