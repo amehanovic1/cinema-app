@@ -50,6 +50,7 @@ public class MovieSpecification {
 
     public static Specification<Movie> hasDateTime(LocalDate date, LocalTime time) {
         return (root, criteriaQuery,criteriaBuilder) -> {
+            criteriaQuery.distinct(true);
             var join = root.join("projections", JoinType.INNER);
 
             if (date == null && time == null) {

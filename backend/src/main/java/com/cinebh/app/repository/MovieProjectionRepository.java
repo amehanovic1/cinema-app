@@ -11,6 +11,10 @@ import java.util.UUID;
 
 public interface MovieProjectionRepository extends JpaRepository<MovieProjection, UUID> {
 
-    @Query("SELECT mp FROM MovieProjection mp JOIN mp.movie m WHERE m.id = :movieId AND mp.projectionDate = :projectionDate")
+    @Query(value = "SELECT DISTINCT ON (mp.projection_time) * " +
+                    "FROM movie_projections mp " +
+                    "WHERE mp.movie_id = :movieId AND mp.projection_date = :projectionDate " +
+                    "ORDER BY mp.projection_time",
+            nativeQuery = true)
     List<MovieProjection> findByMovieIdAndProjectionDate(@Param("movieId") UUID movieId, @Param("projectionDate") LocalDate projectionDate);
 }
