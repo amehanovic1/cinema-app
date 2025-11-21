@@ -6,7 +6,7 @@ import { getAllVenues } from "../../services/venueService";
 import { getGenres } from "../../services/genreService";
 import { times } from "../../data/timesData";
 import { faClock, faLocationDot } from "@fortawesome/free-solid-svg-icons";
-import Dropdown from "../../components/Dropdown/Dropdown";
+import Select from "../../components/Select/Select";
 import DatePicker from "../../components/DatePicker/DatePicker";
 import MovieDetails from "../../components/MovieDetails/MovieDetails";
 import SearchInput from "../../components/SearchInput/SearchInput";
@@ -156,28 +156,28 @@ const CurrentlyShowing = () => {
             <div
                 className="flex flex-col gap-4 items-center justify-center 
                             sm:grid sm:grid-cols-2 sm:gap-4 lg:flex lg:flex-row lg:gap-6">
-                <Dropdown
+                <Select
                     items={cities}
                     selectText="All cities"
                     icon={faLocationDot}
                     selectedValue={selectedCity}
                     onChange={(value) => { updateParam("city", value) }}
                 />
-                <Dropdown
+                <Select
                     items={venues?.content}
                     selectText="All cinemas"
                     icon={faLocationDot}
                     selectedValue={selectedVenue}
                     onChange={(value) => { updateParam("venue", value) }}
                 />
-                <Dropdown
+                <Select
                     items={genres}
                     selectText="All genres"
                     icon={faLocationDot}
                     selectedValue={selectedGenre}
                     onChange={(value) => { updateParam("genre", value) }}
                 />
-                <Dropdown
+                <Select
                     items={times.map(time => ({ id: time, name: time }))}
                     selectText="All projections"
                     icon={faClock}

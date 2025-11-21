@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 
-const Dropdown = ({ items, selectText, icon, selectedValue, onChange }) => {
+const Select = ({ items, selectText, icon, selectedValue, onChange }) => {
 
     const [isSelectorOpen, setIsSelectorOpen] = useState(false)
     const selectedItem = selectedValue === "" ? selectText : selectedValue
@@ -58,4 +58,4 @@ const Dropdown = ({ items, selectText, icon, selectedValue, onChange }) => {
     )
 }
 
-export default Dropdown;
+export default Select;
