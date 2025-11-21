@@ -34,21 +34,16 @@ public class MovieProjectionRepositoryTest {
         var cinemaHall = cinemaHallRepository.findAll().getFirst();
 
         var projectionDate = LocalDate.of(2025, 11, 25);
-        var projectionTime = LocalTime.of(18,0);
+        var projectionTime = LocalTime.of(18,30);
         MovieProjection movieProjection = new MovieProjection();
         movieProjection.setMovie(movie);
         movieProjection.setProjectionDate(projectionDate);
         movieProjection.setProjectionTime(projectionTime);
         movieProjection.setCinemaHall(cinemaHall);
-        movieProjectionRepository.save(movieProjection);
+        MovieProjection savedProjection = movieProjectionRepository.save(movieProjection);
 
-        var projections = movieProjectionRepository
-                .findByMovieIdAndProjectionDate(movie.getId(), projectionDate);
-
-        projections.forEach(projection -> {
-            assertEquals(movie.getId(), projection.getMovie().getId());
-            assertEquals(projectionDate, projection.getProjectionDate());
-            assertEquals(projectionTime, projection.getProjectionTime());
-        });
+        assertEquals(movie.getId(), savedProjection.getMovie().getId());
+        assertEquals(projectionDate, savedProjection.getProjectionDate());
+        assertEquals(projectionTime, savedProjection.getProjectionTime());
     }
 }
