@@ -22,15 +22,12 @@ const Home = () => {
 
     const fetchCurrentlyShowing = async (page = 0, size = 4) => {
         try {
-            const params = {
-                page: page,
-                size: size
-            }
-
-            const res = await getCurrentlyShowingMovies(params);
+            const res = await getCurrentlyShowingMovies({ page, size });
 
             setCurrentMovies(res);
+
             if (page === 0) setCarouselMovies(res.content.slice(0, 3))
+
         } catch (error) {
             console.log(error)
         }
@@ -93,47 +90,50 @@ const Home = () => {
                 />
             </div>
 
-            <VenueButtonList />
+            <div className='flex flex-col gap-6 bg-neutral-25'>
+                <VenueButtonList />
 
-            <ContentSection
-                title="Currently Showing"
-                linkTo={ROUTES.CURRENTLY_SHOWING}
-                items={currentMovies}
-                getAll={fetchCurrentlyShowing}
-                renderItem={(movie) =>
-                    <Card
-                        title={movie.title}
-                        imageUrl={getMovieImage(movie)}
-                        details={[`${movie.durationInMinutes} MIN |`, movie.genres?.[0]?.name]}
-                    />
-                }
-            />
+                <ContentSection
+                    title="Currently Showing"
+                    linkTo={ROUTES.CURRENTLY_SHOWING}
+                    items={currentMovies}
+                    getAll={fetchCurrentlyShowing}
+                    renderItem={(movie) =>
+                        <Card
+                            title={movie.title}
+                            imageUrl={getMovieImage(movie)}
+                            details={[`${movie.durationInMinutes} MIN |`, movie.genres?.[0]?.name]}
+                        />
+                    }
+                />
 
-            <ContentSection
-                title="Upcoming Movies"
-                items={upcomingMovies}
-                getAll={fetchUpcoming}
-                renderItem={(movie) =>
-                    <Card
-                        title={movie.title}
-                        imageUrl={getMovieImage(movie)}
-                        details={[`${movie.durationInMinutes} MIN`, "|", movie.genres?.[0]?.name]}
-                    />
-                }
-            />
+                <ContentSection
+                    title="Upcoming Movies"
+                    items={upcomingMovies}
+                    getAll={fetchUpcoming}
+                    renderItem={(movie) =>
+                        <Card
+                            title={movie.title}
+                            imageUrl={getMovieImage(movie)}
+                            details={[`${movie.durationInMinutes} MIN`, "|", movie.genres?.[0]?.name]}
+                        />
+                    }
+                />
 
-            <ContentSection
-                title="Venues"
-                items={venues}
-                getAll={fetchVenues}
-                renderItem={(venue) =>
-                    <Card
-                        title={venue.name}
-                        imageUrl={venue.imageUrl}
-                        details={[`${venue.street},`, venue.city.name]}
-                    />
-                }
-            />
+                <ContentSection
+                    title="Venues"
+                    items={venues}
+                    getAll={fetchVenues}
+                    renderItem={(venue) =>
+                        <Card
+                            title={venue.name}
+                            imageUrl={venue.imageUrl}
+                            details={[`${venue.street},`, venue.city.name]}
+                        />
+                    }
+                />
+
+            </div>
 
         </>
     );

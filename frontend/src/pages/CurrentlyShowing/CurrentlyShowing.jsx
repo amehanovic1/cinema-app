@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getMovieById } from "../../services/movieProjectionService"
+import { getByMoviIdAndProjectionDate } from "../../services/movieProjectionService"
 import { getCurrentlyShowingMovies } from "../../services/movieService";
 import { getCities } from "../../services/cityService";
 import { getAllVenues } from "../../services/venueService";
@@ -31,6 +31,7 @@ const CurrentlyShowing = () => {
     const [genres, setGenres] = useState([])
 
     const page = Number(searchParams.get("page") || 0)
+    const size = Number(searchParams.get("size") || 5)
     const searchTitle = searchParams.get("title") || ""
     const selectedCity = searchParams.get("city") || ""
     const selectedVenue = searchParams.get("venue") || ""
@@ -43,7 +44,7 @@ const CurrentlyShowing = () => {
             const newParams = new URLSearchParams(searchParams);
             newParams.set("date", new Date().toLocaleDateString('sv-SE'));
             newParams.set("page", 0);
-            newParams.set("size", 9);
+            newParams.set("size", 5);
             setSearchParams(newParams);
         }
         fetchCities();
@@ -65,7 +66,7 @@ const CurrentlyShowing = () => {
                 date: selectedDate,
                 time: selectedTime,
                 page,
-                size: 9
+                size
             }
 
             const res = await getCurrentlyShowingMovies(params);
@@ -110,7 +111,8 @@ const CurrentlyShowing = () => {
     const fetchMovieProjections = async (movies) => {
         try {
             for (const movie of movies) {
-                const res = await getMovieById(movie.id, selectedDate);
+                const params = { movieId: movie.id, projectionDate: selectedDate }
+                const res = await getByMoviIdAndProjectionDate(params);
                 setProjections(previousProjections => ({ ...previousProjections, [movie.id]: res || [] }));
             }
         } catch (error) {
