@@ -9,6 +9,11 @@ const MovieDetails = ({ movies, projections }) => {
         return displayNames.of(languageCode);
     }
 
+    const getLanguageName = (languageCode) => {
+        const displayNames = new Intl.DisplayNames(['en'], {type: 'language'});
+        return displayNames.of(languageCode);
+    }
+
     return (
         <>
             {movies.length > 0 ? (
