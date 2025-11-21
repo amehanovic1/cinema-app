@@ -31,7 +31,7 @@ const CurrentlyShowing = () => {
     const [genres, setGenres] = useState([])
 
     const page = Number(searchParams.get("page") || 0)
-    const size = Number(searchParams.get("size") || 5)
+    const size = searchParams.get("size") || 5
     const searchTitle = searchParams.get("title") || ""
     const selectedCity = searchParams.get("city") || ""
     const selectedVenue = searchParams.get("venue") || ""
@@ -135,7 +135,6 @@ const CurrentlyShowing = () => {
             newParams.delete(key)
 
         newParams.set("page", 0);
-
         setSearchParams(newParams);
     }
 

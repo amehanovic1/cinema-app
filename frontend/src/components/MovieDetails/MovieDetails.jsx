@@ -1,10 +1,11 @@
-import NoMoviesFound from "../NoMoviesFound/NoMoviesFound";
+import NoDataFound from "../NoDataFound/NoDataFound";
 import { formatDate, formatTime } from "../../utils/dateTimeFormatter";
+import { faFilm } from "@fortawesome/free-solid-svg-icons";
 
 const MovieDetails = ({ movies, projections }) => {
 
     const getLanguageName = (languageCode) => {
-        const displayNames = new Intl.DisplayNames(['en'], {type: 'language'});
+        const displayNames = new Intl.DisplayNames(['en'], { type: 'language' });
         return displayNames.of(languageCode);
     }
 
@@ -70,7 +71,14 @@ const MovieDetails = ({ movies, projections }) => {
 
                         </div>
                     </div>))
-            ) : (<NoMoviesFound />)}
+            ) : (
+                <NoDataFound
+                    icon={faFilm}
+                    title={"No movies to preview for current date"}
+                    text={"We are working on updating our schedule for upcoming movies. Stay tuned for amazing movie experience or explore our other exciting cinema features in the meantime!"}
+                    actionText={"Explore Upcoming Movies"}
+                />
+            )}
         </>
     );
 }
