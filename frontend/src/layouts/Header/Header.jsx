@@ -13,7 +13,7 @@ const Header = () => {
 
                     <Logo />
 
-                    <h1 className="font-urbanist font-bold text-xl md:text-2xl lg:text-3xl">
+                    <h1 className="font-urbanist font-bold text-2xl">
                         <span className="text-neutral-25">Cine</span>
                         <span className="text-dark-red">bh.</span>
                     </h1>
@@ -25,7 +25,7 @@ const Header = () => {
                 <NavLink
                     to={ROUTES.CURRENTLY_SHOWING}
                     className={({ isActive }) =>
-                        `text-semibold shadow-text text-xs sm:text-sm md:text-base lg:text-lg
+                        `text-semibold shadow-text text-xs sm:text-sm md:text-base
                     ${isActive ? "text-neutral-0 underline" : "text-neutral-200"}`}>
                     Currently Showing
                 </NavLink>

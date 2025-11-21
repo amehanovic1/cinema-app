@@ -23,7 +23,7 @@ const Pagination = ({ number, totalElements, size, hasNext, hasPrevious, onPageC
                     className="inline-flex items-center justify-center bg-neutral-0 disabled:opacity-50 border border-neutral-200 rounded-lg p-1 sm:p-1.5 md:p-2 lg:p-3 group">
                     <FontAwesomeIcon
                         icon={faArrowLeft}
-                        className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-neutral-800 group-disabled:text-neutral-200"
+                        className="w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 lg:w-5 lg:h-5 text-neutral-800 group-disabled:text-neutral-200"
                     />
                 </button>
 
@@ -33,7 +33,7 @@ const Pagination = ({ number, totalElements, size, hasNext, hasPrevious, onPageC
                     className="inline-flex items-center justify-center bg-neutral-0 disabled:opacity-50 border border-neutral-200 rounded-lg p-1 sm:p-1.5 md:p-2 lg:p-3 group">
                     <FontAwesomeIcon
                         icon={faArrowRight}
-                        className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-neutral-800 group-disabled:text-neutral-200"
+                        className="w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 lg:w-5 lg:h-5 text-neutral-800 group-disabled:text-neutral-200"
                     />
                 </button>
             </div>
