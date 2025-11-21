@@ -34,7 +34,7 @@ const DatePicker = ({ numberOfDays = 10, selectedValue, onChange }) => {
     }
 
     return (
-        <div className="flex flex-row flex-wrap items-center justify-between gap-2 sm:gap-4 md:gap-6 lg:gap-8 justify-start">
+        <div className="flex flex-row flex-wrap items-center justify-between gap-2 md:gap-4 justify-start">
             {dates.map((date, index) =>
                 <button
                     key={index}

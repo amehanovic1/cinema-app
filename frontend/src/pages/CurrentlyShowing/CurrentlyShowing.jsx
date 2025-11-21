@@ -144,7 +144,7 @@ const CurrentlyShowing = () => {
             <h1
                 className="font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl text-neutral-800">
                 Currently Showing
-                {currentMovies.content.length > 0 ? ("(" + currentMovies.content.length + ")") : ""}
+                {currentMovies.content.length > 0 ? ("(" + currentMovies.totalElements + ")") : ""}
             </h1>
 
             <SearchInput
