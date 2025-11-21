@@ -1,18 +1,7 @@
 import NoMoviesFound from "../NoMoviesFound/NoMoviesFound";
+import { formatDate, formatTime } from "../../utils/dateTimeFormatter";
 
 const MovieDetails = ({ movies, projections }) => {
-
-    const formatDate = (dateString) => {
-        const [year, month, day] = dateString.split("-");
-        let newDate = `${day}.${month}.${year}`;
-        return newDate;
-    }
-
-    const formatTime = (time) => {
-        const [hour, minute] = time.split(":");
-        let newTime = `${hour}:${minute}`;
-        return newTime;
-    }
 
     const getLanguageName = (languageCode) => {
         const displayNames = new Intl.DisplayNames(['en'], {type: 'language'});
