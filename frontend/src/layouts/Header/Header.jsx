@@ -21,13 +21,20 @@ const Header = () => {
                 </NavLink>
             </div>
 
-            <div className="flex justify-center ">
+            <div className="flex justify-center gap-4
+                            text-semibold shadow-text text-xs sm:text-sm md:text-base">
                 <NavLink
                     to={ROUTES.CURRENTLY_SHOWING}
                     className={({ isActive }) =>
-                        `text-semibold shadow-text text-xs sm:text-sm md:text-base
-                    ${isActive ? "text-neutral-0 underline" : "text-neutral-200"}`}>
+                        isActive ? "text-neutral-0 underline" : "text-neutral-200"}>
                     Currently Showing
+                </NavLink>
+
+                <NavLink
+                    to={ROUTES.UPCOMING_MOVIES}
+                    className={({ isActive }) =>
+                        isActive ? "text-neutral-0 underline" : "text-neutral-200"}>
+                    Upcoming Movies
                 </NavLink>
             </div>
 

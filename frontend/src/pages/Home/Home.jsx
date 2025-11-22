@@ -109,6 +109,7 @@ const Home = () => {
 
                 <ContentSection
                     title="Upcoming Movies"
+                    linkTo={ROUTES.UPCOMING_MOVIES}
                     items={upcomingMovies}
                     getAll={fetchUpcoming}
                     renderItem={(movie) =>
