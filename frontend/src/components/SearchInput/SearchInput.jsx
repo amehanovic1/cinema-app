@@ -11,7 +11,7 @@ const SearchInput = ({ text, selectedValue, onChange }) => {
     }
 
     return (
-        <div className="w-full relative p-2 border rounded focus:outline-none focus:ring-2 focus:ring-dark-red bg-neutral-0 shadow-input
+        <div className="w-full relative p-2 border rounded bg-neutral-0 shadow-input
                         text-neutral-400 text-xs md:text-sm lg:text-base font-normal ">
 
             <FontAwesomeIcon
@@ -24,7 +24,7 @@ const SearchInput = ({ text, selectedValue, onChange }) => {
                 value={searchTitle}
                 onChange={handleInputChange}
                 placeholder={text}
-                className="w-full pl-8 text-neutral-500"
+                className="w-full pl-8 text-neutral-500 outline-none focus:outline-none"
             />
         </div>
     );
