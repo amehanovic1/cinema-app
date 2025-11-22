@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,10 +22,14 @@ public class MovieProjectionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MovieProjectionDto>> getByMovieIdAndProjectionDate(
+    public ResponseEntity<List<MovieProjectionDto>> getProjectionsByFilter(
             @RequestParam UUID movieId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  LocalDate projectionDate
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  LocalDate projectionDate,
+            @RequestParam(required = false) String venue
             ) {
-        return ResponseEntity.ok(movieProjectionService.getByMovieIdAndProjectionDate(movieId, projectionDate));
+        return ResponseEntity.ok(movieProjectionService.getProjectionsByFilter(
+                movieId, projectionDate, venue
+                )
+        );
     }
 }
