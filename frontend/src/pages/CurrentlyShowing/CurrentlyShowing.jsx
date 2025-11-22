@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { getByMoviIdAndProjectionDate } from "../../services/movieProjectionService"
+import { getProjectionsByFilter } from "../../services/movieProjectionService"
 import { getCurrentlyShowingMovies } from "../../services/movieService";
 import { getCities } from "../../services/cityService";
-import { getAllVenues } from "../../services/venueService";
 import { getGenres } from "../../services/genreService";
+import { getAllVenues } from "../../services/venueService";
 import { times } from "../../data/timesData";
 import { faClock, faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import Select from "../../components/Select/Select";
@@ -90,9 +90,9 @@ const CurrentlyShowing = () => {
         }
     }
 
-    const fetchVenues = async (page = 0, size = 100) => {
+    const fetchVenues = async ( page = 0, size = 100 ) => {
         try {
-            const res = await getAllVenues({ page, size });
+            const res = await getAllVenues({page, size})
             setVenues(res);
         } catch (error) {
             console.log(error)
@@ -111,9 +111,20 @@ const CurrentlyShowing = () => {
     const fetchMovieProjections = async (movies) => {
         try {
             for (const movie of movies) {
-                const params = { movieId: movie.id, projectionDate: selectedDate }
-                const res = await getByMoviIdAndProjectionDate(params);
-                setProjections(previousProjections => ({ ...previousProjections, [movie.id]: res || [] }));
+                const params = { 
+                    movieId: movie.id, 
+                    projectionDate: selectedDate, 
+                    venue: selectedVenue || null
+                }
+                const res = await getProjectionsByFilter(params);
+                
+                const unique = Array.from(
+                    new Map(res.map(p => [p.projectionTime, p])).values()
+                );
+
+                setProjections(previousProjections => (
+                    { ...previousProjections, [movie.id]: unique || [] }
+                ));
             }
         } catch (error) {
             console.log(error)
