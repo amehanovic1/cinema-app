@@ -30,11 +30,7 @@ public class MovieServiceImpl implements MovieService {
             LocalDate date, LocalTime time, Pageable pageable) {
 
         Specification<Movie> movieSpecification = MovieSpecification.isCurrentlyShowing()
-                .and(MovieSpecification.hasTitleLike(title))
-                .and(MovieSpecification.hasCity(city))
-                .and(MovieSpecification.hasVenue(venue))
-                .and(MovieSpecification.hasGenre(genre))
-                .and(MovieSpecification.hasDateTime(date, time));
+                .and(MovieSpecification.getSpecification(title, city, venue, genre, date, time));
 
         return mapToPaginatedResponse(movieRepository.findAll(movieSpecification, pageable));
     }

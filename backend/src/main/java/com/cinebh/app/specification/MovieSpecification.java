@@ -1,81 +1,15 @@
 package com.cinebh.app.specification;
 
 import com.cinebh.app.entity.Movie;
-import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MovieSpecification {
-
-    public static Specification<Movie> hasTitleLike(String title) {
-        if (title == null || title.isEmpty()) return null;
-        return (root, criteriaQuery,criteriaBuilder) ->
-            criteriaBuilder.like(
-                    criteriaBuilder.lower(root.get("title")), "%" + title.toLowerCase() + "%");
-    }
-
-    public static Specification<Movie> hasCity(String city) {
-        if (city == null || city.isEmpty()) return null;
-        return (root, criteriaQuery,criteriaBuilder) -> {
-            criteriaQuery.distinct(true);
-            return criteriaBuilder.equal(
-                    root.join("projections", JoinType.LEFT)
-                            .join("cinemaHall", JoinType.LEFT)
-                            .join("venue", JoinType.LEFT)
-                            .join("city", JoinType.LEFT)
-                            .get("name"), city);
-        };
-    }
-
-    public static Specification<Movie> hasVenue(String venue) {
-        if (venue == null || venue.isEmpty()) return null;
-        return (root, criteriaQuery,criteriaBuilder) -> {
-            criteriaQuery.distinct(true);
-            return criteriaBuilder.equal(
-                    root.join("projections", JoinType.LEFT)
-                            .join("cinemaHall", JoinType.LEFT)
-                            .join("venue", JoinType.LEFT)
-                            .get("name"), venue);
-        };
-    }
-
-    public static Specification<Movie> hasGenre(String genre) {
-        if (genre == null || genre.isEmpty()) return null;
-        return (root, criteriaQuery,criteriaBuilder) ->
-                criteriaBuilder.equal(root.join("genres", JoinType.LEFT)
-                                .get("name"), genre);
-    }
-
-    public static Specification<Movie> hasDateTime(LocalDate date, LocalTime time) {
-        return (root, criteriaQuery,criteriaBuilder) -> {
-            criteriaQuery.distinct(true);
-            var join = root.join("projections", JoinType.INNER);
-
-            if (date == null && time == null) {
-                return criteriaBuilder.conjunction();
-            }
-
-            if (date != null && time == null) {
-                return criteriaBuilder.equal(join.get("projectionDate"), date);
-            }
-
-            if (date == null && time != null) {
-                LocalDate today = LocalDate.now();
-                return criteriaBuilder.and(
-                        criteriaBuilder.equal(join.get("projectionDate"), today),
-                        criteriaBuilder.equal(join.get("projectionTime"), time)
-                );
-            }
-
-            return criteriaBuilder.and(
-                    criteriaBuilder.equal(join.get("projectionDate"), date),
-                    criteriaBuilder.equal(join.get("projectionTime"), time)
-            );
-
-        };
-    }
 
     public static Specification<Movie> isCurrentlyShowing() {
         return (root, criteriaQuery,criteriaBuilder) -> {
@@ -91,6 +25,65 @@ public class MovieSpecification {
         return (root, criteriaQuery,criteriaBuilder) -> {
             LocalDate today = LocalDate.now();
             return criteriaBuilder.greaterThan(root.get("projectionStartDate"), today);
+        };
+    }
+
+    public static Specification<Movie> getSpecification(
+            String title,
+            String city,
+            String venue,
+            String genre,
+            LocalDate date,
+            LocalTime time
+    )
+    {
+        return new Specification<Movie>() {
+            @Override
+            public Predicate toPredicate(Root<Movie> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                query.distinct(true);
+                criteriaBuilder.conjunction();
+                List<Predicate> predicates = new ArrayList<>();
+
+                var projectionJoin = root.join("projections", JoinType.INNER);
+                var hallJoin = projectionJoin.join("cinemaHall", JoinType.INNER);
+                var venueJoin = hallJoin.join("venue", JoinType.INNER);
+                var cityJoin = venueJoin.join("city", JoinType.INNER);
+
+                if (title != null && !title.isEmpty()) {
+                    predicates.add(criteriaBuilder.like(
+                            criteriaBuilder.lower(
+                                    root.get("title")), "%" + title.toLowerCase() + "%"));
+                }
+
+                if(city != null && !city.isEmpty()) {
+                    predicates.add(criteriaBuilder.equal(cityJoin.get("name"), city));
+                }
+
+                if(venue != null && !venue.isEmpty()) {
+                    predicates.add(criteriaBuilder.equal(venueJoin.get("name"), venue));
+                }
+
+                if(genre != null && !genre.isEmpty()) {
+                    predicates.add(criteriaBuilder.equal(
+                            root.join("genres", JoinType.INNER)
+                                    .get("name"), genre));
+                }
+
+                if(date != null) {
+                    predicates.add(criteriaBuilder.equal(
+                            projectionJoin.get("projectionDate"), date));
+                } else {
+                    predicates.add(criteriaBuilder.equal(
+                            projectionJoin.get("projectionDate"), LocalDate.now()));
+                }
+
+                if(time != null) {
+                    predicates.add(criteriaBuilder.equal(
+                            projectionJoin.get("projectionTime"), time));
+                }
+
+                return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+            }
         };
     }
 }
