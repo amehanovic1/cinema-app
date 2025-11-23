@@ -24,9 +24,15 @@ public class MovieController {
 
     @GetMapping("/upcoming")
     public PageDto<MovieDto> getUpcomingMovies(
-            @PageableDefault(page = 0, size = 5, sort = "title", direction = Sort.Direction.ASC) Pageable pageable
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) String venue,
+            @RequestParam(required = false) String genre,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @PageableDefault(page = 0, size = 5, sort = "projectionStartDate", direction = Sort.Direction.ASC) Pageable pageable
     ) {
-        return movieService.getUpcomingMovies(pageable);
+        return movieService.getUpcomingMovies(title, city, venue, genre, startDate, endDate, pageable);
     }
 
     @GetMapping("/currently-showing")

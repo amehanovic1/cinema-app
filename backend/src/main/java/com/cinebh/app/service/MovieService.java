@@ -13,5 +13,7 @@ public interface MovieService {
             String title, String city, String venue, String genre,
             LocalDate date, LocalTime time, Pageable pageable);
 
-    PageDto<MovieDto> getUpcomingMovies(Pageable pageable);
+    PageDto<MovieDto> getUpcomingMovies(
+            String title, String city, String venue, String genre,
+            LocalDate startDate, LocalDate endDate, Pageable pageable);
 }
