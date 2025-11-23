@@ -33,7 +33,7 @@ const DateRangePicker = ({ initialStartDate, initialEndDate, onChangeSet }) => {
         setIsSelectorOpen(!isSelectorOpen)
         setStartDate("")
         setEndDate("")
-        onChangeSet({ start: "", end: ""})
+        onChangeSet({ start: "", end: "" })
         setDateRange("Date range")
     }
 
