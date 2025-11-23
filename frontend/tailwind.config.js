@@ -18,7 +18,8 @@ module.exports = {
         'neutral-0': '#FFFFFF',
         'light-rose': '#fef2f2',
         'neutral-700': '#344054',
-        'neutral-600': '#475467'
+        'neutral-600': '#475467',
+        'neutral-300': '#D0D5DD'
       },
       fontFamily: {
         urbanist: ["Urbanist", "sans-serif"]
