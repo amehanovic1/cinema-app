@@ -15,10 +15,10 @@ export async function getCurrentlyShowingMovies({ title, city, venue, genre, dat
     }
 }
 
-export async function getUpcomingMovies({ page, size }) {
+export async function getUpcomingMovies({title, city, venue, genre, startDate, endDate, page, size }) {
     try {
         const response = await axios.get(`${API_URL}/upcoming`, {
-            params: { page, size }
+            params: { title, city, venue, genre, startDate, endDate, page, size }
         });
         return response.data;
     }
