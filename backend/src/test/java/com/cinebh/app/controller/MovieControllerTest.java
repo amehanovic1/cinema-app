@@ -28,7 +28,7 @@ public class MovieControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    void testCurrentlyShowingMovies_FilterByGenre() throws Exception {
+    void givenGenre_whenGetCurrentlyShowingMovies_thenReturnOnlyMoviesOfThatGenre() throws Exception {
         GenreDto actionGenre = new GenreDto();
         actionGenre.setName("Action");
         GenreDto adventureGenre = new GenreDto();
