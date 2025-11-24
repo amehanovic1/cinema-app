@@ -8,6 +8,6 @@ import java.util.UUID;
 
 public interface MovieProjectionService {
 
-    List<MovieProjectionDto> getProjectionsByFilter(
+    List<MovieProjectionDto> filterMovieProjections(
             UUID movieId, LocalDate projectionDate, String venue);
 }

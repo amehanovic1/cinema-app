@@ -22,7 +22,7 @@ public class MovieProjectionServiceImpl implements MovieProjectionService {
     private final MovieProjectionMapper movieProjectionMapper;
 
     @Override
-    public List<MovieProjectionDto> getProjectionsByFilter(
+    public List<MovieProjectionDto> filterMovieProjections(
             UUID movieId, LocalDate projectionDate, String venue
     ) {
         Specification<MovieProjection> movieProjectionSpecification =

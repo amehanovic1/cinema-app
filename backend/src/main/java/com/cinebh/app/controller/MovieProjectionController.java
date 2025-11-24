@@ -21,12 +21,12 @@ public class MovieProjectionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MovieProjectionDto>> getProjectionsByFilter(
+    public ResponseEntity<List<MovieProjectionDto>> filterMovieProjections(
             @RequestParam UUID movieId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  LocalDate projectionDate,
             @RequestParam(required = false) String venue
             ) {
-        return ResponseEntity.ok(movieProjectionService.getProjectionsByFilter(
+        return ResponseEntity.ok(movieProjectionService.filterMovieProjections(
                 movieId, projectionDate, venue
                 )
         );
