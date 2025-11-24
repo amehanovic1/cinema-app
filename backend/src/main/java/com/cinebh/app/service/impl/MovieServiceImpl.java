@@ -42,7 +42,7 @@ public class MovieServiceImpl implements MovieService {
 
         Specification<Movie> movieSpecification =
                 MovieSpecification.upcomingSpecification(title, city, venue, genre, startDate, endDate);
-        ;
+
         return mapToPaginatedResponse(movieRepository.findAll(movieSpecification, pageable));
     }
 
