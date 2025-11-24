@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getProjectionsByFilter } from "../../services/movieProjectionService"
+import { filterMovieProjections } from "../../services/movieProjectionService"
 import { getCurrentlyShowingMovies } from "../../services/movieService";
 import { getCities } from "../../services/cityService";
 import { getGenres } from "../../services/genreService";
@@ -122,7 +122,7 @@ const CurrentlyShowing = () => {
                     venue: venue?.id || null
                 }
 
-                const res = await getProjectionsByFilter(params);
+                const res = await filterMovieProjections(params);
                 
                 const unique = Array.from(
                     new Map(res.map(p => [p.projectionTime, p])).values()
