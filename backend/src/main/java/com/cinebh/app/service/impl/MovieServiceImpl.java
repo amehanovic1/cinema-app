@@ -29,8 +29,8 @@ public class MovieServiceImpl implements MovieService {
             String title, String city, String venue, String genre,
             LocalDate date, LocalTime time, Pageable pageable) {
 
-        Specification<Movie> movieSpecification = MovieSpecification.filterCurrentlyShowing(date, time)
-                .and(MovieSpecification.filterByTitleCityVenueGenre(title, city, venue, genre));
+        Specification<Movie> movieSpecification = MovieSpecification.isCurrentlyShowing()
+                .and(MovieSpecification.currentSpecification(title, city, venue, genre, date, time));
 
         return mapToPaginatedResponse(movieRepository.findAll(movieSpecification, pageable));
     }
@@ -40,8 +40,8 @@ public class MovieServiceImpl implements MovieService {
             String title, String city, String venue, String genre,
             LocalDate startDate, LocalDate endDate, Pageable pageable) {
 
-        Specification<Movie> movieSpecification = MovieSpecification.filterUpcoming(startDate, endDate)
-                        .and(MovieSpecification.filterByTitleCityVenueGenre(title, city, venue, genre));
+        Specification<Movie> movieSpecification =
+                MovieSpecification.upcomingSpecification(title, city, venue, genre, startDate, endDate);
         ;
         return mapToPaginatedResponse(movieRepository.findAll(movieSpecification, pageable));
     }
