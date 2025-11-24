@@ -15,7 +15,7 @@ public interface MovieMapper {
     MovieDto toDto(Movie movie);
 
     @AfterMapping
-    default void sortGenres(Movie movie, @MappingTarget MovieDto movieDto) {
+    default void sortGenres(@MappingTarget MovieDto movieDto) {
         if (movieDto.getGenres() != null ) {
             movieDto.setGenres(movieDto.getGenres().stream()
                     .sorted(Comparator.comparing(GenreDto::getName))
