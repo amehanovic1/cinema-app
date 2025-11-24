@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { getAllVenues } from "../../services/venueService";
+import { getAllVenues, getVenuesByCityName } from "../../services/venueService";
 import { getCities } from "../../services/cityService";
 import { getGenres } from "../../services/genreService";
 import { getUpcomingMovies } from "../../services/movieService";
@@ -22,7 +22,7 @@ const UpcomingMovies = () => {
         totalElements: 0,
         totalPages: 0
     })
-    const [venues, setVenues] = useState({ content: [] })
+    const [venues, setVenues] = useState([])
     const [cities, setCities] = useState([])
     const [genres, setGenres] = useState([])
 
@@ -43,12 +43,12 @@ const UpcomingMovies = () => {
             setSearchParams(newParams);
         }
         fetchCities();
-        fetchVenues();
         fetchGenres();
     }, []);
 
     useEffect(() => {
         fetchUpcoming();
+        fetchVenues();
     }, [searchParams]);
 
 
@@ -87,9 +87,9 @@ const UpcomingMovies = () => {
         }
     }
 
-    const fetchVenues = async (page = 0, size = 100) => {
+    const fetchVenues = async () => {
         try {
-            const res = await getAllVenues({ page, size })
+            const res = await getVenuesByCityName({ cityName: selectedCity })
             setVenues(res);
         } catch (error) {
             console.log(error)
@@ -105,12 +105,15 @@ const UpcomingMovies = () => {
         }
     }
 
-    const updateParam = (key, value) => {
+    const updateParam = (params) => {
         const newParams = new URLSearchParams(searchParams);
-        if (value)
-            newParams.set(key, value);
-        else
-            newParams.delete(key)
+
+        Object.entries(params).forEach(([key, value]) => {
+            if (value)
+                newParams.set(key, value);
+            else
+                newParams.delete(key)
+        });
 
         newParams.set("page", 0);
         setSearchParams(newParams);
@@ -139,7 +142,7 @@ const UpcomingMovies = () => {
             <SearchInput
                 text={"Search movies"}
                 selectedValue={searchTitle}
-                onChange={(value) => { updateParam("title", value) }}
+                onChange={(value) => { updateParam({ title: value }) }}
             />
 
             <div
@@ -150,37 +153,27 @@ const UpcomingMovies = () => {
                     selectText="All cities"
                     icon={faLocationDot}
                     selectedValue={selectedCity}
-                    onChange={(value) => { updateParam("city", value) }}
+                    onChange={(value) => { updateParam({ city: value }) }}
                 />
                 <Select
-                    items={venues?.content}
+                    items={venues}
                     selectText="All cinemas"
                     icon={faBuilding}
                     selectedValue={selectedVenue}
-                    onChange={(value) => { updateParam("venue", value) }}
+                    onChange={(value) => { updateParam({ venue: value }) }}
                 />
                 <Select
                     items={genres}
                     selectText="All genres"
                     icon={faVideo}
                     selectedValue={selectedGenre}
-                    onChange={(value) => { updateParam("genre", value) }}
+                    onChange={(value) => { updateParam({ genre: value }) }}
                 />
 
                 <DateRangePicker
                     initialStartDate={selectedStartDate}
                     initialEndDate={selectedEndDate}
-                    onChangeSet={({ start, end }) => {
-                        const newParams = new URLSearchParams(searchParams);
-                        if (start) newParams.set("startDate", start);
-                        else newParams.delete("startDate")
-
-                        if (end) newParams.set("endDate", end);
-                        else newParams.delete("endDate")
-
-                        newParams.set("page", 0);
-                        setSearchParams(newParams);
-                    }}
+                    onChangeSet={({ start, end }) => updateParam({ startDate: start, endDate: end })}
                 />
             </div>
 
