@@ -14,7 +14,7 @@ public class MovieProjectionSpecification {
     public static Specification<MovieProjection> getSpecification(
             UUID movieId,
             LocalDate date,
-            String venue
+            UUID venueId
     )
     {
         return new Specification<MovieProjection>() {
@@ -36,11 +36,11 @@ public class MovieProjectionSpecification {
                             root.get("projectionDate"), LocalDate.now()));
                 }
 
-                if(venue != null && !venue.isEmpty()) {
+                if(venueId != null) {
                     predicates.add(criteriaBuilder.equal(
                             root.join("cinemaHall", JoinType.INNER)
                             .join("venue", JoinType.INNER)
-                            .get("name"), venue));
+                            .get("id"), venueId));
                 }
 
                 query.orderBy(criteriaBuilder.asc(root.get("projectionTime")));
