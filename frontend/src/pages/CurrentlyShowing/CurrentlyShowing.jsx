@@ -110,12 +110,18 @@ const CurrentlyShowing = () => {
 
     const fetchMovieProjections = async (movies) => {
         try {
+
+            let venue = null
+            if(selectedVenue && venues.content.length > 0 )
+                venue = venues.content.find(v => v.name === selectedVenue)
+
             for (const movie of movies) {
                 const params = { 
                     movieId: movie.id, 
                     projectionDate: selectedDate, 
-                    venue: selectedVenue || null
+                    venue: venue?.id || null
                 }
+
                 const res = await getProjectionsByFilter(params);
                 
                 const unique = Array.from(
