@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class MovieSpecification {
 
@@ -25,9 +26,9 @@ public class MovieSpecification {
 
     public static Specification<Movie> currentSpecification(
             String title,
-            String city,
-            String venue,
-            String genre,
+            UUID cityId,
+            UUID venueId,
+            UUID genreId,
             LocalDate date,
             LocalTime time
     )
@@ -49,17 +50,17 @@ public class MovieSpecification {
                             criteriaBuilder.lower(root.get("title")), "%" + title.toLowerCase() + "%"));
                 }
 
-                if(city != null && !city.isEmpty()) {
-                    predicates.add(criteriaBuilder.equal(cityJoin.get("name"), city));
+                if(cityId != null) {
+                    predicates.add(criteriaBuilder.equal(cityJoin.get("id"), cityId));
                 }
 
-                if(venue != null && !venue.isEmpty()) {
-                    predicates.add(criteriaBuilder.equal(venueJoin.get("name"), venue));
+                if(venueId != null) {
+                    predicates.add(criteriaBuilder.equal(venueJoin.get("id"), venueId));
                 }
 
-                if(genre != null && !genre.isEmpty()) {
+                if(genreId != null) {
                     predicates.add(criteriaBuilder.equal(
-                            root.join("genres", JoinType.INNER).get("name"), genre));
+                            root.join("genres", JoinType.INNER).get("id"), genreId));
                 }
 
                 if(date != null) {
@@ -79,9 +80,9 @@ public class MovieSpecification {
 
     public static Specification<Movie> upcomingSpecification(
             String title,
-            String city,
-            String venue,
-            String genre,
+            UUID cityId,
+            UUID venueId,
+            UUID genreId,
             LocalDate startDate,
             LocalDate endDate
     )
@@ -103,18 +104,18 @@ public class MovieSpecification {
                             criteriaBuilder.lower(root.get("title")), "%" + title.toLowerCase() + "%"));
                 }
 
-                if(city != null && !city.isEmpty()) {
-                    predicates.add(criteriaBuilder.equal(cityJoin.get("name"), city));
+                if(cityId != null) {
+                    predicates.add(criteriaBuilder.equal(cityJoin.get("id"), cityId));
                 }
 
-                if(venue != null && !venue.isEmpty()) {
-                    predicates.add(criteriaBuilder.equal(venueJoin.get("name"), venue));
+                if(venueId != null) {
+                    predicates.add(criteriaBuilder.equal(venueJoin.get("id"), venueId));
                 }
 
-                if(genre != null && !genre.isEmpty()) {
+                if(genreId != null) {
                     predicates.add(criteriaBuilder.equal(
                             root.join("genres", JoinType.INNER)
-                                    .get("name"), genre));
+                                    .get("id"), genreId));
                 }
 
                 LocalDate today = LocalDate.now();
