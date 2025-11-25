@@ -1,5 +1,5 @@
 import "react-datepicker/dist/react-datepicker.css";
-import "./DateRangePicker.css"
+import "./date-range-picker.css"
 import { useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faCalendarDays } from "@fortawesome/free-solid-svg-icons";
