@@ -3,9 +3,9 @@ import { filterMovieProjections } from "../../services/movieProjectionService"
 import { getCurrentlyShowingMovies } from "../../services/movieService";
 import { getCities } from "../../services/cityService";
 import { getGenres } from "../../services/genreService";
-import { getAllVenues } from "../../services/venueService";
+import { getVenuesByCityName } from "../../services/venueService";
 import { times } from "../../data/timesData";
-import { faClock, faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faLocationDot, faBuilding, faVideo} from "@fortawesome/free-solid-svg-icons";
 import Select from "../../components/Select/Select";
 import DatePicker from "../../components/DatePicker/DatePicker";
 import MovieDetails from "../../components/MovieDetails/MovieDetails";
@@ -25,7 +25,8 @@ const CurrentlyShowing = () => {
     })
 
     const [projections, setProjections] = useState({})
-    const [venues, setVenues] = useState({ content: [] })
+
+    const [venues, setVenues] = useState([])
     const [cities, setCities] = useState([])
     const [genres, setGenres] = useState([])
 
@@ -47,12 +48,12 @@ const CurrentlyShowing = () => {
             setSearchParams(newParams);
         }
         fetchCities();
-        fetchVenues();
         fetchGenres();
     }, []);
 
     useEffect(() => {
         fetchCurrentlyShowing();
+        fetchVenues();
     }, [searchParams]);
 
     const fetchCurrentlyShowing = async () => {
@@ -89,9 +90,9 @@ const CurrentlyShowing = () => {
         }
     }
 
-    const fetchVenues = async ( page = 0, size = 100 ) => {
+    const fetchVenues = async () => {
         try {
-            const res = await getAllVenues({page, size})
+            const res = await getVenuesByCityName({ cityName: selectedCity })
             setVenues(res);
         } catch (error) {
             console.log(error)
@@ -111,14 +112,14 @@ const CurrentlyShowing = () => {
         try {
 
             let venue = null
-            if(selectedVenue && venues.content.length > 0 )
-                venue = venues.content.find(v => v.name === selectedVenue)
+            if(selectedVenue && venues.length > 0 )
+                venue = venues.find(v => v.name === selectedVenue)
 
             for (const movie of movies) {
                 const params = { 
                     movieId: movie.id, 
                     projectionDate: selectedDate, 
-                    venueId: venue?.id || null
+                    venueId: venue.id || null
                 }
 
                 const res = await filterMovieProjections(params);
@@ -179,16 +180,16 @@ const CurrentlyShowing = () => {
                     onChange={(value) => { updateParam("city", value) }}
                 />
                 <Select
-                    items={venues?.content}
+                    items={venues}
                     selectText="All cinemas"
-                    icon={faLocationDot}
+                    icon={faBuilding}
                     selectedValue={selectedVenue}
                     onChange={(value) => { updateParam("venue", value) }}
                 />
                 <Select
                     items={genres}
                     selectText="All genres"
-                    icon={faLocationDot}
+                    icon={faVideo}
                     selectedValue={selectedGenre}
                     onChange={(value) => { updateParam("genre", value) }}
                 />
