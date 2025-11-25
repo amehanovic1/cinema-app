@@ -119,7 +119,7 @@ const CurrentlyShowing = () => {
                 const params = { 
                     movieId: movie.id, 
                     projectionDate: selectedDate, 
-                    venueId: venue.id || null
+                    venueId: venue?.id || null
                 }
 
                 const res = await filterMovieProjections(params);
