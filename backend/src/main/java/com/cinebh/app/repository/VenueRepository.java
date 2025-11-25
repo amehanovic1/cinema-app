@@ -8,5 +8,5 @@ import java.util.UUID;
 
 public interface VenueRepository extends JpaRepository<Venue, UUID> {
 
-    List<Venue> findByCity_Name(String cityName);
+    List<Venue> findAllByCityId(UUID cityId);
 }

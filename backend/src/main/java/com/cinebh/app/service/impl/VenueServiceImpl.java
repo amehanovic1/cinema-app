@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -28,8 +29,8 @@ public class VenueServiceImpl implements VenueService {
     }
 
     @Override
-    public List<VenueDto> getVenuesByCityName(String cityName) {
-        return venueRepository.findByCity_Name(cityName)
+    public List<VenueDto> getVenuesByCityId(UUID cityId) {
+        return venueRepository.findAllByCityId(cityId)
                 .stream()
                 .map(venueMapper::toDto)
                 .toList();

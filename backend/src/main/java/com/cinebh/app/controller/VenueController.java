@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/venues")
@@ -31,8 +32,8 @@ public class VenueController {
         return venueService.getAllVenues(pageable);
     }
 
-    @GetMapping("/by-city-name")
-    public ResponseEntity<List<VenueDto>> getVenuesByCityName(@RequestParam String cityName) {
-        return ResponseEntity.ok(venueService.getVenuesByCityName(cityName));
+    @GetMapping("/by-city")
+    public ResponseEntity<List<VenueDto>> getVenuesByCityId(@RequestParam UUID cityId) {
+        return ResponseEntity.ok(venueService.getVenuesByCityId(cityId));
     }
 }
