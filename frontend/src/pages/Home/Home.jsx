@@ -5,6 +5,7 @@ import ContentSection from "../../components/ContentSection/ContentSection";
 import Carousel from '../../components/Carousel/Carousel';
 import VenueButtonList from './VenueButtonList/VenueButtonList';
 import Card from '../../components/Card/Card';
+import { ROUTES } from '../../routes/routes';
 
 const Home = () => {
 
@@ -21,9 +22,12 @@ const Home = () => {
 
     const fetchCurrentlyShowing = async (page = 0, size = 4) => {
         try {
-            const res = await getCurrentlyShowingMovies(page, size);
+            const res = await getCurrentlyShowingMovies({ page, size });
+
             setCurrentMovies(res);
+
             if (page === 0) setCarouselMovies(res.content.slice(0, 3))
+
         } catch (error) {
             console.log(error)
         }
@@ -31,7 +35,7 @@ const Home = () => {
 
     const fetchUpcoming = async (page = 0, size = 4) => {
         try {
-            const res = await getUpcomingMovies(page, size);
+            const res = await getUpcomingMovies({ page, size });
             setUpcomingMovies(res);
         } catch (error) {
             console.log(error)
@@ -40,7 +44,7 @@ const Home = () => {
 
     const fetchVenues = async (page = 0, size = 4) => {
         try {
-            const res = await getAllVenues(page, size);
+            const res = await getAllVenues({ page, size });
             setVenues(res);
         } catch (error) {
             console.log(error)
@@ -86,46 +90,50 @@ const Home = () => {
                 />
             </div>
 
-            <VenueButtonList />
+            <div className='flex flex-col gap-6 bg-neutral-25'>
+                <VenueButtonList />
 
-            <ContentSection
-                title="Currently Showing"
-                items={currentMovies}
-                getAll={fetchCurrentlyShowing}
-                renderItem={(movie) =>
-                    <Card
-                        title={movie.title}
-                        imageUrl={getMovieImage(movie)}
-                        details={[`${movie.durationInMinutes} MIN |`, movie.genres?.[0]?.name]}
-                    />
-                }
-            />
+                <ContentSection
+                    title="Currently Showing"
+                    linkTo={ROUTES.CURRENTLY_SHOWING}
+                    items={currentMovies}
+                    getAll={fetchCurrentlyShowing}
+                    renderItem={(movie) =>
+                        <Card
+                            title={movie.title}
+                            imageUrl={getMovieImage(movie)}
+                            details={[`${movie.durationInMinutes} MIN |`, movie.genres?.[0]?.name]}
+                        />
+                    }
+                />
 
-            <ContentSection
-                title="Upcoming Movies"
-                items={upcomingMovies}
-                getAll={fetchUpcoming}
-                renderItem={(movie) =>
-                    <Card
-                        title={movie.title}
-                        imageUrl={getMovieImage(movie)}
-                        details={[`${movie.durationInMinutes} MIN`, "|", movie.genres?.[0]?.name]}
-                    />
-                }
-            />
+                <ContentSection
+                    title="Upcoming Movies"
+                    items={upcomingMovies}
+                    getAll={fetchUpcoming}
+                    renderItem={(movie) =>
+                        <Card
+                            title={movie.title}
+                            imageUrl={getMovieImage(movie)}
+                            details={[`${movie.durationInMinutes} MIN`, "|", movie.genres?.[0]?.name]}
+                        />
+                    }
+                />
 
-            <ContentSection
-                title="Venues"
-                items={venues}
-                getAll={fetchVenues}
-                renderItem={(venue) =>
-                     <Card
-                        title={venue.name}
-                        imageUrl={venue.imageUrl}
-                        details={[`${venue.street},`, venue.city.name]}
-                    />
-                }
-            />
+                <ContentSection
+                    title="Venues"
+                    items={venues}
+                    getAll={fetchVenues}
+                    renderItem={(venue) =>
+                        <Card
+                            title={venue.name}
+                            imageUrl={venue.imageUrl}
+                            details={[`${venue.street},`, venue.city.name]}
+                        />
+                    }
+                />
+
+            </div>
 
         </>
     );

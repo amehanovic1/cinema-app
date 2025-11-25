@@ -108,6 +108,23 @@ npm install
 npm start
 ```
 
+## Running Backend Tests
+
+### In IntelliJ IDEA
+1. Open the `backend` project in IntelliJ IDEA.
+2. Navigate to the test class, file or the `test` folder.
+3. Right-click and select **Run**.
+4. View the test results in the **Run** window.
+
+### From Terminal
+```
+cd backend 
+
+./mvnw test
+
+# Or with global Maven
+mvn test
+````
 
 ## Development Tools
 

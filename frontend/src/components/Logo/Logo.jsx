@@ -7,7 +7,7 @@ const Logo = () => {
             className="flex items-center justify-center bg-neutral-25 rounded-md p-1">
             <FontAwesomeIcon
                 icon={faVideoCamera}
-                className="text-dark-red text-xs sm:text-sm md:text-base lg:text-lg"
+                className="text-dark-red text-xs sm:text-sm md:text-base"
             />
         </div>
     );

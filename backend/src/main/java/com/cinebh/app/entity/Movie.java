@@ -60,4 +60,7 @@ public class Movie extends Auditable {
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
     private Set<Genre> genres = new HashSet<>();
+
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<MovieProjection> projections = new HashSet<>();
 }

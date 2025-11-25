@@ -1,34 +1,37 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import Logo from "../../components/Logo/Logo";
 import { ROUTES } from "../../routes/routes";
 
 const Footer = () => {
     return (
-        <footer className="bg-gradient-to-r from-dark-gray from-opacity-50 to-dark-red flex flex-col items-center justify-center gap-3 sm:gap-4 md:gap-5 lg:gap-6 py-6 sm:py-8 md:py-10 lg:py-12 px-4 sm:px-6 md:px-8 lg:px-12">
+        <footer className="bg-gradient-to-r from-dark-gray from-opacity-50 to-dark-red flex flex-col 
+                            items-center justify-center gap-4 p-6 md:p-8 lg:p-10">
 
             <div className="flex flex-row items-center justify-center gap-1 lg:gap-2">
                 <Logo />
-                <h1 className="font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl text-neutral-0">Cinebh.</h1>
+                <h1 className="font-bold text-2xl text-neutral-0">Cinebh.</h1>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 md:gap-3 lg:gap-4 font-bold text-xs sm:text-base md:text-lg lg:text-xl text-neutral-25">
-                <Link
+            <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 md:gap-3 lg:gap-4 font-bold text-sm text-neutral-25">
+                <NavLink
                     to={ROUTES.ABOUT_US}
                     className="hover:underline"
                 >
                     ABOUT US
-                </Link>
+                </NavLink>
                 <span className="text-neutral-0">|</span>
-                <Link
+                <NavLink
                     to={ROUTES.TICKETS}
                     className="hover:underline"
                 >
                     TICKETS
-                </Link>
+                </NavLink>
             </div>
-            <p className="font-normal font-[10px] sm:text-xs md:text-sm lg:text-base text-light-rose mt-1 sm:mt-2 md:mt-3 lg:mt-4">
+
+            <p className="font-normal text-base text-light-rose">
                 Copyright @Cinebh. Built with love in Sarajevo. All rights reserved.
             </p>
+
         </footer>
     );
 }

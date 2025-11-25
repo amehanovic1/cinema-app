@@ -6,12 +6,15 @@ import com.cinebh.app.entity.Movie;
 import com.cinebh.app.mapper.MovieMapper;
 import com.cinebh.app.repository.MovieRepository;
 import com.cinebh.app.service.MovieService;
+import com.cinebh.app.specification.MovieSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import com.cinebh.app.util.PaginationUtil;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @RequiredArgsConstructor
 @Service
@@ -22,13 +25,20 @@ public class MovieServiceImpl implements MovieService {
 
 
     @Override
-    public PageDto<MovieDto> getCurrentlyShowingMovies(Pageable pageable) {
-        return mapToPaginatedResponse(movieRepository.findCurrentlyShowing(LocalDate.now(), pageable));
+    public PageDto<MovieDto> getCurrentlyShowingMovies(
+            String title, String city, String venue, String genre,
+            LocalDate date, LocalTime time, Pageable pageable) {
+
+        Specification<Movie> movieSpecification = MovieSpecification.isCurrentlyShowing()
+                .and(MovieSpecification.getSpecification(title, city, venue, genre, date, time));
+
+        return mapToPaginatedResponse(movieRepository.findAll(movieSpecification, pageable));
     }
 
     @Override
     public PageDto<MovieDto> getUpcomingMovies(Pageable pageable) {
-        return mapToPaginatedResponse(movieRepository.findByProjectionStartDateAfter(LocalDate.now(), pageable));
+        Specification<Movie> movieSpecification = MovieSpecification.isUpcoming();
+        return mapToPaginatedResponse(movieRepository.findAll(movieSpecification, pageable));
     }
 
     private PageDto<MovieDto> mapToPaginatedResponse(Page<Movie> page) {
