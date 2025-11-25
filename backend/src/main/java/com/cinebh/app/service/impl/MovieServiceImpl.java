@@ -29,10 +29,20 @@ public class MovieServiceImpl implements MovieService {
             String title, String city, String venue, String genre,
             LocalDate date, LocalTime time, Pageable pageable) {
 
-        Specification<Movie> movieSpecification = MovieSpecification.isCurrentlyShowing()
-                .and(MovieSpecification.currentSpecification(title, city, venue, genre, date, time));
+        boolean hasFilter = (title != null && !title.isEmpty()) ||
+                (city != null && !city.isEmpty()) ||
+                (venue != null && !venue.isEmpty()) ||
+                (genre != null && !genre.isEmpty()) ||
+                date != null || time != null;
 
-        return mapToPaginatedResponse(movieRepository.findAll(movieSpecification, pageable));
+        if(hasFilter) {
+            Specification<Movie> movieSpecification = MovieSpecification.isCurrentlyShowing()
+                    .and(MovieSpecification.currentSpecification(title, city, venue, genre, date, time));
+            return mapToPaginatedResponse(movieRepository.findAll(movieSpecification, pageable));
+        }
+
+        return mapToPaginatedResponse(
+                movieRepository.findAll(MovieSpecification.isCurrentlyShowing(), pageable));
     }
 
     @Override

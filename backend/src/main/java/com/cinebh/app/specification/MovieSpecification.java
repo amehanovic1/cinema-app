@@ -15,8 +15,10 @@ public class MovieSpecification {
         return (root, criteriaQuery,criteriaBuilder) -> {
             LocalDate today = LocalDate.now();
             return criteriaBuilder.and(
-                    criteriaBuilder.lessThanOrEqualTo(root.get("projectionStartDate"), today),
-                    criteriaBuilder.greaterThanOrEqualTo(root.get("projectionEndDate"), today)
+                    criteriaBuilder.lessThanOrEqualTo(
+                            root.get("projectionStartDate"), today),
+                    criteriaBuilder.greaterThanOrEqualTo(
+                            root.get("projectionEndDate"), today)
             );
         };
     }
