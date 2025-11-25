@@ -3,9 +3,9 @@ import { filterMovieProjections } from "../../services/movieProjectionService"
 import { getCurrentlyShowingMovies } from "../../services/movieService";
 import { getCities } from "../../services/cityService";
 import { getGenres } from "../../services/genreService";
-import { getVenuesByCityName } from "../../services/venueService";
+import { getVenuesByCityId } from "../../services/venueService";
 import { times } from "../../data/timesData";
-import { faClock, faLocationDot, faBuilding, faVideo} from "@fortawesome/free-solid-svg-icons";
+import { faClock, faLocationDot, faBuilding, faVideo } from "@fortawesome/free-solid-svg-icons";
 import Select from "../../components/Select/Select";
 import DatePicker from "../../components/DatePicker/DatePicker";
 import MovieDetails from "../../components/MovieDetails/MovieDetails";
@@ -97,7 +97,8 @@ const CurrentlyShowing = () => {
 
     const fetchVenues = async () => {
         try {
-            const res = await getVenuesByCityName({ cityName: selectedCity })
+            const city = cities.find(c => c.name === selectedCity);
+            const res = await getVenuesByCityId({ cityId: city?.id })
             setVenues(res);
         } catch (error) {
             console.log(error)
@@ -119,14 +120,14 @@ const CurrentlyShowing = () => {
             const venue = venues.find(v => v.name === selectedVenue);
 
             for (const movie of movies) {
-                const params = { 
-                    movieId: movie.id, 
-                    projectionDate: selectedDate, 
+                const params = {
+                    movieId: movie.id,
+                    projectionDate: selectedDate,
                     venueId: venue?.id || null
                 }
 
                 const res = await filterMovieProjections(params);
-                
+
                 const unique = Array.from(
                     new Map(res.map(p => [p.projectionTime, p])).values()
                 );
@@ -147,16 +148,20 @@ const CurrentlyShowing = () => {
         setSearchParams(newParams);
     }
 
-    const updateParam = (key, value) => {
+    const updateParam = (params) => {
         const newParams = new URLSearchParams(searchParams);
-        if (value)
-            newParams.set(key, value);
-        else
-            newParams.delete(key)
+
+        Object.entries(params).forEach(([key, value]) => {
+            if (value)
+                newParams.set(key, value);
+            else
+                newParams.delete(key)
+        });
 
         newParams.set("page", 0);
         setSearchParams(newParams);
     }
+
 
     return (
         <div className="flex flex-col gap-4 px-6 md:px-14 py-4 md:py-5 bg-neutral-25">
@@ -170,7 +175,7 @@ const CurrentlyShowing = () => {
             <SearchInput
                 text={"Search movies"}
                 selectedValue={searchTitle}
-                onChange={(value) => { updateParam("title", value) }} />
+                onChange={(value) => { updateParam({ title: value }) }} />
 
             <div
                 className="flex flex-col gap-4 items-center justify-center 
@@ -180,33 +185,33 @@ const CurrentlyShowing = () => {
                     selectText="All cities"
                     icon={faLocationDot}
                     selectedValue={selectedCity}
-                    onChange={(value) => { updateParam("city", value) }}
+                    onChange={(value) => { updateParam({ city: value, venue: "" }) }}
                 />
                 <Select
                     items={venues}
                     selectText="All cinemas"
                     icon={faBuilding}
                     selectedValue={selectedVenue}
-                    onChange={(value) => { updateParam("venue", value) }}
+                    onChange={(value) => { updateParam({ venue: value }) }}
                 />
                 <Select
                     items={genres}
                     selectText="All genres"
                     icon={faVideo}
                     selectedValue={selectedGenre}
-                    onChange={(value) => { updateParam("genre", value) }}
+                    onChange={(value) => { updateParam({ genre: value }) }}
                 />
                 <Select
                     items={times.map(time => ({ id: time, name: time }))}
                     selectText="All projections"
                     icon={faClock}
                     selectedValue={selectedTime}
-                    onChange={(value) => { updateParam("time", value) }} />
+                    onChange={(value) => { updateParam({ time: value }) }} />
             </div>
 
             <DatePicker
                 selectedValue={selectedDate}
-                onChange={(value) => { updateParam("date", value) }}
+                onChange={(value) => { updateParam({ date: value }) }}
             />
 
             <h1 className="font-normal italic text-neutral-500 text-xs md:text-sm lg:text-base">

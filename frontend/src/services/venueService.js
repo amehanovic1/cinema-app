@@ -15,10 +15,10 @@ export async function getAllVenues({ page, size }) {
     }
 }
 
-export async function getVenuesByCityName({ cityName }) {
+export async function getVenuesByCityId({ cityId }) {
     try {
-        const response = await axios.get(`${API_URL}/by-city-name`, { 
-            params: { cityName } 
+        const response = await axios.get(`${API_URL}/by-city`, { 
+            params: { cityId } 
         });
         return response.data;
     }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { getVenuesByCityName } from "../../services/venueService";
+import { getVenuesByCityId } from "../../services/venueService";
 import { getCities } from "../../services/cityService";
 import { getGenres } from "../../services/genreService";
 import { getUpcomingMovies } from "../../services/movieService";
@@ -95,7 +95,8 @@ const UpcomingMovies = () => {
 
     const fetchVenues = async () => {
         try {
-            const res = await getVenuesByCityName({ cityName: selectedCity })
+            const city = cities.find(c => c.name === selectedCity);
+            const res = await getVenuesByCityId({ cityId: city?.id })
             setVenues(res);
         } catch (error) {
             console.log(error)
@@ -159,7 +160,7 @@ const UpcomingMovies = () => {
                     selectText="All cities"
                     icon={faLocationDot}
                     selectedValue={selectedCity}
-                    onChange={(value) => { updateParam({ city: value }) }}
+                    onChange={(value) => { updateParam({ city: value, venue: "" }) }}
                 />
                 <Select
                     items={venues}
