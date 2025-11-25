@@ -1,13 +1,7 @@
-import { startOfWeek, endOfWeek, isWithinInterval, format } from "date-fns"
+import { format } from "date-fns"
+import { isDateThisWeek } from "../../utils/dateTimeFormatter";
 
 const Card = ({ title, imageUrl, details, startDateLabel = null }) => {
-
-    const isDateThisWeek = (date) => {
-        const today = new Date();
-        const currentWeekStart = startOfWeek(today, { weekStartsOn: 1 })
-        const currentWeekEnd = endOfWeek(today, { weekStartsOn: 1 })
-        return isWithinInterval(date, { start: currentWeekStart, end: currentWeekEnd })
-    }
 
     return (
         <div className="flex flex-col justify-between items-center w-full">
