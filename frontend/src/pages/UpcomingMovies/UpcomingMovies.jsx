@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { getAllVenues, getVenuesByCityName } from "../../services/venueService";
+import { getVenuesByCityName } from "../../services/venueService";
 import { getCities } from "../../services/cityService";
 import { getGenres } from "../../services/genreService";
 import { getUpcomingMovies } from "../../services/movieService";
