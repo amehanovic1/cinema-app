@@ -72,7 +72,7 @@ const DateRangePicker = ({ initialStartDate, initialEndDate, onChangeSet }) => {
                 />
             </div>
 
-            <div className={`absolute left-0 rigth-0 z-50 p-4 w-full bg-neutral-0 mt-1 shadow-card
+            <div className={`absolute left-0 rigth-0 z-40 p-4 w-full bg-neutral-0 mt-1 shadow-card
                             overflow-y-auto transition-all duration-300 rounded flex flex-col items-center gap-2 
                         ${isSelectorOpen ? "opacity-100" : "hidden"}`}>
                 <div className="grid grid-cols-2 gap-2">
@@ -104,7 +104,6 @@ const DateRangePicker = ({ initialStartDate, initialEndDate, onChangeSet }) => {
                         minDate={new Date()}
                         selectsRange
                         inline
-                        calendarClassName="w-full h-full"
                     />
                 </div>
 
