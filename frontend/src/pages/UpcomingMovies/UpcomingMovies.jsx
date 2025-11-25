@@ -57,11 +57,15 @@ const UpcomingMovies = () => {
     const fetchUpcoming = async () => {
         try {
 
+            const city = cities.find(c => c.name === selectedCity);
+            const venue = venues.find(v => v.name === selectedVenue);
+            const genre = genres.find(g => g.name === selectedGenre);
+
             const params = {
                 title: searchTitle,
-                city: selectedCity,
-                venue: selectedVenue,
-                genre: selectedGenre,
+                cityId: city?.id,
+                venueId: venue?.id,
+                genreId: genre?.id,
                 startDate: selectedStartDate,
                 endDate: selectedEndDate,
                 page,

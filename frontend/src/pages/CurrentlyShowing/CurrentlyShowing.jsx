@@ -58,11 +58,16 @@ const CurrentlyShowing = () => {
 
     const fetchCurrentlyShowing = async () => {
         try {
+
+            const city = cities.find(c => c.name === selectedCity);
+            const venue = venues.find(v => v.name === selectedVenue);
+            const genre = genres.find(g => g.name === selectedGenre);
+
             const params = {
                 title: searchTitle,
-                city: selectedCity,
-                venue: selectedVenue,
-                genre: selectedGenre,
+                cityId: city?.id,
+                venueId: venue?.id,
+                genreId: genre?.id,
                 date: selectedDate,
                 time: selectedTime,
                 page,
@@ -111,9 +116,7 @@ const CurrentlyShowing = () => {
     const fetchMovieProjections = async (movies) => {
         try {
 
-            let venue = null
-            if(selectedVenue && venues.length > 0 )
-                venue = venues.find(v => v.name === selectedVenue)
+            const venue = venues.find(v => v.name === selectedVenue);
 
             for (const movie of movies) {
                 const params = { 
