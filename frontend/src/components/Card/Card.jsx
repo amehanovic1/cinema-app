@@ -1,8 +1,4 @@
-import { format } from "date-fns"
-import { isDateThisWeek } from "../../utils/dateTimeFormatter";
-
-const Card = ({ title, imageUrl, details, startDateLabel = null }) => {
-
+const Card = ({ title, imageUrl, details, badge = null }) => {
     return (
         <div className="flex flex-col justify-between items-center w-full">
 
@@ -13,12 +9,10 @@ const Card = ({ title, imageUrl, details, startDateLabel = null }) => {
                     className="w-full h-full object-cover rounded-xl"
                 />
 
-                {startDateLabel && (
+                {badge && (
                     <span className="absolute top-2 right-1 bg-dark-red text-white 
                                     text-xs font-semibold px-2 py-2 rounded shadow-card">
-                        {isDateThisWeek(startDateLabel)
-                            ? `Opens ${format(startDateLabel, "EEEE")}`
-                            : format(startDateLabel, "EEE, MMM dd, yyyy")}
+                        {badge}
                     </span>
                 )}
 

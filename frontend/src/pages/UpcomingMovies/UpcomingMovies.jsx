@@ -10,6 +10,8 @@ import Select from "../../components/Select/Select";
 import Card from "../../components/Card/Card";
 import DateRangePicker from "../../components/DateRangePicker/DateRangePicker";
 import NoDataFound from "../../components/NoDataFound/NoDataFound";
+import { format } from "date-fns"
+import { isDateThisWeek } from "../../utils/dateTimeFormatter";
 
 const UpcomingMovies = () => {
     const [searchParams, setSearchParams] = useSearchParams()
@@ -188,7 +190,11 @@ const UpcomingMovies = () => {
                                     title={movie.title}
                                     imageUrl={getMovieImage(movie)}
                                     details={[`${movie.durationInMinutes} MIN`, "|", movie.genres?.[0]?.name]}
-                                    startDateLabel={movie.projectionStartDate}
+                                    badge={
+                                        isDateThisWeek(movie.projectionStartDate)
+                                            ? `Opens ${format(movie.projectionStartDate, "EEEE")}`
+                                            : format(movie.projectionStartDate, "EEE, MMM dd, yyyy")
+                                    }
                                 />
                             </div>
                         )}
