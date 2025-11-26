@@ -12,6 +12,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @Service
 public class VenueServiceImpl implements VenueService {
@@ -23,5 +26,13 @@ public class VenueServiceImpl implements VenueService {
     public PageDto<VenueDto> getAllVenues(Pageable pageable) {
         Page<Venue> page = venueRepository.findAll(pageable);
         return PaginationUtil.buildPaginatedResponse(page.map(venueMapper::toDto));
+    }
+
+    @Override
+    public List<VenueDto> getVenuesByCityId(UUID cityId) {
+        return venueRepository.findAllByCityId(cityId)
+                .stream()
+                .map(venueMapper::toDto)
+                .toList();
     }
 }

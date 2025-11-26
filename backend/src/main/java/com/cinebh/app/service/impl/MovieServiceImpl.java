@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.cinebh.app.util.PaginationUtil;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -26,18 +27,31 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public PageDto<MovieDto> getCurrentlyShowingMovies(
-            String title, String city, String venue, String genre,
+            String title, UUID cityId, UUID venueId, UUID genreId,
             LocalDate date, LocalTime time, Pageable pageable) {
 
-        Specification<Movie> movieSpecification = MovieSpecification.isCurrentlyShowing()
-                .and(MovieSpecification.getSpecification(title, city, venue, genre, date, time));
+        boolean hasFilter = (title != null && !title.isEmpty()) ||
+                cityId != null || venueId != null || genreId != null ||
+                date != null || time != null;
 
-        return mapToPaginatedResponse(movieRepository.findAll(movieSpecification, pageable));
+        if(hasFilter) {
+            Specification<Movie> movieSpecification = MovieSpecification.isCurrentlyShowing()
+                    .and(MovieSpecification.currentSpecification(title, cityId, venueId, genreId, date, time));
+            return mapToPaginatedResponse(movieRepository.findAll(movieSpecification, pageable));
+        }
+
+        return mapToPaginatedResponse(
+                movieRepository.findAll(MovieSpecification.isCurrentlyShowing(), pageable));
     }
 
     @Override
-    public PageDto<MovieDto> getUpcomingMovies(Pageable pageable) {
-        Specification<Movie> movieSpecification = MovieSpecification.isUpcoming();
+    public PageDto<MovieDto> getUpcomingMovies(
+            String title, UUID cityId, UUID venueId, UUID genreId,
+            LocalDate startDate, LocalDate endDate, Pageable pageable) {
+
+        Specification<Movie> movieSpecification =
+                MovieSpecification.upcomingSpecification(title, cityId, venueId, genreId, startDate, endDate);
+
         return mapToPaginatedResponse(movieRepository.findAll(movieSpecification, pageable));
     }
 

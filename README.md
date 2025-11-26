@@ -29,6 +29,8 @@ The ERD for this project is available at the link: [View ERD on dbdiagram.io](ht
 - Axios
 - TailwindCSS
 - FontAwesome
+- react-datepicker
+- date-fns
 
 ---
 ## Setup

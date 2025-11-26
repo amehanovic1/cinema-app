@@ -11,12 +11,14 @@ const SearchInput = ({ text, selectedValue, onChange }) => {
     }
 
     return (
-        <div className="w-full relative p-2 border rounded bg-neutral-0 shadow-input
-                        text-neutral-400 text-xs md:text-sm lg:text-base font-normal ">
+        <div className={`w-full relative p-2 border rounded bg-neutral-0 shadow-input
+                        text-xs md:text-sm lg:text-base font-normal
+                        ${selectedValue ? "border-dark-red" : "border-neutral-400"}`}>
 
             <FontAwesomeIcon
                 icon={faMagnifyingGlass}
-                className="absolute left-3 top-1/2 -translate-y-1/2 justify-center "
+                className={`absolute left-3 top-1/2 -translate-y-1/2 justify-center
+                            ${selectedValue ? "text-dark-red" : "text-neutral-400"}`}
             />
 
             <input

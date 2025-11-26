@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class MovieSpecification {
 
@@ -15,24 +16,19 @@ public class MovieSpecification {
         return (root, criteriaQuery,criteriaBuilder) -> {
             LocalDate today = LocalDate.now();
             return criteriaBuilder.and(
-                    criteriaBuilder.lessThanOrEqualTo(root.get("projectionStartDate"), today),
-                    criteriaBuilder.greaterThanOrEqualTo(root.get("projectionEndDate"), today)
+                    criteriaBuilder.lessThanOrEqualTo(
+                            root.get("projectionStartDate"), today),
+                    criteriaBuilder.greaterThanOrEqualTo(
+                            root.get("projectionEndDate"), today)
             );
         };
     }
 
-    public static Specification<Movie> isUpcoming() {
-        return (root, criteriaQuery,criteriaBuilder) -> {
-            LocalDate today = LocalDate.now();
-            return criteriaBuilder.greaterThan(root.get("projectionStartDate"), today);
-        };
-    }
-
-    public static Specification<Movie> getSpecification(
+    public static Specification<Movie> currentSpecification(
             String title,
-            String city,
-            String venue,
-            String genre,
+            UUID cityId,
+            UUID venueId,
+            UUID genreId,
             LocalDate date,
             LocalTime time
     )
@@ -51,35 +47,83 @@ public class MovieSpecification {
 
                 if (title != null && !title.isEmpty()) {
                     predicates.add(criteriaBuilder.like(
-                            criteriaBuilder.lower(
-                                    root.get("title")), "%" + title.toLowerCase() + "%"));
+                            criteriaBuilder.lower(root.get("title")), "%" + title.toLowerCase() + "%"));
                 }
 
-                if(city != null && !city.isEmpty()) {
-                    predicates.add(criteriaBuilder.equal(cityJoin.get("name"), city));
+                if(cityId != null) {
+                    predicates.add(criteriaBuilder.equal(cityJoin.get("id"), cityId));
                 }
 
-                if(venue != null && !venue.isEmpty()) {
-                    predicates.add(criteriaBuilder.equal(venueJoin.get("name"), venue));
+                if(venueId != null) {
+                    predicates.add(criteriaBuilder.equal(venueJoin.get("id"), venueId));
                 }
 
-                if(genre != null && !genre.isEmpty()) {
+                if(genreId != null) {
                     predicates.add(criteriaBuilder.equal(
-                            root.join("genres", JoinType.INNER)
-                                    .get("name"), genre));
+                            root.join("genres", JoinType.INNER).get("id"), genreId));
                 }
 
                 if(date != null) {
-                    predicates.add(criteriaBuilder.equal(
-                            projectionJoin.get("projectionDate"), date));
+                    predicates.add(criteriaBuilder.equal(projectionJoin.get("projectionDate"), date));
                 } else {
-                    predicates.add(criteriaBuilder.equal(
-                            projectionJoin.get("projectionDate"), LocalDate.now()));
+                    predicates.add(criteriaBuilder.equal(projectionJoin.get("projectionDate"), LocalDate.now()));
                 }
 
                 if(time != null) {
+                    predicates.add(criteriaBuilder.equal(projectionJoin.get("projectionTime"), time));
+                }
+
+                return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+            }
+        };
+    }
+
+    public static Specification<Movie> upcomingSpecification(
+            String title,
+            UUID cityId,
+            UUID venueId,
+            UUID genreId,
+            LocalDate startDate,
+            LocalDate endDate
+    )
+    {
+        return new Specification<Movie>() {
+            @Override
+            public Predicate toPredicate(Root<Movie> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                query.distinct(true);
+                criteriaBuilder.conjunction();
+                List<Predicate> predicates = new ArrayList<>();
+
+                var projectionJoin = root.join("projections", JoinType.INNER);
+                var hallJoin = projectionJoin.join("cinemaHall", JoinType.INNER);
+                var venueJoin = hallJoin.join("venue", JoinType.INNER);
+                var cityJoin = venueJoin.join("city", JoinType.INNER);
+
+                if (title != null && !title.isEmpty()) {
+                    predicates.add(criteriaBuilder.like(
+                            criteriaBuilder.lower(root.get("title")), "%" + title.toLowerCase() + "%"));
+                }
+
+                if(cityId != null) {
+                    predicates.add(criteriaBuilder.equal(cityJoin.get("id"), cityId));
+                }
+
+                if(venueId != null) {
+                    predicates.add(criteriaBuilder.equal(venueJoin.get("id"), venueId));
+                }
+
+                if(genreId != null) {
                     predicates.add(criteriaBuilder.equal(
-                            projectionJoin.get("projectionTime"), time));
+                            root.join("genres", JoinType.INNER)
+                                    .get("id"), genreId));
+                }
+
+                LocalDate today = LocalDate.now();
+                predicates.add(criteriaBuilder.greaterThan(root.get("projectionStartDate"), today));
+                if(startDate != null && endDate != null) {
+                    predicates.add(
+                            criteriaBuilder.between(root.get("projectionStartDate"), startDate,  endDate)
+                    );
                 }
 
                 return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

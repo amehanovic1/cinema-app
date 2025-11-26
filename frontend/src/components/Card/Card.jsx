@@ -1,13 +1,21 @@
-const Card = ({ title, imageUrl, details }) => {
+const Card = ({ title, imageUrl, details, badge = null }) => {
     return (
         <div className="flex flex-col justify-between items-center w-full">
 
-            <div className="w-full aspect-square overflow-hidden flex-none rounded-xl">
+            <div className="w-full aspect-square overflow-hidden flex-none rounded-xl relative">
                 <img
                     src={imageUrl}
                     alt={title}
                     className="w-full h-full object-cover rounded-xl"
                 />
+
+                {badge && (
+                    <span className="absolute top-2 right-1 bg-dark-red text-white 
+                                    text-xs font-semibold px-2 py-2 rounded shadow-card">
+                        {badge}
+                    </span>
+                )}
+
             </div>
 
             <div className="w-full mt-2 flex flex-col items-start">

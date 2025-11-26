@@ -14,3 +14,16 @@ export async function getAllVenues({ page, size }) {
         throw error;
     }
 }
+
+export async function getVenuesByCityId({ cityId }) {
+    try {
+        const response = await axios.get(`${API_URL}/by-city`, { 
+            params: { cityId } 
+        });
+        return response.data;
+    }
+    catch (error) {
+        console.log("Error fetching venues:", error);
+        throw error;
+    }
+}
