@@ -9,5 +9,5 @@ import java.util.UUID;
 public interface MovieProjectionService {
 
     List<MovieProjectionDto> filterMovieProjections(
-            UUID movieId, LocalDate projectionDate, UUID venueId);
+            UUID movieId, LocalDate projectionDate, UUID cityId, UUID venueId);
 }

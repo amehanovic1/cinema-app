@@ -24,10 +24,11 @@ public class MovieProjectionController {
     public ResponseEntity<List<MovieProjectionDto>> filterMovieProjections(
             @RequestParam UUID movieId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  LocalDate projectionDate,
+            @RequestParam(required = false) UUID cityId,
             @RequestParam(required = false) UUID venueId
             ) {
         return ResponseEntity.ok(movieProjectionService.filterMovieProjections(
-                movieId, projectionDate, venueId
+                movieId, projectionDate, cityId, venueId
                 )
         );
     }
