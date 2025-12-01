@@ -117,12 +117,14 @@ const CurrentlyShowing = () => {
     const fetchMovieProjections = async (movies) => {
         try {
 
+            const city = cities.find(c => c.name === selectedCity);
             const venue = venues.find(v => v.name === selectedVenue);
 
             for (const movie of movies) {
                 const params = {
                     movieId: movie.id,
                     projectionDate: selectedDate,
+                    cityId: city?.id || null,
                     venueId: venue?.id || null
                 }
 
