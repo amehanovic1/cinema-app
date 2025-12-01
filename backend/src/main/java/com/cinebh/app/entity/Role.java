@@ -21,6 +21,6 @@ public class Role extends Auditable {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 }

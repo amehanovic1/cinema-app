@@ -19,13 +19,14 @@ import java.util.UUID;
 public class Country {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @Column(name = "iso_2_code")
+    @Column(name = "iso_2_code", nullable = false)
     private String iso2Code;
 
     @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, orphanRemoval = true)

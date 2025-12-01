@@ -23,17 +23,17 @@ public class MovieProjection extends Auditable {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "projection_date")
+    @Column(name = "projection_date", nullable = false)
     private LocalDate projectionDate;
 
-    @Column(name = "projection_time")
+    @Column(name = "projection_time", nullable = false)
     private LocalTime projectionTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "movie_id")
+    @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cinema_hall_id")
+    @JoinColumn(name = "cinema_hall_id", nullable = false)
     private CinemaHall cinemaHall;
 }
