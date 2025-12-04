@@ -23,10 +23,10 @@ public class MovieProjectionServiceImpl implements MovieProjectionService {
 
     @Override
     public List<MovieProjectionDto> filterMovieProjections(
-            UUID movieId, LocalDate projectionDate, UUID venueId
+            UUID movieId, LocalDate projectionDate, UUID cityId, UUID venueId
     ) {
         Specification<MovieProjection> movieProjectionSpecification =
-                MovieProjectionSpecification.getSpecification(movieId, projectionDate, venueId);
+                MovieProjectionSpecification.getSpecification(movieId, projectionDate, cityId, venueId);
 
         return movieProjectionRepository.findAll(movieProjectionSpecification)
                 .stream()

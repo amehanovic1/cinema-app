@@ -14,6 +14,7 @@ public class MovieProjectionSpecification {
     public static Specification<MovieProjection> getSpecification(
             UUID movieId,
             LocalDate date,
+            UUID cityId,
             UUID venueId
     )
     {
@@ -23,6 +24,10 @@ public class MovieProjectionSpecification {
                 query.distinct(true);
 
                 List<Predicate> predicates = new ArrayList<>();
+
+                var hallJoin = root.join("cinemaHall", JoinType.INNER);
+                var venueJoin = hallJoin.join("venue", JoinType.INNER);
+                var cityJoin = venueJoin.join("city", JoinType.INNER);
 
                 if(movieId != null) {
                     predicates.add(criteriaBuilder.equal(root.get("movie").get("id"), movieId));
@@ -36,11 +41,14 @@ public class MovieProjectionSpecification {
                             root.get("projectionDate"), LocalDate.now()));
                 }
 
+                if(cityId != null) {
+                    predicates.add(criteriaBuilder.equal(
+                            cityJoin.get("id"), cityId));
+                }
+
                 if(venueId != null) {
                     predicates.add(criteriaBuilder.equal(
-                            root.join("cinemaHall", JoinType.INNER)
-                            .join("venue", JoinType.INNER)
-                            .get("id"), venueId));
+                            venueJoin.get("id"), venueId));
                 }
 
                 query.orderBy(criteriaBuilder.asc(root.get("projectionTime")));

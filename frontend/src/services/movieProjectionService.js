@@ -3,11 +3,11 @@ import axios from "axios";
 const API_URL = process.env.REACT_APP_API_URL + "/movie-projections";
 
 export async function filterMovieProjections(
-    { movieId, projectionDate, venueId }
+    { movieId, projectionDate, cityId, venueId }
 ) {
     try {
         const response = await axios.get(API_URL, {
-            params: { movieId, projectionDate, venueId }
+            params: { movieId, projectionDate, cityId, venueId }
         });
         return response.data;
     }
