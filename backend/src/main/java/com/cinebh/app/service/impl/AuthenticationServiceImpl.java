@@ -25,7 +25,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public AuthResponseDto register(RegisterRequestDto request) {
 
-        Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
+        String email = request.getEmail().trim();
+        Optional<User> optionalUser = userRepository.findByEmail(email);
 
         if(optionalUser.isPresent()) {
             return AuthResponseDto.builder()
@@ -34,13 +35,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .build();
         }
 
-        Role customerRole = roleRepository.findByName("USER")
+        Role userRole = roleRepository.findByName("USER")
                 .orElseThrow(() -> new RuntimeException("Error: USER role not found!"));
 
         User newUser = User.builder()
-                .email(request.getEmail())
+                .email(email)
                 .password(passwordEncoder.encode(request.getPassword()))
-                .roles(new HashSet<>(Set.of(customerRole)))
+                .roles(new HashSet<>(Set.of(userRole)))
                 .build();
 
         User savedUser = userRepository.save(newUser);
