@@ -22,6 +22,8 @@ The ERD for this project is available at the link: [View ERD on dbdiagram.io](ht
 - Flyway
 - MapStruct
 - SpringDoc OpenAPI
+- Spring Security
+- JWT (JSON Web Token)
 
 **Frontend**: 
 - React 19
@@ -34,6 +36,57 @@ The ERD for this project is available at the link: [View ERD on dbdiagram.io](ht
 
 ---
 ## Setup
+
+### Local HTTPS Setup with `mkcert` 
+
+### Install `mkcert`
+
+**Windows**
+1. Visit :  [mkcert Releases](https://github.com/FiloSottile/mkcert/releases)
+2. Download the latest Windows executable (`mkcert-vX.X.X-windows-amd64.exe`)
+3. Add it to your system `PATH`
+4. Initialize `mkcert`:
+
+```
+mkcert -install
+```
+**Note:** This is one way to install `mkcert` on Windows. Alternative methods, such as using **Chocolatey** or **Scoop**, are also available. See the [mkcert GitHub](https://github.com/FiloSottile/mkcert) page for details.
+
+**Other operating systems (macOS / Linux ):**
+
+Refer to the official `mkcert` documentation: [mkcert GitHub](https://github.com/FiloSottile/mkcert)
+
+Follow the instructions for your platform to install and initialize `mkcert`.
+
+### Configure Hosts File
+
+**Windows**
+1. Open Notepad (or any text editor) as Administrator.
+2. Open the hosts file located at: `C:\Windows\System32\drivers\etc\hosts`
+3. Add the following at the end of the file:
+
+```
+# CineBH
+127.0.0.1 cinebh-api.yourdomain.com
+127.0.0.1 cinebh.yourdomain.com
+# End of section
+```
+
+### Generate Local Certificates
+After installing `mkcert` and configuring your hosts, generate certificates for both frontend and backend environments.
+
+Frontend Certificate:
+```
+cd frontend
+mkdir .cert
+mkcert -cert-file .cert/cert.pem -key-file .cert/key.pem cinebh.yourdomain.com localhost 127.0.0.1
+```
+Backend Keystore:
+```
+cd backend
+mkdir .cert
+mkcert -pkcs12 -p12-file .cert/keystore.p12 cinebh-api.yourdomain.com localhost 127.0.0.1
+```
 
 ### Database Setup
 
@@ -60,8 +113,12 @@ DB_URL=jdbc:postgresql://localhost:5432/cinebh
 DB_USERNAME=username
 DB_PASSWORD=password
 
-# CORS Configuration
-FRONTEND_URL=http://localhost:3000
+# Frontend URL
+FRONTEND_URL=https://cinebh.yourdomain.com:3000
+
+# SSL configuration
+SERVER_PORT=8080
+SERVER_SSL_KEY_STORE_PASSWORD=password
 ```
 
 Run the application:
@@ -100,7 +157,13 @@ cp .env.example .env
 Update ```.env``` file:
 ```
 # Backend API URL
-REACT_APP_API_URL=http://localhost:8080/api
+REACT_APP_API_URL=https://cinebh-api.yourdomain.com:8080/api
+
+# SSL configuration
+HTTPS=true
+SSL_CRT_FILE=./.cert/cert.pem 
+SSL_KEY_FILE=./.cert/key.pem
+HOST=cinebh.yourdomain.com
 ```
 
 Install dependencies and run:
@@ -132,7 +195,7 @@ mvn test
 
 ### API Documentation (Swagger): 
 ```
-http://localhost:<PORT>/swagger-ui/index.html
+https://cinebh-api.yourdomain.com:<PORT>/swagger-ui/index.html
 ```
 
 ### PMD Static Analysis:
