@@ -26,7 +26,9 @@ spring:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
       mail.smtp.ssl.enable: false
-      mail.smtp.from: ${MAIL_FROM}
+
+mail:
+  from: ${MAIL_FROM}
 
 frontend:
   url: ${FRONTEND_URL}

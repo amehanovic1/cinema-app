@@ -24,6 +24,8 @@ The ERD for this project is available at the link: [View ERD on dbdiagram.io](ht
 - SpringDoc OpenAPI
 - Spring Security
 - JWT (JSON Web Token)
+- Mail
+- Thymeleaf
 
 **Frontend**: 
 - React 19
@@ -119,7 +121,21 @@ FRONTEND_URL=https://cinebh.yourdomain.com:3000
 # SSL configuration
 SERVER_PORT=8080
 SERVER_SSL_KEY_STORE_PASSWORD=password
+
+# Mail configuration
+MAIL_USERNAME=your_consumer_key
+MAIL_PASSWORD=your_consumer_secret
+MAIL_FROM=noreply@cinebh.com
 ```
+***Mail Configuration (Turbo-SMTP)***
+
+1. Create a free account at [Turbo-SMTP](https://serversmtp.com/)
+2. Generate SMTP credentials (Consumer Key/Secret)
+3. Configure environment variables:
+   - `MAIL_USERNAME` = Consumer Key
+   - `MAIL_PASSWORD` = Consumer Secret
+   - `MAIL_FROM` = Verified sender email address
+
 
 Run the application:
 

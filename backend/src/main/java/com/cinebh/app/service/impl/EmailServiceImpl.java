@@ -15,7 +15,7 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 @Service
 public class EmailServiceImpl implements EmailService {
 
-    @Value("${spring.mail.properties.mail.smtp.from}")
+    @Value("${mail.from}")
     private String fromEmail;
 
     private final JavaMailSender emailSender;
