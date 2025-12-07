@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinebh Account Activation</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #F9FAFB; padding: 0; margin: 0;">
+<div style="max-width: 600px; margin: 40px auto; background-color: #FFFFFF; border-radius: 12px; overflow: hidden;">
+
+    <div style="background: #B22222; padding: 32px 40px; text-align: center;">
+        <h1 style="color: #FFFFFF; font-size: 28px; font-weight: 700; margin: 0;">Cinebh</h1>
+    </div>
+
+    <div style="padding: 40px;">
+        <h2 style="color: #101828; font-size: 24px; font-weight: 600; margin: 0 0 16px 0;">Welcome to Cinebh!</h2>
+
+        <p style="font-size: 16px; color: #475467; margin: 0 0 32px 0;">
+            Thank you for registering. To activate your account and start enjoying movies, please use the activation code below:
+        </p>
+
+        <div style="background: #FEF3F2; padding: 32px; border-radius: 12px; text-align: center; margin-bottom: 32px;">
+            <p style="color: #667085; font-size: 14px; font-weight: 500; text-transform: uppercase; margin: 0 0 12px 0;">Your Activation Code</p>
+            <p style="font-size: 36px; font-weight: 700; color: #B22222; margin: 0; font-family: 'Courier New', monospace;" th:text="${code}"></p>
+        </div>
+
+        <div style="background-color: #F9FAFB; padding: 20px; border-radius: 8px; border-left: 4px solid #B22222; margin-bottom: 24px;">
+            <p style="font-size: 14px; color: #344054; margin: 0;">
+                <strong>Important:</strong> This code will expire in <strong>15 minutes</strong>. Please enter it in the app to complete your account activation.
+            </p>
+        </div>
+
+        <p style="font-size: 14px; color: #667085; margin: 0;">
+            If you did not register for Cinebh, please ignore this email or contact our support team if you have concerns.
+        </p>
+    </div>
+</div>
+</body>
+</html>
