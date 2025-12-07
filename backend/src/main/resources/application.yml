@@ -26,7 +26,11 @@ spring:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
       mail.smtp.ssl.enable: false
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> af9dc51 (Update README)
 mail:
   from: ${MAIL_FROM}
 
