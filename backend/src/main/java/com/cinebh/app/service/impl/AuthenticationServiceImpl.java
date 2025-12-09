@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -197,7 +198,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     private String generateVerificationCode() {
-        int code = new Random().nextInt(10000);
+        SecureRandom secureRandom = new SecureRandom();
+        int code = secureRandom.nextInt(10000);
         return String.format("%04d", code);
     }
 
