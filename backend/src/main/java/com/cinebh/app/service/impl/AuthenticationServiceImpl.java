@@ -4,10 +4,10 @@ import com.cinebh.app.dto.auth.AuthResponseDto;
 import com.cinebh.app.dto.auth.EmailRequestDto;
 import com.cinebh.app.dto.auth.VerifyRequestDto;
 import com.cinebh.app.dto.auth.RegisterRequestDto;
-import com.cinebh.app.entity.EmailVerificationCodes;
+import com.cinebh.app.entity.EmailVerificationCode;
 import com.cinebh.app.entity.Role;
 import com.cinebh.app.entity.User;
-import com.cinebh.app.repository.EmailVerificationCodesRepository;
+import com.cinebh.app.repository.EmailVerificationCodeRepository;
 import com.cinebh.app.repository.RoleRepository;
 import com.cinebh.app.repository.UserRepository;
 import com.cinebh.app.service.AuthenticationService;
@@ -29,7 +29,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
-    private final EmailVerificationCodesRepository verificationCodesRepository;
+    private final EmailVerificationCodeRepository verificationCodesRepository;
 
     @Override
     public AuthResponseDto register(RegisterRequestDto request) {
@@ -81,7 +81,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (status != null) return status;
 
         User user = userRepository.findByEmail(email).get();
-        EmailVerificationCodes verificationCodes = verificationCodesRepository.findByUser(user)
+        EmailVerificationCode verificationCodes = verificationCodesRepository.findByUser(user)
                 .orElse(null);
 
         if (verificationCodes == null) {
@@ -126,7 +126,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         User user = userRepository.findByEmail(email).get();
 
-        Optional<EmailVerificationCodes> activeCode = verificationCodesRepository
+        Optional<EmailVerificationCode> activeCode = verificationCodesRepository
                 .findByUserAndExpiresAtAfter(user, Instant.now());
 
         if(activeCode.isPresent()) {
@@ -173,9 +173,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     private void saveAndSendCode(User user, String code) {
-        EmailVerificationCodes verificationCodes = verificationCodesRepository.findByUser(user)
+        EmailVerificationCode verificationCodes = verificationCodesRepository.findByUser(user)
                 .orElseGet(() -> {
-                    EmailVerificationCodes codes = new EmailVerificationCodes();
+                    EmailVerificationCode codes = new EmailVerificationCode();
                     codes.setUser(user);
                     return codes;
                 });

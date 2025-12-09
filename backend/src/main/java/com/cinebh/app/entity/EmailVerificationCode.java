@@ -15,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "email_verification_codes")
-public class EmailVerificationCodes extends Auditable {
+public class EmailVerificationCode extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
