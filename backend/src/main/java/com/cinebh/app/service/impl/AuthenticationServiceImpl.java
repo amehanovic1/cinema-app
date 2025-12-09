@@ -151,8 +151,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if(optionalUser.isEmpty()) {
             return AuthResponseDto.builder()
                     .isVerified(false)
-                    .success(false)
-                    .message("No account found with this email.")
+                    .success(true)
+                    .message("Verification code sent if account exists.")
                     .build();
         }
 
