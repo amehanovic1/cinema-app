@@ -12,7 +12,6 @@ import com.cinebh.app.repository.RoleRepository;
 import com.cinebh.app.repository.UserRepository;
 import com.cinebh.app.service.AuthenticationService;
 import com.cinebh.app.service.EmailService;
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -66,8 +65,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .build();
 
         User savedUser = userRepository.save(newUser);
-        String code = generateVerificationCode();
-        saveAndSendCode(savedUser, code);
+        saveAndSendCode(savedUser);
 
         return AuthResponseDto.builder()
                 .isVerified(false)
@@ -138,9 +136,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .build();
         }
 
-        String code = generateVerificationCode();
-
-        saveAndSendCode(user, code);
+        saveAndSendCode(user);
 
         return AuthResponseDto.builder()
                 .isVerified(false)
@@ -173,7 +169,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return null;
     }
 
-    private void saveAndSendCode(User user, String code) {
+    private void saveAndSendCode(User user) {
+        String code = generateVerificationCode();
+
         EmailVerificationCode verificationCodes = verificationCodesRepository.findByUser(user)
                 .orElseGet(() -> {
                     EmailVerificationCode codes = new EmailVerificationCode();
@@ -185,16 +183,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         verificationCodes.setExpiresAt(Instant.now().plus(15, ChronoUnit.MINUTES));
         verificationCodesRepository.save(verificationCodes);
 
-        sendVerificationEmail(user.getEmail(), code);
-    }
-
-    public void sendVerificationEmail(String email, String verificationCode) {
-        String subject = "Account Activation";
-        try {
-            emailService.sendVerificationEmail(email, subject, verificationCode);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
+        emailService.sendUserVerificationEmail(user.getEmail(), code);
     }
 
     private String generateVerificationCode() {
