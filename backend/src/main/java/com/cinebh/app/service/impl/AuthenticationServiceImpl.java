@@ -82,7 +82,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if(optionalUser.isEmpty()) {
             return AuthResponseDto.builder()
                     .isVerified(false)
-                    .success(true)
+                    .success(false)
                     .message("Invalid verification code.")
                     .build();
         }
@@ -143,20 +143,36 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String email = request.getEmail().trim();
         Optional<User> optionalUser = userRepository.findByEmail(email);
 
-        if(optionalUser.isPresent()) {
-
-            User user = optionalUser.get();
-
-            if(!user.getIsVerified()) {
-
-                Optional<EmailVerificationCode> activeCode = verificationCodeRepository
-                        .findByUserAndExpiresAtAfter(user, Instant.now());
-
-                if (activeCode.isEmpty()) {
-                    saveAndSendCode(user);
-                }
-            }
+        if (optionalUser.isEmpty()) {
+            return AuthResponseDto.builder()
+                    .isVerified(false)
+                    .success(false)
+                    .message("Verification code has been sent if this email is registered.")
+                    .build();
         }
+
+        User user = optionalUser.get();
+
+        if (user.getIsVerified()) {
+            return AuthResponseDto.builder()
+                    .isVerified(true)
+                    .success(false)
+                    .message("Account is already verified. Please log in.")
+                    .build();
+        }
+
+        Optional<EmailVerificationCode> activeCode = verificationCodeRepository
+                .findByUserAndExpiresAtAfter(user, Instant.now());
+
+        if (activeCode.isPresent()) {
+            return AuthResponseDto.builder()
+                    .isVerified(false)
+                    .success(false)
+                    .message("Verification code was recently sent. Please check your email or wait before requesting a new one.")
+                    .build();
+        }
+
+        saveAndSendCode(user);
 
         return AuthResponseDto.builder()
                 .isVerified(false)
