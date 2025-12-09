@@ -35,7 +35,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthResponseDto register(RegisterRequestDto request) {
-
         String email = request.getEmail().trim();
         Optional<User> optionalUser = userRepository.findByEmail(email);
 
@@ -78,40 +77,50 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     public AuthResponseDto verify(VerifyRequestDto verifyRequestDto) {
         String email = verifyRequestDto.getEmail().trim();
-        AuthResponseDto status = checkUserStatus(email);
-        if (status != null) return status;
+        Optional<User> optionalUser = userRepository.findByEmail(email);
 
-        User user = userRepository.findByEmail(email).get();
+        if(optionalUser.isEmpty()) {
+            return AuthResponseDto.builder()
+                    .isVerified(false)
+                    .success(true)
+                    .message("Invalid verification code.")
+                    .build();
+        }
+
+        User user = optionalUser.get();
+
+        if(user.getIsVerified()) {
+            return AuthResponseDto.builder()
+                    .isVerified(true)
+                    .success(false)
+                    .message("Account is already verified. Please log in.")
+                    .build();
+        }
+
         EmailVerificationCode verificationCode = verificationCodeRepository.findByUser(user)
                 .orElse(null);
 
-        if (verificationCode == null) {
+        if (verificationCode == null || verificationCode.getExpiresAt().isBefore(Instant.now())) {
             return AuthResponseDto.builder()
                     .isVerified(false)
                     .success(false)
-                    .message("Verification code not found. Please request a new one.")
+                    .message("Invalid verification code. Please request a new code.")
                     .build();
         }
 
-        if (verificationCode.getExpiresAt().isBefore(Instant.now())) {
-            return AuthResponseDto.builder()
-                    .isVerified(false)
-                    .success(false)
-                    .message("Verification code has expired. Please request a new one.")
-                    .build();
-        }
-
-        if (verificationCode.getAttemptCount() >= MAX_VERIFICATION_ATTEMPTS) {
-            verificationCodeRepository.delete(verificationCode);
-            return AuthResponseDto.builder()
-                    .isVerified(false)
-                    .success(false)
-                    .message("Maximum verification attempts exceeded. Please request a new code.")
-                    .build();
-        }
 
         if (!passwordEncoder.matches(verifyRequestDto.getVerificationCode(), verificationCode.getCodeHash())) {
             verificationCode.setAttemptCount(verificationCode.getAttemptCount() + 1);
+
+            if (verificationCode.getAttemptCount() >= MAX_VERIFICATION_ATTEMPTS) {
+                verificationCodeRepository.delete(verificationCode);
+                return AuthResponseDto.builder()
+                        .isVerified(false)
+                        .success(false)
+                        .message("Maximum verification attempts exceeded. Please request a new code.")
+                        .build();
+            }
+
             verificationCodeRepository.save(verificationCode);
             return AuthResponseDto.builder()
                     .isVerified(false)
@@ -132,54 +141,28 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     public AuthResponseDto resendCode(EmailRequestDto request) {
         String email = request.getEmail().trim();
+        Optional<User> optionalUser = userRepository.findByEmail(email);
 
-        AuthResponseDto status = checkUserStatus(email);
-        if(status != null) return status;
+        if(optionalUser.isPresent()) {
 
-        User user = userRepository.findByEmail(email).get();
+            User user = optionalUser.get();
 
-        Optional<EmailVerificationCode> activeCode = verificationCodeRepository
-                .findByUserAndExpiresAtAfter(user, Instant.now());
+            if(!user.getIsVerified()) {
 
-        if(activeCode.isPresent()) {
-            return AuthResponseDto.builder()
-                    .isVerified(false)
-                    .success(false)
-                    .message("A verification code is already active. Please check your email.")
-                    .build();
+                Optional<EmailVerificationCode> activeCode = verificationCodeRepository
+                        .findByUserAndExpiresAtAfter(user, Instant.now());
+
+                if (activeCode.isEmpty()) {
+                    saveAndSendCode(user);
+                }
+            }
         }
-
-        saveAndSendCode(user);
 
         return AuthResponseDto.builder()
                 .isVerified(false)
                 .success(true)
-                .message("Verification code sent to email.")
+                .message("Verification code sent. Please check your email.")
                 .build();
-    }
-
-    private AuthResponseDto checkUserStatus(String email) {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-
-        if(optionalUser.isEmpty()) {
-            return AuthResponseDto.builder()
-                    .isVerified(false)
-                    .success(true)
-                    .message("Verification code sent if account exists.")
-                    .build();
-        }
-
-        User user = optionalUser.get();
-
-        if(user.getIsVerified()) {
-            return AuthResponseDto.builder()
-                    .isVerified(true)
-                    .success(false)
-                    .message("Account is already verified. Please log in.")
-                    .build();
-        }
-
-        return null;
     }
 
     private void saveAndSendCode(User user) {
