@@ -170,18 +170,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     private void saveAndSendCode(User user) {
+        verificationCodesRepository
+                .findByUserAndExpiresAtBefore(user, Instant.now())
+                .ifPresent(verificationCodesRepository::delete);
+
         String code = generateVerificationCode();
 
-        EmailVerificationCode verificationCodes = verificationCodesRepository.findByUser(user)
-                .orElseGet(() -> {
-                    EmailVerificationCode codes = new EmailVerificationCode();
-                    codes.setUser(user);
-                    return codes;
-                });
-
-        verificationCodes.setCodeHash(passwordEncoder.encode(code));
-        verificationCodes.setExpiresAt(Instant.now().plus(15, ChronoUnit.MINUTES));
-        verificationCodesRepository.save(verificationCodes);
+        EmailVerificationCode verificationCode = new EmailVerificationCode();
+        verificationCode.setUser(user);
+        verificationCode.setCodeHash(passwordEncoder.encode(code));
+        verificationCode.setExpiresAt(Instant.now().plus(15, ChronoUnit.MINUTES));
+        verificationCodesRepository.save(verificationCode);
 
         emailService.sendUserVerificationEmail(user.getEmail(), code);
     }

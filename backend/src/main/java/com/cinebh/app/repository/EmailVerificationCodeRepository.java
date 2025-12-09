@@ -13,4 +13,8 @@ public interface EmailVerificationCodeRepository extends JpaRepository<EmailVeri
     Optional<EmailVerificationCode> findByUser(User user);
 
     Optional<EmailVerificationCode> findByUserAndExpiresAtAfter(User user, Instant now);
+
+    Optional<EmailVerificationCode> findByUserAndExpiresAtBefore(User user, Instant now);
+
+
 }
