@@ -25,11 +25,13 @@ import java.util.*;
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
+    private static final int MAX_VERIFICATION_ATTEMPTS = 5;
+
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
-    private final EmailVerificationCodeRepository verificationCodesRepository;
+    private final EmailVerificationCodeRepository verificationCodeRepository;
 
     @Override
     public AuthResponseDto register(RegisterRequestDto request) {
@@ -80,10 +82,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (status != null) return status;
 
         User user = userRepository.findByEmail(email).get();
-        EmailVerificationCode verificationCodes = verificationCodesRepository.findByUser(user)
+        EmailVerificationCode verificationCode = verificationCodeRepository.findByUser(user)
                 .orElse(null);
 
-        if (verificationCodes == null) {
+        if (verificationCode == null) {
             return AuthResponseDto.builder()
                     .isVerified(false)
                     .success(false)
@@ -91,7 +93,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .build();
         }
 
-        if (verificationCodes.getExpiresAt().isBefore(Instant.now())) {
+        if (verificationCode.getExpiresAt().isBefore(Instant.now())) {
             return AuthResponseDto.builder()
                     .isVerified(false)
                     .success(false)
@@ -99,7 +101,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .build();
         }
 
-        if (!passwordEncoder.matches(verifyRequestDto.getVerificationCode(), verificationCodes.getCodeHash())) {
+        if (verificationCode.getAttemptCount() >= MAX_VERIFICATION_ATTEMPTS) {
+            verificationCodeRepository.delete(verificationCode);
+            return AuthResponseDto.builder()
+                    .isVerified(false)
+                    .success(false)
+                    .message("Maximum verification attempts exceeded. Please request a new code.")
+                    .build();
+        }
+
+        if (!passwordEncoder.matches(verifyRequestDto.getVerificationCode(), verificationCode.getCodeHash())) {
+            verificationCode.setAttemptCount(verificationCode.getAttemptCount() + 1);
+            verificationCodeRepository.save(verificationCode);
             return AuthResponseDto.builder()
                     .isVerified(false)
                     .success(false)
@@ -125,7 +138,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         User user = userRepository.findByEmail(email).get();
 
-        Optional<EmailVerificationCode> activeCode = verificationCodesRepository
+        Optional<EmailVerificationCode> activeCode = verificationCodeRepository
                 .findByUserAndExpiresAtAfter(user, Instant.now());
 
         if(activeCode.isPresent()) {
@@ -170,9 +183,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     private void saveAndSendCode(User user) {
-        verificationCodesRepository
+        verificationCodeRepository
                 .findByUserAndExpiresAtBefore(user, Instant.now())
-                .ifPresent(verificationCodesRepository::delete);
+                .ifPresent(verificationCodeRepository::delete);
 
         String code = generateVerificationCode();
 
@@ -180,7 +193,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         verificationCode.setUser(user);
         verificationCode.setCodeHash(passwordEncoder.encode(code));
         verificationCode.setExpiresAt(Instant.now().plus(15, ChronoUnit.MINUTES));
-        verificationCodesRepository.save(verificationCode);
+        verificationCodeRepository.save(verificationCode);
 
         emailService.sendUserVerificationEmail(user.getEmail(), code);
     }

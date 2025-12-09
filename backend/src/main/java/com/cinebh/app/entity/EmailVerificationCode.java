@@ -28,6 +28,9 @@ public class EmailVerificationCode extends Auditable {
     @Column(name = "expires_at", nullable = false)
     private Instant expiresAt;
 
+    @Column(name = "attempt_count", nullable = false)
+    private int attemptCount;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
