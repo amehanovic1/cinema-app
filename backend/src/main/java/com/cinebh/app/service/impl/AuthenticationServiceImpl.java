@@ -12,6 +12,7 @@ import com.cinebh.app.repository.RoleRepository;
 import com.cinebh.app.repository.UserRepository;
 import com.cinebh.app.service.AuthenticationService;
 import com.cinebh.app.service.EmailService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final EmailService emailService;
     private final EmailVerificationCodeRepository verificationCodeRepository;
 
+    @Transactional
     @Override
     public AuthResponseDto register(RegisterRequestDto request) {
         String email = request.getEmail().trim();
@@ -182,9 +184,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     private void saveAndSendCode(User user) {
-        verificationCodeRepository
-                .findByUserAndExpiresAtBefore(user, Instant.now())
-                .ifPresent(verificationCodeRepository::delete);
+        verificationCodeRepository.deleteAllByUser(user);
 
         String code = generateVerificationCode();
 
@@ -199,7 +199,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private String generateVerificationCode() {
         SecureRandom secureRandom = new SecureRandom();
-        int code = secureRandom.nextInt(10000);
+        int code = secureRandom.nextInt(1000000);
         return String.format("%06d", code);
     }
 

@@ -14,7 +14,5 @@ public interface EmailVerificationCodeRepository extends JpaRepository<EmailVeri
 
     Optional<EmailVerificationCode> findByUserAndExpiresAtAfter(User user, Instant now);
 
-    Optional<EmailVerificationCode> findByUserAndExpiresAtBefore(User user, Instant now);
-
-
+    void deleteAllByUser(User user);
 }
