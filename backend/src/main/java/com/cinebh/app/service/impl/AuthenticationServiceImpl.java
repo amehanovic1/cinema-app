@@ -191,7 +191,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         EmailVerificationCode verificationCode = new EmailVerificationCode();
         verificationCode.setUser(user);
         verificationCode.setCodeHash(passwordEncoder.encode(code));
-        verificationCode.setExpiresAt(Instant.now().plus(15, ChronoUnit.MINUTES));
+        verificationCode.setExpiresAt(Instant.now().plus(10, ChronoUnit.MINUTES));
         verificationCodeRepository.save(verificationCode);
 
         emailService.sendUserVerificationEmail(user.getEmail(), code);
@@ -200,7 +200,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private String generateVerificationCode() {
         SecureRandom secureRandom = new SecureRandom();
         int code = secureRandom.nextInt(10000);
-        return String.format("%04d", code);
+        return String.format("%06d", code);
     }
 
 }
