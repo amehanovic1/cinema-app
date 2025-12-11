@@ -1,15 +1,11 @@
 package com.cinebh.app.service.impl;
 
-import com.cinebh.app.dto.auth.AuthResponseDto;
-import com.cinebh.app.dto.auth.EmailRequestDto;
-import com.cinebh.app.dto.auth.VerifyRequestDto;
-import com.cinebh.app.dto.auth.RegisterRequestDto;
+import com.cinebh.app.dto.auth.*;
 import com.cinebh.app.entity.EmailVerificationCode;
 import com.cinebh.app.repository.EmailVerificationCodeRepository;
 import com.cinebh.app.repository.RoleRepository;
 import com.cinebh.app.repository.UserRepository;
-import com.cinebh.app.service.AuthenticationService;
-import com.cinebh.app.service.EmailService;
+import com.cinebh.app.service.*;
 import com.cinebh.app.entity.RefreshToken;
 import com.cinebh.app.entity.Role;
 import com.cinebh.app.entity.User;
@@ -219,7 +215,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String email = request.getEmail().trim();
         User user = userRepository.findByEmail(email).orElse(null);
 
-        if (user != null && user.getIsVerified()) {
+        if (user != null && !user.getIsVerified()) {
             return AuthResponseDto.builder()
                     .isVerified(false)
                     .message("Account exists but is not verified. Please check email or request a new code.")
