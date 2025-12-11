@@ -5,14 +5,20 @@ import com.cinebh.app.dto.auth.EmailRequestDto;
 import com.cinebh.app.dto.auth.VerifyRequestDto;
 import com.cinebh.app.dto.auth.RegisterRequestDto;
 import com.cinebh.app.entity.EmailVerificationCode;
-import com.cinebh.app.entity.Role;
-import com.cinebh.app.entity.User;
 import com.cinebh.app.repository.EmailVerificationCodeRepository;
 import com.cinebh.app.repository.RoleRepository;
 import com.cinebh.app.repository.UserRepository;
 import com.cinebh.app.service.AuthenticationService;
 import com.cinebh.app.service.EmailService;
+import com.cinebh.app.entity.RefreshToken;
+import com.cinebh.app.entity.Role;
+import com.cinebh.app.entity.User;
+import com.cinebh.app.enums.Token;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +39,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final EmailVerificationCodeRepository verificationCodeRepository;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+    private final CookieService cookieService;
+    private final RefreshTokenService refreshTokenService;
 
     @Transactional
     @Override
@@ -203,6 +213,107 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         SecureRandom secureRandom = new SecureRandom();
         int code = secureRandom.nextInt(1000000);
         return String.format("%06d", code);
+    }
+
+    public AuthResponseDto login(LoginRequestDto request, HttpServletResponse response) {
+        String email = request.getEmail().trim();
+        User user = userRepository.findByEmail(email).orElse(null);
+
+        if (user != null && user.getIsVerified()) {
+            return AuthResponseDto.builder()
+                    .isVerified(false)
+                    .message("Account exists but is not verified. Please check email or request a new code.")
+                    .success(false)
+                    .build();
+        }
+
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, request.getPassword())
+            );
+        } catch (Exception e) {
+            return AuthResponseDto.builder()
+                    .success(false)
+                    .message("Invalid email or password")
+                    .build();
+        }
+
+        String accessToken = jwtService.generateToken(user);
+        String refreshToken = refreshTokenService.createRefreshToken(request.getEmail());
+
+        cookieService.addTokenToCookie(response, Token.ACCESS, accessToken, jwtService.getAccessExpiration());
+        cookieService.addTokenToCookie(response, Token.REFRESH, refreshToken, refreshTokenService.getRefreshExpiration());
+
+        return AuthResponseDto.builder()
+                .success(true)
+                .message("Login successful.")
+                .build();
+
+    }
+
+    @Override
+    public AuthResponseDto refresh(HttpServletRequest request, HttpServletResponse response) {
+        String refreshTokenValue = cookieService.getTokenFromCookie(request, Token.REFRESH);
+
+        if(refreshTokenValue == null) {
+            return AuthResponseDto.builder()
+                    .success(false)
+                    .message("Invalid or expired session. Please log in again.")
+                    .build();
+        }
+
+        try {
+            RefreshToken refreshToken = refreshTokenService.verifyRefreshToken(refreshTokenValue);
+            User user = refreshToken.getUser();
+
+            refreshTokenService.revokeToken(refreshToken);
+            String newRefreshToken = refreshTokenService.createRefreshToken(user.getEmail());
+            String newAccessToken = jwtService.generateToken(user);
+
+            cookieService.addTokenToCookie(response, Token.ACCESS, newAccessToken, jwtService.getAccessExpiration());
+            cookieService.addTokenToCookie(response, Token.REFRESH, newRefreshToken, refreshTokenService.getRefreshExpiration());
+
+            return AuthResponseDto.builder()
+                    .success(true)
+                    .message("Session refreshed successfully.")
+                    .build();
+
+        } catch (RuntimeException e) {
+            return AuthResponseDto.builder()
+                    .success(false)
+                    .message(e.getMessage())
+                    .build();
+        }
+    }
+
+    @Override
+    public AuthResponseDto logout(HttpServletRequest request, HttpServletResponse response) {
+        String refreshTokenValue = cookieService.getTokenFromCookie(request, Token.REFRESH);
+
+        if(refreshTokenValue == null) {
+            return AuthResponseDto.builder()
+                    .success(false)
+                    .message("No refresh token found. Please log in again.")
+                    .build();
+        }
+
+        try {
+            RefreshToken refreshToken = refreshTokenService.verifyRefreshToken(refreshTokenValue);
+            refreshTokenService.revokeToken(refreshToken);
+        } catch (RuntimeException e) {
+            return AuthResponseDto.builder()
+                    .success(false)
+                    .message(e.getMessage())
+                    .build();
+        }
+
+        cookieService.deleteTokenFromCookie(response, Token.ACCESS);
+        cookieService.deleteTokenFromCookie(response, Token.REFRESH);
+
+        return AuthResponseDto.builder()
+                .success(true)
+                .message("Session ended successfully.")
+                .build();
     }
 
 }

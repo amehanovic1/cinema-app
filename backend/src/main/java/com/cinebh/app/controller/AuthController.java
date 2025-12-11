@@ -1,10 +1,11 @@
 package com.cinebh.app.controller;
 
-import com.cinebh.app.dto.auth.AuthResponseDto;
-import com.cinebh.app.dto.auth.EmailRequestDto;
-import com.cinebh.app.dto.auth.VerifyRequestDto;
-import com.cinebh.app.dto.auth.RegisterRequestDto;
+import com.cinebh.app.dto.auth.*;
 import com.cinebh.app.service.AuthenticationService;
+import com.cinebh.app.service.impl.JwtServiceImpl;
+import com.cinebh.app.service.impl.RefreshTokenServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthenticationService authenticationService;
+    private final RefreshTokenServiceImpl refreshTokenService;
+    private final JwtServiceImpl jwtService;
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDto> register (
@@ -39,5 +42,29 @@ public class AuthController {
             @Valid @RequestBody EmailRequestDto request)
     {
         return ResponseEntity.ok(authenticationService.resendCode(request));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponseDto> login (
+            @RequestBody LoginRequestDto request,
+            HttpServletResponse response
+    ) {
+        return ResponseEntity.ok(authenticationService.login(request, response));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponseDto> refreshToken (
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
+        return ResponseEntity.ok(authenticationService.refresh(request, response));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<AuthResponseDto> logout (
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
+        return ResponseEntity.ok(authenticationService.logout(request, response));
     }
 }
