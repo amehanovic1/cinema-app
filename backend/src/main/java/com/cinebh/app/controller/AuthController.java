@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthenticationService authenticationService;
+    private final RefreshTokenServiceImpl refreshTokenService;
+    private final JwtServiceImpl jwtService;
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDto> register (
