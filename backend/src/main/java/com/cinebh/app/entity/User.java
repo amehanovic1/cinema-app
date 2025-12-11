@@ -38,6 +38,9 @@ public class User extends Auditable implements UserDetails {
     @Column(name = "profile_image_url")
     private String profileImageUrl;
 
+    @Column(name = "is_verified")
+    private Boolean isVerified;
+
     @ManyToOne
     @JoinColumn(name = "city_id")
     private City city;

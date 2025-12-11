@@ -1,6 +1,8 @@
 package com.cinebh.app.controller;
 
 import com.cinebh.app.dto.auth.AuthResponseDto;
+import com.cinebh.app.dto.auth.EmailRequestDto;
+import com.cinebh.app.dto.auth.VerifyRequestDto;
 import com.cinebh.app.dto.auth.RegisterRequestDto;
 import com.cinebh.app.service.AuthenticationService;
 import jakarta.validation.Valid;
@@ -23,5 +25,19 @@ public class AuthController {
             @Valid @RequestBody RegisterRequestDto request
     ) {
         return ResponseEntity.ok(authenticationService.register(request));
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<AuthResponseDto> verify (
+            @Valid @RequestBody VerifyRequestDto request
+    ) {
+        return ResponseEntity.ok(authenticationService.verify(request));
+    }
+
+    @PostMapping("/resend-code")
+    public ResponseEntity<AuthResponseDto> resendCode(
+            @Valid @RequestBody EmailRequestDto request)
+    {
+        return ResponseEntity.ok(authenticationService.resendCode(request));
     }
 }
