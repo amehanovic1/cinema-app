@@ -12,10 +12,10 @@ import com.cinebh.app.repository.RoleRepository;
 import com.cinebh.app.repository.UserRepository;
 import com.cinebh.app.service.AuthenticationService;
 import com.cinebh.app.service.EmailService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.Instant;
@@ -77,6 +77,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .build();
     }
 
+    @Transactional
     public AuthResponseDto verify(VerifyRequestDto verifyRequestDto) {
         String email = verifyRequestDto.getEmail().trim();
         Optional<User> optionalUser = userRepository.findByEmail(email);
@@ -141,6 +142,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .build();
     }
 
+    @Transactional
     public AuthResponseDto resendCode(EmailRequestDto request) {
         String email = request.getEmail().trim();
         Optional<User> optionalUser = userRepository.findByEmail(email);
