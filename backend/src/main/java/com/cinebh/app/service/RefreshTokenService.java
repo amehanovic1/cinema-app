@@ -10,5 +10,7 @@ public interface RefreshTokenService {
 
     void revokeToken(RefreshToken token);
 
+    void deleteToken(RefreshToken token);
+
     Long getRefreshExpiration();
 }

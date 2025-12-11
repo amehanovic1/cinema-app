@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.Instant;
@@ -26,6 +27,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     @Override
     public String createRefreshToken(String email) {
         User user = userRepository.findByEmail(email)
@@ -54,6 +56,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
+    @Transactional
     @Override
     public RefreshToken verifyRefreshToken(String refreshToken) {
         RefreshToken token = refreshTokenRepository.findAll().stream()
@@ -77,6 +80,11 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     public void revokeToken(RefreshToken token) {
         token.setIsRevoked(true);
         refreshTokenRepository.save(token);
+    }
+
+    @Override
+    public void deleteToken(RefreshToken token) {
+        refreshTokenRepository.delete(token);
     }
 
     @Override

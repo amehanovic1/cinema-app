@@ -84,6 +84,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Transactional
+    @Override
     public AuthResponseDto verify(VerifyRequestDto verifyRequestDto) {
         String email = verifyRequestDto.getEmail().trim();
         Optional<User> optionalUser = userRepository.findByEmail(email);
@@ -149,6 +150,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Transactional
+    @Override
     public AuthResponseDto resendCode(EmailRequestDto request) {
         String email = request.getEmail().trim();
         Optional<User> optionalUser = userRepository.findByEmail(email);
@@ -211,6 +213,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return String.format("%06d", code);
     }
 
+    @Transactional
+    @Override
     public AuthResponseDto login(LoginRequestDto request, HttpServletResponse response) {
         String email = request.getEmail().trim();
         User user = userRepository.findByEmail(email).orElse(null);
@@ -247,6 +251,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     }
 
+    @Transactional
     @Override
     public AuthResponseDto refresh(HttpServletRequest request, HttpServletResponse response) {
         String refreshTokenValue = cookieService.getTokenFromCookie(request, Token.REFRESH);
@@ -282,6 +287,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
+    @Transactional
     @Override
     public AuthResponseDto logout(HttpServletRequest request, HttpServletResponse response) {
         String refreshTokenValue = cookieService.getTokenFromCookie(request, Token.REFRESH);
@@ -295,7 +301,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         try {
             RefreshToken refreshToken = refreshTokenService.verifyRefreshToken(refreshTokenValue);
-            refreshTokenService.revokeToken(refreshToken);
+            refreshTokenService.deleteToken(refreshToken);
         } catch (RuntimeException e) {
             return AuthResponseDto.builder()
                     .success(false)
