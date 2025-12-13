@@ -264,6 +264,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         try {
+            cookieService.deleteTokenFromCookie(response, Token.ACCESS);
+            cookieService.deleteTokenFromCookie(response, Token.REFRESH);
+
             RefreshToken refreshToken = refreshTokenService.verifyRefreshToken(refreshTokenValue);
             User user = refreshToken.getUser();
 
