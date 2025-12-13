@@ -57,7 +57,7 @@ public class User extends Auditable implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     @Override
