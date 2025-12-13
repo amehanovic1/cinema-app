@@ -318,10 +318,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .success(false)
                     .message(e.getMessage())
                     .build();
+        } finally {
+            cookieService.deleteTokenFromCookie(response, Token.ACCESS);
+            cookieService.deleteTokenFromCookie(response, Token.REFRESH);
         }
-
-        cookieService.deleteTokenFromCookie(response, Token.ACCESS);
-        cookieService.deleteTokenFromCookie(response, Token.REFRESH);
 
         return AuthResponseDto.builder()
                 .success(true)
