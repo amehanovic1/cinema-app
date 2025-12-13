@@ -2,8 +2,6 @@ package com.cinebh.app.controller;
 
 import com.cinebh.app.dto.auth.*;
 import com.cinebh.app.service.AuthenticationService;
-import com.cinebh.app.service.impl.JwtServiceImpl;
-import com.cinebh.app.service.impl.RefreshTokenServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -20,8 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthenticationService authenticationService;
-    private final RefreshTokenServiceImpl refreshTokenService;
-    private final JwtServiceImpl jwtService;
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDto> register (
