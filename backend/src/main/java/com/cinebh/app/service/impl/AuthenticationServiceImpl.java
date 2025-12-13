@@ -219,7 +219,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String email = request.getEmail().trim();
         User user = userRepository.findByEmail(email).orElse(null);
 
-        if (user != null && !user.getIsVerified()) {
+        if (user == null) {
+            return AuthResponseDto.builder()
+                    .isVerified(false)
+                    .message("Invalid email address.")
+                    .success(false)
+                    .build();
+        }
+
+        if (user.getIsVerified()) {
             return AuthResponseDto.builder()
                     .isVerified(false)
                     .message("Account exists but is not verified. Please check email or request a new code.")
