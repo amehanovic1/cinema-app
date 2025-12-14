@@ -227,7 +227,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .build();
         }
 
-        if (user.getIsVerified()) {
+        if (!user.getIsVerified()) {
             return AuthResponseDto.builder()
                     .isVerified(false)
                     .message("Account exists but is not verified. Please check email or request a new code.")
@@ -256,7 +256,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .success(true)
                 .message("Login successful.")
                 .build();
-
     }
 
     @Transactional
@@ -264,38 +263,30 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthResponseDto refresh(HttpServletRequest request, HttpServletResponse response) {
         String refreshTokenValue = cookieService.getTokenFromCookie(request, Token.REFRESH);
 
-        if(refreshTokenValue == null) {
+        if (refreshTokenValue == null) {
             return AuthResponseDto.builder()
                     .success(false)
                     .message("Invalid or expired session. Please log in again.")
                     .build();
         }
 
-        try {
-            cookieService.deleteTokenFromCookie(response, Token.ACCESS);
-            cookieService.deleteTokenFromCookie(response, Token.REFRESH);
+        cookieService.deleteTokenFromCookie(response, Token.ACCESS);
+        cookieService.deleteTokenFromCookie(response, Token.REFRESH);
 
-            RefreshToken refreshToken = refreshTokenService.verifyRefreshToken(refreshTokenValue);
-            User user = refreshToken.getUser();
+        RefreshToken refreshToken = refreshTokenService.verifyRefreshToken(refreshTokenValue);
+        User user = refreshToken.getUser();
 
-            refreshTokenService.revokeToken(refreshToken);
-            String newRefreshToken = refreshTokenService.createRefreshToken(user.getEmail());
-            String newAccessToken = jwtService.generateToken(user);
+        refreshTokenService.revokeToken(refreshToken);
+        String newRefreshToken = refreshTokenService.createRefreshToken(user.getEmail());
+        String newAccessToken = jwtService.generateToken(user);
 
-            cookieService.addTokenToCookie(response, Token.ACCESS, newAccessToken, jwtService.getAccessExpiration());
-            cookieService.addTokenToCookie(response, Token.REFRESH, newRefreshToken, refreshTokenService.getRefreshExpiration());
+        cookieService.addTokenToCookie(response, Token.ACCESS, newAccessToken, jwtService.getAccessExpiration());
+        cookieService.addTokenToCookie(response, Token.REFRESH, newRefreshToken, refreshTokenService.getRefreshExpiration());
 
-            return AuthResponseDto.builder()
-                    .success(true)
-                    .message("Session refreshed successfully.")
-                    .build();
-
-        } catch (RuntimeException e) {
-            return AuthResponseDto.builder()
-                    .success(false)
-                    .message(e.getMessage())
-                    .build();
-        }
+        return AuthResponseDto.builder()
+                .success(true)
+                .message("Session refreshed successfully.")
+                .build();
     }
 
     @Transactional
@@ -311,6 +302,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         try {
+
             RefreshToken refreshToken = refreshTokenService.verifyRefreshToken(refreshTokenValue);
             refreshTokenService.deleteToken(refreshToken);
         } catch (RuntimeException e) {
@@ -328,5 +320,4 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .message("Session ended successfully.")
                 .build();
     }
-
 }

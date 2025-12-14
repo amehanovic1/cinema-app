@@ -8,10 +8,12 @@ import com.cinebh.app.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Base64;
@@ -25,7 +27,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     @Override
@@ -36,7 +37,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         String token = generateSecureToken();
 
         RefreshToken refreshToken = RefreshToken.builder()
-                .tokenHash(passwordEncoder.encode(token))
+                .tokenHash(hashToken(token))
                 .expiresAt(Instant.now().plusMillis(refreshTokenExpiry))
                 .isRevoked(false)
                 .user(user)
@@ -54,12 +55,21 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
+    public String hashToken(String token) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hashBytes = digest.digest(token.getBytes(StandardCharsets.UTF_8));
+            return Base64.getUrlEncoder().withoutPadding().encodeToString(hashBytes);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error hashing refresh token", e);
+        }
+    }
+
     @Transactional
     @Override
     public RefreshToken verifyRefreshToken(String refreshToken) {
-        RefreshToken token = refreshTokenRepository.findAll().stream()
-                .filter(rt -> passwordEncoder.matches(refreshToken, rt.getTokenHash()))
-                .findFirst()
+        RefreshToken token = refreshTokenRepository
+                .findByTokenHash(hashToken(refreshToken))
                 .orElseThrow(() -> new RuntimeException("Refresh token not found!"));
 
         if(token.getIsRevoked()) {
