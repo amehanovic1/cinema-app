@@ -2,9 +2,9 @@ import { NavLink } from "react-router-dom";
 import Logo from "../../components/Logo/Logo";
 import { ROUTES } from "../../routes/routes";
 
-const Header = () => {
+const Header = ({ openDrawer }) => {
     return (
-        <header className="w-full bg-neutral-800 border-b border-neutral-500 grid grid-cols-3 items-center sticky top-0 z-50 px-6 md:px-14 py-4 md:py-5">
+        <header className="w-full h-16 bg-neutral-800 border-b border-neutral-500 grid grid-cols-3 items-center sticky top-0 z-50 px-6 md:px-14 py-4 md:py-5">
 
             <div className="flex items-center ">
                 <NavLink
@@ -38,7 +38,15 @@ const Header = () => {
                 </NavLink>
             </div>
 
-            <div className="flex items-center"></div>
+            <div className="flex justify-end items-center">
+                <button
+                    onClick={() => openDrawer("signup")}
+                    className="text-neutral-0 text-semibold shadow-text text-xs sm:text-sm md:text-base 
+                                px-2 py-1 border rounded-lg rounded-neutral-0"
+                >
+                    Sign In
+                </button>
+            </div>
 
         </header>
     );
