@@ -21,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -125,7 +127,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             if (verificationCode.getAttemptCount() >= MAX_VERIFICATION_ATTEMPTS) {
                 verificationCodeRepository.delete(verificationCode);
                 return AuthResponseDto.builder()
-                        .isVerified(false)
+                        .errorCode("MAX_ATTEMPTS")
                         .success(false)
                         .message("Maximum verification attempts exceeded. Please request a new code.")
                         .build();
@@ -177,11 +179,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .findByUserAndExpiresAtAfter(user, Instant.now());
 
         if (activeCode.isPresent()) {
-            return AuthResponseDto.builder()
-                    .isVerified(false)
-                    .success(false)
-                    .message("Verification code was recently sent. Please check your email or wait before requesting a new one.")
-                    .build();
+            EmailVerificationCode code = activeCode.get();
+            LocalDateTime resendAllowedAt = code.getCreatedAt().plusMinutes(2);
+
+            if (resendAllowedAt.isAfter(LocalDateTime.now())) {
+                return AuthResponseDto.builder()
+                        .isVerified(false)
+                        .success(false)
+                        .message("Verification code was recently sent. Please check your email or wait before requesting a new one.")
+                        .build();
+            }
         }
 
         saveAndSendCode(user);

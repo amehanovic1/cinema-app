@@ -13,4 +13,5 @@ public class AuthResponseDto {
     private Boolean isVerified;
     private Boolean success;
     private String message;
+    private String errorCode;
 }
