@@ -34,6 +34,8 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
+        refreshTokenRepository.deleteAllByUser(user);
+
         String token = generateSecureToken();
 
         RefreshToken refreshToken = RefreshToken.builder()
