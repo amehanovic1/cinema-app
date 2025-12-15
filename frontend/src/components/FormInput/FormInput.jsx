@@ -1,0 +1,54 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
+
+const FormInput = ({ label, type, name, placeholder, icon, onChange, value, error }) => {
+    const [showPassword, setShowPassword] = useState(false);
+    const togglePassword = () => setShowPassword(prev => !prev);
+    const inputType = type === "password" ? (showPassword ? "text" : "password") : type;
+
+    return (
+        <div>
+            <label className={`text-base font-semibold ${error ? "text-error-300" : "text-neutral-25"}`}>
+                {label}
+            </label>
+
+            <div className={`w-full relative p-2 border rounded-lg bg-neutral-0 shadow-input
+                            text-xs md:text-sm lg:text-base font-normal
+                            ${error ? "border-error-300" : "border-neutral-200"}`}>
+
+                <FontAwesomeIcon
+                    icon={icon}
+                    className={`absolute left-3 top-1/2 -translate-y-1/2 justify-center
+                                ${value || error ? "text-error-500" : "text-neutral-400"}`}
+                />
+
+                <input
+                    type={inputType}
+                    name={name}
+                    value={value}
+                    placeholder={placeholder || label}
+                    onChange={onChange}
+                    className={`w-full pl-8 font-normal text-base 
+                                outline-none focus:outline-none rounded-lg 
+                                text-neutral-500`}
+                />
+
+                {type === "password" && (
+                    <FontAwesomeIcon
+                        icon={showPassword ? faEye : faEyeSlash}
+                        className={`absolute right-3 top-1/2 -translate-y-1/2 justify-center
+                                    ${value || error ? "text-error-500" : "text-neutral-400"}`}
+                        onClick={togglePassword}
+                    />
+                )}
+
+            </div>
+
+            <span className="block h-4 text-error-300 text-sm font-normal">{error || ""}</span>
+
+        </div>
+    )
+}
+
+export default FormInput;
