@@ -3,8 +3,6 @@ package com.cinebh.app.config;
 import com.cinebh.app.enums.Token;
 import com.cinebh.app.service.CookieService;
 import com.cinebh.app.service.JwtService;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
