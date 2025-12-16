@@ -126,6 +126,9 @@ SERVER_SSL_KEY_STORE_PASSWORD=password
 MAIL_USERNAME=your_consumer_key
 MAIL_PASSWORD=your_consumer_secret
 MAIL_FROM=noreply@cinebh.com
+
+# JWT Configuration
+JWT_SECRET=your_jwt_secret_here
 ```
 ***Mail Configuration (Turbo-SMTP)***
 
