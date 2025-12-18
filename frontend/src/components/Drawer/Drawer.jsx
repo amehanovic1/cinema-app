@@ -1,17 +1,22 @@
 import Logo from "../Logo/Logo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { useContext } from "react";
+import DrawerContext from "../../context/DrawerContext";
 
-const Drawer = ({ title, isOpen, onClose, children }) => {
+const Drawer = ({ title, children }) => {
+    const { isOpen, closeDrawer } = useContext(DrawerContext)
+
     return (
         <>
-            <div
-                className={`fixed inset-0 z-40 bg-black bg-opacity-50 transition-opacity duration-300
-                            ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
-                onClick={onClose}>
-            </div>
+            {isOpen && (
+                <div>
+                    <div
+                        className={`fixed inset-0 z-40 bg-black bg-opacity-50 transition-opacity duration-300
+                            ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+                    </div>
 
-            <div className={`fixed top-16 right-0 fixed z-50 
+                    <div className={`fixed top-16 right-0 fixed z-50 
                             h-[calc(100vh-64px)] 
                             bg-neutral-800 
                             flex flex-col gap-6 p-10 
@@ -21,35 +26,37 @@ const Drawer = ({ title, isOpen, onClose, children }) => {
                             ${isOpen ? 'translate-x-0' : 'translate-x-full'}
                             transition-transform ease-in-out duration-300`}>
 
-                <div className="flex items-center justify-center gap-2">
+                        <div className="flex items-center justify-center gap-2">
 
-                    <Logo />
+                            <Logo />
 
-                    <h1 className="font-bold text-xl sm:text-2xl">
-                        <span className="text-neutral-25">Cine</span>
-                        <span className="text-dark-red">bh.</span>
-                    </h1>
+                            <h1 className="font-bold text-xl sm:text-2xl">
+                                <span className="text-neutral-25">Cine</span>
+                                <span className="text-dark-red">bh.</span>
+                            </h1>
 
+                        </div>
+
+                        <div className="relative flex items-center justify-center">
+                            <button
+                                onClick={closeDrawer}
+                                className="absolute left-0 justify-start bg-neutral-700 rounded-lg p-2">
+                                <FontAwesomeIcon
+                                    icon={faArrowLeft}
+                                    className="w-3 h-3 sm:w-4 sm:h-4 text-neutral-400"
+                                />
+                            </button>
+
+                            <h1 className="flex justify-center text-neutral-300 font-bold text-xl sm:text-2xl">
+                                {title}
+                            </h1>
+                        </div>
+
+                        {children}
+
+                    </div>
                 </div>
-
-                <div className="relative flex items-center justify-center">
-                    <button
-                        onClick={onClose}
-                        className="absolute left-0 justify-start bg-neutral-700 rounded-lg p-2">
-                        <FontAwesomeIcon
-                            icon={faArrowLeft}
-                            className="w-3 h-3 sm:w-4 sm:h-4 text-neutral-400"
-                        />
-                    </button>
-
-                    <h1 className="flex justify-center text-neutral-300 font-bold text-xl sm:text-2xl">
-                        {title}
-                    </h1>
-                </div>
-
-                {children}
-
-            </div>
+            )}
         </>
     );
 }
