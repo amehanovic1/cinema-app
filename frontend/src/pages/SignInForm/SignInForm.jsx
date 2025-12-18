@@ -1,10 +1,13 @@
 import FormInput from "../../components/FormInput/FormInput";
 import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
-import { loginUser } from "../../services/authService";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { validateEmail, validatePassword } from "../../utils/validatorUtils";
+import DrawerContext from "../../context/DrawerContext";
+import SignUpForm from "../SignUpForm/SignUpForm";
+import AuthContext from "../../context/AuthContext";
+import FormSuccess from "../../components/FormSuccess/FormSuccess";
 
-const SignInForm = ({ openDrawer }) => {
+const SignInForm = () => {
     const [formData, setFormData] = useState({
         email: "",
         password: ""
@@ -12,6 +15,9 @@ const SignInForm = ({ openDrawer }) => {
 
     const [serverError, setServerError] = useState("")
     const [errors, setErrors] = useState({});
+
+    const { openDrawer } = useContext(DrawerContext);
+    const { login } = useContext(AuthContext)
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -28,17 +34,11 @@ const SignInForm = ({ openDrawer }) => {
 
         if (Object.keys(validationErrors).length === 0) {
             try {
-                const res = await loginUser(
-                    {
-                        email: formData.email,
-                        password: formData.password
-                    });
-
-                if (!res.success)
-                    setServerError(res.message);
-
+                await login({ email: formData.email, password: formData.password });
+                openDrawer("Success", <FormSuccess />)
             } catch (error) {
-                console.log(error)
+                setServerError("Invalid email or password.");
+                console.log(error);
             }
         }
     }
@@ -73,7 +73,9 @@ const SignInForm = ({ openDrawer }) => {
                     error={errors.password}
                 />
 
-                {serverError && <span className="text-dark-red text-sm">{serverError}</span>}
+                <span className="text-center block h-4 text-error-300 text-sm text-normal">
+                    {serverError || ""}
+                </span>
 
                 <button
                     type="submit"
@@ -84,8 +86,8 @@ const SignInForm = ({ openDrawer }) => {
                 <p className="text-center text-base font-normal text-neutral-25">Don't have an account?
                     <span
                         className="cursor-pointer underline"
-                        onClick={() => openDrawer("signup")}
-                    >Sign In</span>
+                        onClick={() => openDrawer("Hello", <SignUpForm />)}
+                    >Sign Up</span>
                 </p>
             </div>
         </form>

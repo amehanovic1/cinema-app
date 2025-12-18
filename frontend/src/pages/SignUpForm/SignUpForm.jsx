@@ -1,21 +1,26 @@
 import FormInput from "../../components/FormInput/FormInput";
 import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
 import { registerUser } from "../../services/authService";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { validateConfirmPassword, validateEmail, validatePassword } from "../../utils/validatorUtils";
-import { useAuth } from "../../context/AuthContext";
+import AuthContext from "../../context/AuthContext";
 import FormButton from "../../components/FormButton/FormButton";
+import DrawerContext from "../../context/DrawerContext";
+import SignInForm from "../SignInForm/SignInForm";
+import VerificationCodeForm from "../VerificationCodeForm/VerificationCodeForm";
 
-const SignUpForm = ({ openDrawer }) => {
+const SignUpForm = () => {
     const [formData, setFormData] = useState({
         email: "",
         password: "",
         confirmPassword: ""
     })
 
-    const { setEmail } = useAuth();
     const [serverError, setServerError] = useState("")
     const [errors, setErrors] = useState({});
+
+    const { setEmail } = useContext(AuthContext)
+    const { openDrawer } = useContext(DrawerContext);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -44,9 +49,8 @@ const SignUpForm = ({ openDrawer }) => {
                     setServerError(res.message);
                 else {
                     setEmail(formData.email);
-                    openDrawer("verify");
+                    openDrawer("Account Activation", <VerificationCodeForm />)
                 }
-
             } catch (error) {
                 console.log(error)
             }
@@ -105,7 +109,7 @@ const SignUpForm = ({ openDrawer }) => {
                     Already have an account?
                     <span
                         className="cursor-pointer underline"
-                        onClick={() => openDrawer("signin")}
+                        onClick={() => openDrawer("Welcome Back", <SignInForm />)}
                     > Sign In</span>
                 </p>
 

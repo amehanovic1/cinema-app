@@ -1,8 +1,18 @@
 import { NavLink } from "react-router-dom";
 import Logo from "../../components/Logo/Logo";
 import { ROUTES } from "../../routes/routes";
+import { useContext, useState } from "react";
+import DrawerContext from "../../context/DrawerContext";
+import SignInForm from "../../pages/SignInForm/SignInForm";
+import AuthContext from "../../context/AuthContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 
-const Header = ({ openDrawer }) => {
+const Header = () => {
+    const [dropdownOpen, setDropdownOpen] = useState(false)
+    const { openDrawer } = useContext(DrawerContext)
+    const { user, logout } = useContext(AuthContext)
+
     return (
         <header className="w-full h-16 bg-neutral-800 border-b border-neutral-500 grid grid-cols-3 items-center sticky top-0 z-50 px-6 md:px-14 py-4 md:py-5">
 
@@ -39,13 +49,42 @@ const Header = ({ openDrawer }) => {
             </div>
 
             <div className="flex justify-end items-center">
-                <button
-                    onClick={() => openDrawer("signup")}
-                    className="text-neutral-0 text-semibold shadow-text text-xs sm:text-sm md:text-base 
+                {user ?
+                    (
+                        <div className="relative">
+                            <button
+                                onClick={() => setDropdownOpen(!dropdownOpen)}
+                                className="flex items-center gap-1 text-neutral-0 text-semibold shadow-text text-xs sm:text-sm md:text-base 
                                 px-2 py-1 border rounded-lg rounded-neutral-0"
-                >
-                    Sign In
-                </button>
+                            >
+                                {user.firstName + " " + user.lastName}
+                                <FontAwesomeIcon
+                                    icon={faAngleDown}
+                                    className={`transition-transform
+                                    ${dropdownOpen ? "rotate-180 text-dark-red" : "text-neutral-400 "}`}
+                                />
+                            </button>
+
+                            {dropdownOpen && (
+                                <div className="absolute right-0 mt-1 w-40 bg-neutral-200 border border-neutral-500 rounded-md shadow-lg z-40">
+                                    <button
+                                        className="w-full hover:bg-neutral-400" onClick={logout}>
+                                        Logout
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                    ) : (
+                        <button
+                            onClick={() => openDrawer("Welcome Back", <SignInForm />)}
+                            className="text-neutral-0 text-semibold shadow-text text-xs sm:text-sm md:text-base 
+                                px-2 py-1 border rounded-lg rounded-neutral-0"
+                        >
+                            Sign In
+                        </button>
+                    )
+                }
             </div>
 
         </header>
