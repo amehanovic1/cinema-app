@@ -79,11 +79,12 @@ const SignInForm = () => {
 
                 <button
                     type="submit"
-                    className="mt-10 py-2 text-lg w-full bg-dark-red text-neutral-0 rounded-lg">
-                    Sign Up
+                    className="py-2 text-base font-semibold w-full rounded-lg bg-dark-red text-neutral-25">
+                    Sign In
                 </button>
 
-                <p className="text-center text-base font-normal text-neutral-25">Don't have an account?
+                <p className="text-center text-base font-normal text-neutral-25">
+                    Don't have an account? {" "}
                     <span
                         className="cursor-pointer underline"
                         onClick={() => openDrawer("Hello", <SignUpForm />)}

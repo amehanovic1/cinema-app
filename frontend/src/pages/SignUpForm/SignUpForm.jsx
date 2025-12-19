@@ -4,7 +4,6 @@ import { registerUser } from "../../services/authService";
 import { useContext, useState } from "react";
 import { validateConfirmPassword, validateEmail, validatePassword } from "../../utils/validatorUtils";
 import AuthContext from "../../context/AuthContext";
-import FormButton from "../../components/FormButton/FormButton";
 import DrawerContext from "../../context/DrawerContext";
 import SignInForm from "../SignInForm/SignInForm";
 import VerificationCodeForm from "../VerificationCodeForm/VerificationCodeForm";
@@ -103,10 +102,14 @@ const SignUpForm = () => {
                     {serverError || ""}
                 </span>
 
-                <FormButton text="Sign Up" />
+                <button
+                    type="submit"
+                    className="py-2 text-base font-semibold w-full rounded-lg bg-dark-red text-neutral-25">
+                    Sign Up
+                </button>
 
                 <p className="text-center text-base font-normal text-neutral-25">
-                    Already have an account?
+                    Already have an account? {" "}
                     <span
                         className="cursor-pointer underline"
                         onClick={() => openDrawer("Welcome Back", <SignInForm />)}
