@@ -1,4 +1,4 @@
-import FormInput from "../../components/FormInput/FormInput";
+import InputField from "../../components/InputField/InputField";
 import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
 import { registerUser } from "../../services/authService";
 import { useContext, useState } from "react";
@@ -65,7 +65,7 @@ const SignUpForm = () => {
         <form onSubmit={handleSubmit} noValidate>
             <div className="flex flex-col gap-1">
 
-                <FormInput
+                <InputField
                     label="Email"
                     type="email"
                     name="email"
@@ -76,7 +76,7 @@ const SignUpForm = () => {
                     error={errors.email}
                 />
 
-                <FormInput
+                <InputField
                     label="Password"
                     type="password"
                     name="password"
@@ -87,7 +87,7 @@ const SignUpForm = () => {
                     error={errors.password}
                 />
 
-                <FormInput
+                <InputField
                     label="Confirm Password"
                     type="password"
                     name="confirmPassword"
