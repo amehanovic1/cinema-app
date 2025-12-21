@@ -2,10 +2,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 
-const InputField = ({ label, type, name, placeholder, icon, onChange, value, error }) => {
-    const [showPassword, setShowPassword] = useState(false);
-    const togglePassword = () => setShowPassword(prev => !prev);
-    const inputType = type === "password" ? (showPassword ? "text" : "password") : type;
+const InputField = ({
+    label,
+    type,
+    name,
+    placeholder,
+    icon,
+    onChange,
+    value,
+    error,
+    hiddenInput = false
+}) => {
+    const [showInput, setShowInput] = useState(false);
+    const inputType = hiddenInput ? (showInput ? "text" : "password") : type;
 
     return (
         <div>
@@ -34,12 +43,12 @@ const InputField = ({ label, type, name, placeholder, icon, onChange, value, err
                                 text-neutral-500`}
                 />
 
-                {type === "password" && (
+                {hiddenInput && (
                     <FontAwesomeIcon
-                        icon={showPassword ? faEye : faEyeSlash}
+                        icon={showInput ? faEye : faEyeSlash}
                         className={`absolute right-3 top-1/2 -translate-y-1/2 justify-center
                                     ${value || error ? "text-error-500" : "text-neutral-400"}`}
-                        onClick={togglePassword}
+                        onClick={() => setShowInput(!showInput)}
                     />
                 )}
 
