@@ -2,16 +2,17 @@ import { NavLink } from "react-router-dom";
 import Logo from "../../components/Logo/Logo";
 import { ROUTES } from "../../routes/routes";
 import { useContext, useState } from "react";
-import DrawerContext from "../../context/DrawerContext";
-import SignInForm from "../../pages/SignInForm/SignInForm";
 import AuthContext from "../../context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 
-const Header = () => {
-    const [dropdownOpen, setDropdownOpen] = useState(false)
-    const { openDrawer } = useContext(DrawerContext)
+const Header = ({ onSignIn }) => {
     const { user, logout } = useContext(AuthContext)
+
+    const [userMenuOpen, setUserMenuOpen] = useState(false)
+    const userMenuItems = [
+        { label: "Logout", onClick: logout }
+    ]
 
     return (
         <header className="w-full h-16 bg-neutral-800 border-b border-neutral-500 grid grid-cols-3 items-center sticky top-0 z-50 px-6 md:px-14 py-4 md:py-5">
@@ -53,31 +54,36 @@ const Header = () => {
                     (
                         <div className="relative">
                             <button
-                                onClick={() => setDropdownOpen(!dropdownOpen)}
+                                onClick={() => setUserMenuOpen(!userMenuOpen)}
                                 className="flex items-center gap-1 text-neutral-0 text-semibold shadow-text text-xs sm:text-sm md:text-base 
-                                px-2 py-1 border rounded-lg rounded-neutral-0"
+                                        px-2 py-1 border rounded-lg rounded-neutral-0"
                             >
                                 {user.firstName + " " + user.lastName}
                                 <FontAwesomeIcon
                                     icon={faAngleDown}
                                     className={`transition-transform
-                                    ${dropdownOpen ? "rotate-180 text-dark-red" : "text-neutral-400 "}`}
+                                    ${userMenuOpen ? "rotate-180 text-dark-red" : "text-neutral-400 "}`}
                                 />
                             </button>
 
-                            {dropdownOpen && (
-                                <div className="absolute right-0 mt-1 w-40 bg-neutral-200 border border-neutral-500 rounded-md shadow-lg z-40">
-                                    <button
-                                        className="w-full hover:bg-neutral-400" onClick={logout}>
-                                        Logout
-                                    </button>
+                            {userMenuOpen && (
+                                <div className="absolute right-0 mt-1 w-24 bg-neutral-200 rounded-md shadow-lg z-40">
+                                    {userMenuItems.map((item, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={item.onClick}
+                                            className="w-full px-1 py-1 text-right text-neutral-700 text-sm md:text-base
+                                                        hover:bg-neutral-400 hover:text-neutral-0 hover:rounded-md">
+                                            {item.label}
+                                        </button>
+                                    ))}
                                 </div>
                             )}
                         </div>
 
                     ) : (
                         <button
-                            onClick={() => openDrawer("Welcome Back", <SignInForm />)}
+                            onClick={onSignIn}
                             className="text-neutral-0 text-semibold shadow-text text-xs sm:text-sm md:text-base 
                                 px-2 py-1 border rounded-lg rounded-neutral-0"
                         >
