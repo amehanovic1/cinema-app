@@ -1,14 +1,10 @@
 import InputField from "../../components/InputField/InputField";
 import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
 import { registerUser } from "../../services/authService";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { validateConfirmPassword, validateEmail, validatePassword } from "../../utils/validatorUtils";
-import AuthContext from "../../context/AuthContext";
-import DrawerContext from "../../context/DrawerContext";
-import SignInForm from "../SignInForm/SignInForm";
-import VerificationCodeForm from "../VerificationCodeForm/VerificationCodeForm";
 
-const SignUpForm = () => {
+const SignUpForm = ({setView, setEmail}) => {
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -17,9 +13,6 @@ const SignUpForm = () => {
 
     const [serverError, setServerError] = useState("")
     const [errors, setErrors] = useState({});
-
-    const { setEmail } = useContext(AuthContext)
-    const { openDrawer } = useContext(DrawerContext);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -47,8 +40,8 @@ const SignUpForm = () => {
                 if (!res.success && res.isVerified)
                     setServerError(res.message);
                 else {
-                    setEmail(formData.email);
-                    openDrawer("Account Activation", <VerificationCodeForm />)
+                    setView("verify");
+                    setEmail(formData.email)
                 }
             } catch (error) {
                 console.log(error)
@@ -85,6 +78,7 @@ const SignUpForm = () => {
                     onChange={handleChange}
                     value={formData.password}
                     error={errors.password}
+                    hiddenInput={true}
                 />
 
                 <InputField
@@ -96,6 +90,7 @@ const SignUpForm = () => {
                     onChange={handleChange}
                     value={formData.confirmPassword}
                     error={errors.confirmPassword}
+                    hiddenInput={true}
                 />
 
                 <span className="text-center block h-4 text-error-300 text-sm text-normal">
@@ -112,7 +107,7 @@ const SignUpForm = () => {
                     Already have an account? {" "}
                     <span
                         className="cursor-pointer underline"
-                        onClick={() => openDrawer("Welcome Back", <SignInForm />)}
+                        onClick={() => setView("signIn")}
                     > Sign In</span>
                 </p>
 
