@@ -6,6 +6,7 @@ import SuccessView from "../SuccessView/SuccessView";
 import { faFilm } from "@fortawesome/free-solid-svg-icons";
 import { faVideoCamera } from "@fortawesome/free-solid-svg-icons";
 import VerificationCodeForm from "../VerificationCodeForm/VerificationCodeForm";
+import { ROUTES } from "../../routes/routes";
 
 const AuthDrawer = ({ onClose }) => {
     const viewsMap = {
@@ -25,10 +26,10 @@ const AuthDrawer = ({ onClose }) => {
             props: {
                 text: "Start exploring latest movies, venues, and ticket options!",
                 icon: faFilm,
-                navigateTo: "/currently-showing",
+                navigateTo: ROUTES.CURRENTLY_SHOWING,
                 navigateToText: "See movies"
             }
-        },
+        }
     }
 
     const [view, setView] = useState("signIn")

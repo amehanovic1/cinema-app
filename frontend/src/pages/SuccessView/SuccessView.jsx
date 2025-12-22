@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import SuccessIcon from "../../components/SuccessIcon/SuccessIcon";
+import { ROUTES } from "../../routes/routes";
 
 const SuccessView = ({ text, icon, onClose, navigateTo = null, navigateToText, autoClose = false }) => {
     const navigate = useNavigate();
@@ -10,9 +11,9 @@ const SuccessView = ({ text, icon, onClose, navigateTo = null, navigateToText, a
 
         const timer = setTimeout(() => {
             onClose();
-            navigate("/");
+            navigate(ROUTES.HOME);
         }, 3000);
-        
+
         return () => clearTimeout(timer);
     }, [onClose, navigate, navigateTo, autoClose]);
 
