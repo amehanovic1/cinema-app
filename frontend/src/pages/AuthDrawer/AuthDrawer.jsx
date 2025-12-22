@@ -15,7 +15,7 @@ const AuthDrawer = ({ isOpen, onClose }) => {
         signInSuccess: {
             component: SuccessView, title: "Sign In Successful!",
             props: {
-                paragraph: "Please, wait. You will be directed to the homepage.",
+                text: "Please, wait. You will be directed to the homepage.",
                 icon: faVideoCamera,
                 autoClose: true
             }
@@ -23,7 +23,7 @@ const AuthDrawer = ({ isOpen, onClose }) => {
         signUpSuccess: {
             component: SuccessView, title: "You're all set!",
             props: {
-                paragraph: "Start exploring latest movies, venues, and ticket options!",
+                text: "Start exploring latest movies, venues, and ticket options!",
                 icon: faFilm,
                 navigateTo: "/currently-showing",
                 navigateToText: "See movies"

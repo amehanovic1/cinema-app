@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import SuccessIcon from "../../components/SuccessIcon/SuccessIcon";
 
-const SuccessView = ({ paragraph, icon, onClose, navigateTo = null, navigateToText, autoClose = false }) => {
+const SuccessView = ({ text, icon, onClose, navigateTo = null, navigateToText, autoClose = false }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -17,7 +17,11 @@ const SuccessView = ({ paragraph, icon, onClose, navigateTo = null, navigateToTe
 
     return (
         <div className="flex flex-col items-center justify-center gap-16">
-            {paragraph && <p className="font-normal text-center text-xs md:text-sm text-neutral-300 w-1/2">{paragraph}</p>}
+            {text &&
+                <p className="font-normal text-center text-xs md:text-sm text-neutral-300 w-1/2">
+                    {text}
+                </p>
+            }
 
             <div>
                 <SuccessIcon icon={icon} />
