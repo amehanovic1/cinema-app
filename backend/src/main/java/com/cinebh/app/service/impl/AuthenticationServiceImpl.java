@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -117,6 +116,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .isVerified(false)
                     .success(false)
                     .message("Invalid verification code. Please request a new code.")
+                    .errorCode("CODE_EXPIRED")
                     .build();
         }
 
@@ -229,7 +229,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (user == null) {
             return AuthResponseDto.builder()
                     .isVerified(false)
-                    .message("Invalid email address.")
+                    .message("Invalid email or password.")
+                    .success(false)
+                    .build();
+        }
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            return AuthResponseDto.builder()
+                    .message("Invalid email or password.")
                     .success(false)
                     .build();
         }
@@ -239,6 +246,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .isVerified(false)
                     .message("Account exists but is not verified. Please check email or request a new code.")
                     .success(false)
+                    .errorCode("NOT_VERIFIED")
                     .build();
         }
 
@@ -248,6 +256,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             );
         } catch (Exception e) {
             return AuthResponseDto.builder()
+                    .isVerified(true)
                     .success(false)
                     .message("Invalid email or password")
                     .build();
@@ -260,6 +269,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         cookieService.addTokenToCookie(response, Token.REFRESH, refreshToken, refreshTokenService.getRefreshExpiration());
 
         return AuthResponseDto.builder()
+                .isVerified(true)
                 .success(true)
                 .message("Login successful.")
                 .build();
@@ -277,10 +287,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .build();
         }
 
+        RefreshToken refreshToken = refreshTokenService.verifyRefreshToken(refreshTokenValue);
+
         cookieService.deleteTokenFromCookie(response, Token.ACCESS);
         cookieService.deleteTokenFromCookie(response, Token.REFRESH);
 
-        RefreshToken refreshToken = refreshTokenService.verifyRefreshToken(refreshTokenValue);
         User user = refreshToken.getUser();
 
         refreshTokenService.revokeToken(refreshToken);
