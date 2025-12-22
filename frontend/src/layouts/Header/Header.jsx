@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import Logo from "../../components/Logo/Logo";
 import { ROUTES } from "../../routes/routes";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import AuthContext from "../../context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
@@ -15,10 +15,11 @@ const Header = () => {
         { label: "Logout", onClick: logout }
     ]
 
-    const [isDrawerOpen, setDrawerOpen] = useState(false)
+    const [isAuthDrawerOpen, setAuthDrawerOpen] = useState(false)
 
     return (
-        <header className="w-full h-16 bg-neutral-800 border-b border-neutral-500 grid grid-cols-3 items-center sticky top-0 z-50 px-6 md:px-14 py-4 md:py-5">
+        <header className="w-full h-16 bg-neutral-800 border-b border-neutral-500 
+                        grid grid-cols-3 items-center sticky top-0 z-50 px-6 md:px-14 py-4 md:py-5">
 
             <div className="flex items-center ">
                 <NavLink
@@ -58,9 +59,10 @@ const Header = () => {
                         <div className="relative">
                             <button
                                 onClick={() => setUserMenuOpen(prev => !prev)}
-                                className="flex items-center gap-1 text-neutral-0 text-semibold shadow-text text-xs sm:text-sm md:text-base 
+                                className="flex items-center gap-1 text-neutral-0 
+                                        text-semibold shadow-text text-xs sm:text-sm md:text-base 
                                         px-2 py-1 border rounded-lg rounded-neutral-0"
-                                disabled={isDrawerOpen}
+                                disabled={isAuthDrawerOpen}
                             >
                                 {user.firstName && user.lastName
                                     ? `${user.firstName} ${user.lastName}`
@@ -81,8 +83,9 @@ const Header = () => {
                                     <li
                                         key={index}
                                         onClick={item.onClick}
-                                        className="py-2 px-3 text-neutral-700 bg-neutral-200 text-xs md:text-sm lg:text-base 
-                                                    hover:bg-neutral-600 hover:text-white">
+                                        className="py-2 px-3 text-neutral-700 bg-neutral-200 
+                                                text-xs md:text-sm lg:text-base 
+                                                hover:bg-neutral-600 hover:text-white">
                                         {item.label}
                                     </li>
                                 ))}
@@ -91,7 +94,7 @@ const Header = () => {
 
                     ) : (
                         <button
-                            onClick={() => setDrawerOpen(true)}
+                            onClick={() => setAuthDrawerOpen(true)}
                             className="text-neutral-0 text-semibold shadow-text text-xs sm:text-sm md:text-base 
                                 px-2 py-1 border rounded-lg rounded-neutral-0"
                         >
@@ -101,7 +104,9 @@ const Header = () => {
                 }
             </div>
 
-            <AuthDrawer isOpen={isDrawerOpen} onClose={() =>setDrawerOpen(false)} />
+            {isAuthDrawerOpen &&
+                <AuthDrawer onClose={() => setAuthDrawerOpen(false)} />
+            }
 
         </header>
     );

@@ -7,7 +7,7 @@ import { faFilm } from "@fortawesome/free-solid-svg-icons";
 import { faVideoCamera } from "@fortawesome/free-solid-svg-icons";
 import VerificationCodeForm from "../VerificationCodeForm/VerificationCodeForm";
 
-const AuthDrawer = ({ isOpen, onClose }) => {
+const AuthDrawer = ({ onClose }) => {
     const viewsMap = {
         signIn: { component: SignInForm, title: "Welcome back" },
         signUp: { component: SignUpForm, title: "Hello" },
@@ -35,23 +35,21 @@ const AuthDrawer = ({ isOpen, onClose }) => {
     const [email, setEmail] = useState("")
 
     useEffect(() => {
-        if (onClose) {
-            setView("signIn");
-            setEmail("")
-        }
-    }, [isOpen])
+        setView("signIn");
+        setEmail("")
+    }, [])
 
     const Component = viewsMap[view].component;
 
     return (
-        <Drawer title={viewsMap[view].title} isOpen={isOpen} onClose={onClose}>
-            {Component && <Component
+        <Drawer title={viewsMap[view].title} onClose={onClose}>
+            <Component
                 setView={setView}
                 email={email}
                 setEmail={setEmail}
                 onClose={onClose}
                 {...viewsMap[view].props}
-            />}
+            />
         </Drawer>
     );
 }

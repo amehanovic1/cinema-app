@@ -12,6 +12,7 @@ const SuccessView = ({ text, icon, onClose, navigateTo = null, navigateToText, a
             onClose();
             navigate("/");
         }, 3000);
+        
         return () => clearTimeout(timer);
     }, [onClose, navigate, navigateTo, autoClose]);
 
