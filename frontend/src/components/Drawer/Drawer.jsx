@@ -1,12 +1,8 @@
 import Logo from "../Logo/Logo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { useContext } from "react";
-import DrawerContext from "../../context/DrawerContext";
 
-const Drawer = ({ title, children }) => {
-    const { isOpen, closeDrawer } = useContext(DrawerContext)
-
+const Drawer = ({ isOpen, onClose, title, children }) => {
     return (
         <>
             {isOpen && (
@@ -39,7 +35,7 @@ const Drawer = ({ title, children }) => {
 
                         <div className="relative flex items-center justify-center">
                             <button
-                                onClick={closeDrawer}
+                                onClick={onClose}
                                 className="absolute left-0 justify-start bg-neutral-700 rounded-lg p-2">
                                 <FontAwesomeIcon
                                     icon={faArrowLeft}

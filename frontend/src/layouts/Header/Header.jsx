@@ -5,14 +5,17 @@ import { useContext, useState } from "react";
 import AuthContext from "../../context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import AuthDrawer from "../../pages/AuthDrawer/AuthDrawer";
 
-const Header = ({ onSignIn }) => {
-    const { user, logout } = useContext(AuthContext)
+const Header = () => {
+    const { user, logout, isLoading } = useContext(AuthContext)
 
     const [userMenuOpen, setUserMenuOpen] = useState(false)
     const userMenuItems = [
         { label: "Logout", onClick: logout }
     ]
+
+    const [isDrawerOpen, setDrawerOpen] = useState(false)
 
     return (
         <header className="w-full h-16 bg-neutral-800 border-b border-neutral-500 grid grid-cols-3 items-center sticky top-0 z-50 px-6 md:px-14 py-4 md:py-5">
@@ -50,7 +53,7 @@ const Header = ({ onSignIn }) => {
             </div>
 
             <div className="flex justify-end items-center">
-                {user ?
+                {isLoading ? null : user ?
                     (
                         <div className="relative">
                             <button
@@ -58,7 +61,10 @@ const Header = ({ onSignIn }) => {
                                 className="flex items-center gap-1 text-neutral-0 text-semibold shadow-text text-xs sm:text-sm md:text-base 
                                         px-2 py-1 border rounded-lg rounded-neutral-0"
                             >
-                                {user.firstName + " " + user.lastName}
+                                {user.firstName && user.lastName
+                                    ? `${user.firstName} ${user.lastName}`
+                                    : user.email.split("@")[0]
+                                }
                                 <FontAwesomeIcon
                                     icon={faAngleDown}
                                     className={`transition-transform
@@ -83,7 +89,7 @@ const Header = ({ onSignIn }) => {
 
                     ) : (
                         <button
-                            onClick={onSignIn}
+                            onClick={() => setDrawerOpen(true)}
                             className="text-neutral-0 text-semibold shadow-text text-xs sm:text-sm md:text-base 
                                 px-2 py-1 border rounded-lg rounded-neutral-0"
                         >
@@ -92,6 +98,8 @@ const Header = ({ onSignIn }) => {
                     )
                 }
             </div>
+
+            <AuthDrawer isOpen={isDrawerOpen} onClose={() => setDrawerOpen(false)} />
 
         </header>
     );
