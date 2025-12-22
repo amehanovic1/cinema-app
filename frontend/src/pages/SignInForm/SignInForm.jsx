@@ -2,12 +2,9 @@ import InputField from "../../components/InputField/InputField";
 import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
 import { useContext, useState } from "react";
 import { validateEmail, validatePassword } from "../../utils/validatorUtils";
-import DrawerContext from "../../context/DrawerContext";
-import SignUpForm from "../SignUpForm/SignUpForm";
 import AuthContext from "../../context/AuthContext";
-import FormSuccess from "../../components/FormSuccess/FormSuccess";
 
-const SignInForm = () => {
+const SignInForm = ({ setView, setEmail}) => {
     const [formData, setFormData] = useState({
         email: "",
         password: ""
@@ -16,7 +13,6 @@ const SignInForm = () => {
     const [serverError, setServerError] = useState("")
     const [errors, setErrors] = useState({});
 
-    const { openDrawer } = useContext(DrawerContext);
     const { login } = useContext(AuthContext)
 
     const handleSubmit = async (e) => {
@@ -24,7 +20,7 @@ const SignInForm = () => {
 
         const validationErrors = {};
         const emailError = validateEmail(formData.email);
-        const passwordError = validatePassword(formData.password);
+        const passwordError = validatePassword(formData.password, {requiredOnly: true});
 
         if (emailError) validationErrors.email = emailError
         if (passwordError) validationErrors.password = passwordError
@@ -34,10 +30,19 @@ const SignInForm = () => {
 
         if (Object.keys(validationErrors).length === 0) {
             try {
-                await login({ email: formData.email, password: formData.password });
-                openDrawer("Success", <FormSuccess />)
+                const res = await login({ email: formData.email, password: formData.password });
+                if (!res.success) {
+                    if (!res.isVerified && res.errorCode === "NOT_VERIFIED") {
+                        setView("verify");
+                        setEmail(formData.email);
+                    }
+                    
+                    setServerError(res.message)
+                }
+                else {
+                    setView("signInSuccess")
+                }
             } catch (error) {
-                setServerError("Invalid email or password.");
                 console.log(error);
             }
         }
@@ -60,6 +65,7 @@ const SignInForm = () => {
                     onChange={handleChange}
                     value={formData.email}
                     error={errors.email}
+                    hasServerError={!!serverError}
                 />
 
                 <InputField
@@ -71,9 +77,11 @@ const SignInForm = () => {
                     onChange={handleChange}
                     value={formData.password}
                     error={errors.password}
+                    hasServerError={!!serverError}
+                    hiddenInput={true}
                 />
 
-                <span className="text-center block h-4 text-error-300 text-sm text-normal">
+                <span className="text-left block h-4 mb-1 text-error-300 text-sm text-normal">
                     {serverError || ""}
                 </span>
 
@@ -87,7 +95,7 @@ const SignInForm = () => {
                     Don't have an account? {" "}
                     <span
                         className="cursor-pointer underline"
-                        onClick={() => openDrawer("Hello", <SignUpForm />)}
+                        onClick={() => setView("signUp")}
                     >Sign Up</span>
                 </p>
             </div>
