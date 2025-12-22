@@ -92,8 +92,7 @@ const SignInForm = ({ setView, setEmail}) => {
                 </button>
 
                 <p className="text-center text-base font-normal text-neutral-25">
-                    Don't have an account? {" "}
-                    <span
+                    Don't have an account? <span
                         className="cursor-pointer underline"
                         onClick={() => setView("signUp")}
                     >Sign Up</span>

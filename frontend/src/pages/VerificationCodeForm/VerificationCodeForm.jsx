@@ -67,11 +67,9 @@ const VerificationCodeForm = ({ setView, email }) => {
 
             {email && (
                 <p className="mx-auto text-center font-normal text-neutral-400 text-sm w-1/2">
-                    We have sent code to your email {" "}
-                    <span>
+                    We have sent code to your email <span>
                         {hideEmail(email)}
-                    </span>
-                    .{" "}Please, enter the code below to verify.
+                    </span>. Please, enter the code below to verify.
                 </p>
             )}
 
@@ -85,9 +83,9 @@ const VerificationCodeForm = ({ setView, email }) => {
                         onClick={resendEmail}
                         className="text-neutral-25 underline">Resend email</button>
                 ) : (
-                    <p> You can resend email in {" "}
-                        <span className="font-semibold text-neutral-0">{getFormattedTime()}</span>
-                        {minutes === 0 && " seconds"}
+                    <p>
+                        You can resend email in <span className="font-semibold text-neutral-0">
+                            {getFormattedTime()} </span> {minutes === 0 && " seconds"}
                     </p>
                 )
 

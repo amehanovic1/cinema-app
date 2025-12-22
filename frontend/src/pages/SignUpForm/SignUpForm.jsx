@@ -4,7 +4,7 @@ import { registerUser } from "../../services/authService";
 import { useState } from "react";
 import { validateConfirmPassword, validateEmail, validatePassword } from "../../utils/validatorUtils";
 
-const SignUpForm = ({setView, setEmail}) => {
+const SignUpForm = ({ setView, setEmail }) => {
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -104,11 +104,11 @@ const SignUpForm = ({setView, setEmail}) => {
                 </button>
 
                 <p className="text-center text-base font-normal text-neutral-25">
-                    Already have an account? {" "}
-                    <span
+                    Already have an account? <span
                         className="cursor-pointer underline"
                         onClick={() => setView("signIn")}
-                    > Sign In</span>
+                    > Sign In
+                    </span>
                 </p>
 
             </div>
