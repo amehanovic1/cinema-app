@@ -1,15 +1,15 @@
-import { verifyUser } from "../../services/authService";
+import { resendCode, verifyUser } from "../../services/authService";
 import OtpInput from "../../components/OtpInput/OtpInput";
-import { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
-import FormButton from "../../components/FormButton/FormButton";
 import { hideEmail } from "../../utils/emailUtils";
+import { useState } from "react";
+import useTimer from "../../hooks/useTimer";
 
-const VerificationCodeForm = ({ openDrawer }) => {
+const VerificationCodeForm = ({ setView, email }) => {
     const [otp, setOtp] = useState('')
     const [serverError, setServerError] = useState("")
     const [isDisabled, setIsDisabled] = useState(false)
-    const { email } = useAuth();
+    const [isExpired, setIsExpired] = useState(false)
+    const { minutes, seconds, reset } = useTimer({ initialMinutes: 2, initialSeconds: 0 })
 
     const onChange = (value) => setOtp(value)
 
@@ -25,14 +25,41 @@ const VerificationCodeForm = ({ openDrawer }) => {
                 });
 
             if (!res.success && !res.isVerified) {
-                if (res.errorCode === "MAX_ATTEMPTS")
+                if (res.errorCode === "MAX_ATTEMPTS" || res.errorCode === "CODE_EXPIRED")
                     setIsDisabled(true);
 
+                if (res.errorCode === "CODE_EXPIRED")
+                    setIsExpired(true);
+
                 setServerError(res.message);
-            } 
+            }
+            if (res.success) {
+                setView("signUpSuccess")
+            }
         } catch (error) {
             console.log(error)
         }
+    }
+
+    const resendEmail = async () => {
+        try {
+            await resendCode({ email: email });
+            setServerError("");
+            setOtp("");
+            reset();
+            setIsDisabled(false);
+            setIsExpired(false)
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const getFormattedTime = () => {
+        const formattedSeconds = seconds.toString().padStart(2, '0');
+        if (minutes > 0)
+            return `${minutes}:${formattedSeconds}`
+
+        return formattedSeconds;
     }
 
     return (
@@ -52,12 +79,31 @@ const VerificationCodeForm = ({ openDrawer }) => {
 
             <div className="mx-auto text-center font-normal text-neutral-400 text-sm space-y-1">
                 <p>Didn't receive email?</p>
+                {(minutes === 0 && seconds === 0) || isExpired ? (
+                    <button
+                        type="button"
+                        onClick={resendEmail}
+                        className="text-neutral-25 underline">Resend email</button>
+                ) : (
+                    <p> You can resend email in {" "}
+                        <span className="font-semibold text-neutral-0">{getFormattedTime()}</span>
+                        {minutes === 0 && " seconds"}
+                    </p>
+                )
 
+                }
                 <span className="block h-4 text-error-300 text-sm">{serverError || ""}</span>
 
             </div>
 
-            <FormButton text="Continue" disabled={isDisabled} />
+            <button
+                type="submit"
+                disabled={isDisabled}
+                className={`py-2 text-base font-semibold w-full rounded-lg
+                        ${isDisabled ? "bg-dark-red/50 text-neutral-25/50" : "bg-dark-red text-neutral-25"}`}>
+                Continue
+            </button>
+
 
         </form>
     )
