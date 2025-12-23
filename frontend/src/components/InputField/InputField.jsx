@@ -14,8 +14,11 @@ const InputField = ({
     hasServerError,
     hiddenInput = false
 }) => {
-    const [showInput, setShowInput] = useState(false);
-    const inputType = hiddenInput ? (showInput ? "text" : "password") : type;
+    const [inputType, setInputType] = useState(type);
+
+    const toggleInputType = () => {
+        setInputType(prev => prev === "password" ? "text" : "password")
+    }
 
     return (
         <div>
@@ -42,19 +45,19 @@ const InputField = ({
                     onChange={onChange}
                     className={`w-full pl-8 font-normal text-base 
                                 outline-none focus:outline-none rounded-lg 
-                                ${error || hasServerError
+                                ${(value || placeholder) && (error || hasServerError)
                             ? "text-error-500 placeholder-error-500"
-                            : value ? "text-dark-red" : "text-neutral-400"}`}
+                            : "text-neutral-700"}`}
                 />
 
                 {hiddenInput && (
                     <FontAwesomeIcon
-                        icon={showInput ? faEye : faEyeSlash}
+                        icon={inputType === "password" ? faEyeSlash : faEye}
                         className={`absolute right-3 top-1/2 -translate-y-1/2 justify-center
                             ${error || hasServerError
                                 ? "text-error-500"
-                                : value ? "text-dark-red" : "text-neutral-400"}`}
-                        onClick={() => setShowInput(!showInput)}
+                                : "text-neutral-400"}`}
+                        onClick={toggleInputType}
                     />
                 )}
 
