@@ -2,7 +2,7 @@ import InputField from "../../components/InputField/InputField";
 import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
 import { registerUser } from "../../services/authService";
 import { useState } from "react";
-import { validateConfirmPassword, validateEmail, validatePassword } from "../../utils/validatorUtils";
+import { validateEmail, validatePassword } from "../../utils/validatorUtils";
 
 const SignUpForm = ({ setView, setEmail }) => {
     const [formData, setFormData] = useState({
@@ -19,8 +19,8 @@ const SignUpForm = ({ setView, setEmail }) => {
 
         const validationErrors = {};
         const emailError = validateEmail(formData.email);
-        const passwordError = validatePassword(formData.password);
-        const confirmPasswordError = validateConfirmPassword(formData.password, formData.confirmPassword);
+        const passwordError = validatePassword(formData.password, {confirm: formData.confirmPassword});
+        const confirmPasswordError = validatePassword(formData.password, {confirm: formData.confirmPassword});
 
         if (emailError) validationErrors.email = emailError
         if (passwordError) validationErrors.password = passwordError
@@ -93,7 +93,7 @@ const SignUpForm = ({ setView, setEmail }) => {
                     hiddenInput={true}
                 />
 
-                <span className="text-center block h-4 text-error-300 text-sm text-normal">
+                <span className="text-left block h-4 mb-1 text-error-300 text-sm text-normal">
                     {serverError || ""}
                 </span>
 

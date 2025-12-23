@@ -10,7 +10,7 @@ export const validateEmail = (email) => {
     return "";
 }
 
-export const validatePassword = (password, { requiredOnly = false } = {}) => {
+export const validatePassword = (password, { requiredOnly = false, confirm} = {}) => {
     if (!password)
         return "Password is required.";
 
@@ -23,14 +23,7 @@ export const validatePassword = (password, { requiredOnly = false } = {}) => {
     if (!RE_PASSWORD.test(password))
         return "Password must contain: A-Z, a-z, 0-9, symbol";
 
-    return "";
-}
-
-export const validateConfirmPassword = (password, confirm) => {
-    if (!confirm)
-        return "Confirm password is required.";
-
-    if (password !== confirm)
+    if (confirm && password !== confirm)
         return "Passwords do not match.";
 
     return "";
