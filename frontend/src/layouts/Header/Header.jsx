@@ -15,7 +15,7 @@ const Header = () => {
         { label: "Logout", onClick: logout }
     ]
 
-    const [isAuthDrawerOpen, setAuthDrawerOpen] = useState(false)
+    const [authDrawerOpen, setAuthDrawerOpen] = useState(false)
 
     return (
         <header className="w-full h-16 bg-neutral-800 border-b border-neutral-500 
@@ -106,7 +106,7 @@ const Header = () => {
                 }
             </div>
 
-            {isAuthDrawerOpen &&
+            {authDrawerOpen &&
                 <AuthDrawer onClose={() => setAuthDrawerOpen(false)} />
             }
 
