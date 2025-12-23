@@ -12,6 +12,7 @@ const SignUpForm = ({ setView, setEmail }) => {
     })
 
     const [serverError, setServerError] = useState("")
+    const [hasServerError, setHasServerError] = useState(false)
     const [errors, setErrors] = useState({});
 
     const handleSubmit = async (e) => {
@@ -28,6 +29,7 @@ const SignUpForm = ({ setView, setEmail }) => {
 
         setErrors(validationErrors);
         setServerError("");
+        setHasServerError(false);
 
         if (Object.keys(validationErrors).length === 0) {
             try {
@@ -37,11 +39,14 @@ const SignUpForm = ({ setView, setEmail }) => {
                         password: formData.password
                     });
 
-                if (!res.success && res.isVerified)
+                if (!res.success && res.isVerified) {
                     setServerError(res.message);
+                    setHasServerError(true);
+                }
                 else {
                     setView("verify");
-                    setEmail(formData.email)
+                    setEmail(formData.email);
+                    setHasServerError(false);
                 }
             } catch (error) {
                 console.log(error)
@@ -66,7 +71,7 @@ const SignUpForm = ({ setView, setEmail }) => {
                     icon={faEnvelope}
                     onChange={handleChange}
                     value={formData.email}
-                    error={errors.email}
+                    error={errors.email || hasServerError}
                 />
 
                 <InputField
@@ -77,7 +82,7 @@ const SignUpForm = ({ setView, setEmail }) => {
                     icon={faLock}
                     onChange={handleChange}
                     value={formData.password}
-                    error={errors.password}
+                    error={errors.password || hasServerError}
                     hiddenInput={true}
                 />
 
@@ -89,7 +94,7 @@ const SignUpForm = ({ setView, setEmail }) => {
                     icon={faLock}
                     onChange={handleChange}
                     value={formData.confirmPassword}
-                    error={errors.confirmPassword}
+                    error={errors.confirmPassword || hasServerError}
                     hiddenInput={true}
                 />
 

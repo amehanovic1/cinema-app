@@ -11,6 +11,7 @@ const SignInForm = ({ setView, setEmail}) => {
     })
 
     const [serverError, setServerError] = useState("")
+    const [hasServerError, setHasServerError] = useState(false)
     const [errors, setErrors] = useState({});
 
     const { login } = useContext(AuthContext)
@@ -27,6 +28,7 @@ const SignInForm = ({ setView, setEmail}) => {
 
         setErrors(validationErrors);
         setServerError("");
+        setHasServerError(false);
 
         if (Object.keys(validationErrors).length === 0) {
             try {
@@ -37,10 +39,12 @@ const SignInForm = ({ setView, setEmail}) => {
                         setEmail(formData.email);
                     }
                     
-                    setServerError(res.message)
+                    setServerError(res.message);
+                    setHasServerError(true);
                 }
                 else {
-                    setView("signInSuccess")
+                    setView("signInSuccess");
+                    setHasServerError(false);
                 }
             } catch (error) {
                 console.log(error);
@@ -64,8 +68,7 @@ const SignInForm = ({ setView, setEmail}) => {
                     icon={faEnvelope}
                     onChange={handleChange}
                     value={formData.email}
-                    error={errors.email}
-                    hasServerError={!!serverError}
+                    error={errors.email || hasServerError}
                 />
 
                 <InputField
@@ -76,8 +79,7 @@ const SignInForm = ({ setView, setEmail}) => {
                     icon={faLock}
                     onChange={handleChange}
                     value={formData.password}
-                    error={errors.password}
-                    hasServerError={!!serverError}
+                    error={errors.password || hasServerError}
                     hiddenInput={true}
                 />
 
