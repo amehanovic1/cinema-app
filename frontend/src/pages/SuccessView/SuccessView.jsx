@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import SuccessIcon from "../../components/SuccessIcon/SuccessIcon";
+import SuccessIcon from "../../components/icons/SuccessIcon";
 import { ROUTES } from "../../routes/routes";
 
 const SuccessView = ({ text, icon, onClose, navigateTo = null, navigateToText, autoClose = false }) => {
