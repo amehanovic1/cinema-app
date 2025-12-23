@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -115,6 +116,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .isVerified(false)
                     .success(false)
                     .message("Invalid verification code. Please request a new code.")
+                    .errorCode("CODE_EXPIRED")
                     .build();
         }
 
@@ -125,7 +127,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             if (verificationCode.getAttemptCount() >= MAX_VERIFICATION_ATTEMPTS) {
                 verificationCodeRepository.delete(verificationCode);
                 return AuthResponseDto.builder()
-                        .isVerified(false)
+                        .errorCode("MAX_ATTEMPTS")
                         .success(false)
                         .message("Maximum verification attempts exceeded. Please request a new code.")
                         .build();
@@ -177,11 +179,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .findByUserAndExpiresAtAfter(user, Instant.now());
 
         if (activeCode.isPresent()) {
-            return AuthResponseDto.builder()
-                    .isVerified(false)
-                    .success(false)
-                    .message("Verification code was recently sent. Please check your email or wait before requesting a new one.")
-                    .build();
+            EmailVerificationCode code = activeCode.get();
+            LocalDateTime resendAllowedAt = code.getCreatedAt().plusMinutes(2);
+
+            if (resendAllowedAt.isAfter(LocalDateTime.now())) {
+                return AuthResponseDto.builder()
+                        .isVerified(false)
+                        .success(false)
+                        .message("Verification code was recently sent. Please check your email or wait before requesting a new one.")
+                        .build();
+            }
         }
 
         saveAndSendCode(user);
@@ -222,7 +229,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (user == null) {
             return AuthResponseDto.builder()
                     .isVerified(false)
-                    .message("Invalid email address.")
+                    .message("Email or Password that you've entered is incorrect.")
+                    .success(false)
+                    .build();
+        }
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            return AuthResponseDto.builder()
+                    .message("Email or Password that you've entered is incorrect.")
                     .success(false)
                     .build();
         }
@@ -232,6 +246,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .isVerified(false)
                     .message("Account exists but is not verified. Please check email or request a new code.")
                     .success(false)
+                    .errorCode("NOT_VERIFIED")
                     .build();
         }
 
@@ -241,8 +256,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             );
         } catch (Exception e) {
             return AuthResponseDto.builder()
+                    .isVerified(true)
                     .success(false)
-                    .message("Invalid email or password")
+                    .message("Email or Password that you've entered is incorrect.")
                     .build();
         }
 
@@ -253,6 +269,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         cookieService.addTokenToCookie(response, Token.REFRESH, refreshToken, refreshTokenService.getRefreshExpiration());
 
         return AuthResponseDto.builder()
+                .isVerified(true)
                 .success(true)
                 .message("Login successful.")
                 .build();
@@ -270,10 +287,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .build();
         }
 
+        RefreshToken refreshToken = refreshTokenService.verifyRefreshToken(refreshTokenValue);
+
         cookieService.deleteTokenFromCookie(response, Token.ACCESS);
         cookieService.deleteTokenFromCookie(response, Token.REFRESH);
 
-        RefreshToken refreshToken = refreshTokenService.verifyRefreshToken(refreshTokenValue);
         User user = refreshToken.getUser();
 
         refreshTokenService.revokeToken(refreshToken);

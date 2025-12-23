@@ -97,6 +97,10 @@ const CurrentlyShowing = () => {
 
     const fetchVenues = async () => {
         try {
+            if (!selectedCity) {
+                setVenues([]);
+                return;
+            }
             const city = cities.find(c => c.name === selectedCity);
             const res = await getVenuesByCityId({ cityId: city?.id })
             setVenues(res);

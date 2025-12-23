@@ -1,10 +1,8 @@
-import axios from "axios";
-
-const API_URL = process.env.REACT_APP_API_URL + "/venues";
+import { api } from "./api";
 
 export async function getAllVenues({ page, size }) {
     try {
-        const response = await axios.get(API_URL, { 
+        const response = await api.get("/venues", { 
             params: { page, size } 
         });
         return response.data;
@@ -17,7 +15,7 @@ export async function getAllVenues({ page, size }) {
 
 export async function getVenuesByCityId({ cityId }) {
     try {
-        const response = await axios.get(`${API_URL}/by-city`, { 
+        const response = await api.get("/venues/by-city", { 
             params: { cityId } 
         });
         return response.data;

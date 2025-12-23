@@ -1,10 +1,8 @@
-import axios from "axios";
-
-const API_URL = process.env.REACT_APP_API_URL + "/genres";
+import { api } from "./api";
 
 export async function getGenres() {
     try {
-        const response = await axios.get(API_URL);
+        const response = await api.get("/genres");
         return response.data;
     }
     catch (error) {

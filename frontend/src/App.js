@@ -13,7 +13,7 @@ function App() {
     <Layout>
       <Routes>
         <Route path={ROUTES.HOME} element={<Home />} />
-        <Route path={ROUTES.ABOUT_US} element={<AboutUs />} />
+        <Route path={ROUTES.ABOUT_US} element={<AboutUs />} /> 
         <Route path={ROUTES.TICKETS} element={<Tickets />} />
         <Route path={ROUTES.CURRENTLY_SHOWING} element={<CurrentlyShowing />} />
         <Route path={ROUTES.UPCOMING_MOVIES} element={<UpcomingMovies />} />

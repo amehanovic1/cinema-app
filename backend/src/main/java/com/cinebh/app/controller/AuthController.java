@@ -1,16 +1,18 @@
 package com.cinebh.app.controller;
 
 import com.cinebh.app.dto.auth.*;
+import com.cinebh.app.entity.Role;
+import com.cinebh.app.entity.User;
 import com.cinebh.app.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -62,5 +64,18 @@ public class AuthController {
             HttpServletResponse response
     ) {
         return ResponseEntity.ok(authenticationService.logout(request, response));
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<UserProfileDto> getUserProfile (@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(
+                new UserProfileDto(
+                        user.getId(),
+                        user.getFirstName(),
+                        user.getLastName(),
+                        user.getEmail(),
+                        user.getRoles().stream().map(Role::getName).collect(Collectors.toSet())
+                )
+        );
     }
 }
