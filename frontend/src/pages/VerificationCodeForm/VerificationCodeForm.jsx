@@ -87,10 +87,11 @@ const VerificationCodeForm = ({ setView, email }) => {
                         You can resend email in <span className="font-semibold text-neutral-0">
                             {getFormattedTime()} </span> {minutes === 0 && " seconds"}
                     </p>
-                )
+                )}
 
-                }
-                <span className="block h-4 text-error-300 text-sm">{serverError || ""}</span>
+                <span className="text-left block h-4 mb-1 text-error-300 text-sm">
+                    {serverError || ""}
+                </span>
 
             </div>
 
