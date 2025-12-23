@@ -13,11 +13,7 @@ const InputField = ({
     error,
     hiddenInput = false
 }) => {
-    const [inputType, setInputType] = useState(type);
-
-    const toggleInputType = () => {
-        setInputType(prev => prev === "password" ? "text" : "password")
-    }
+    const [showInput, setShowInput] = useState(false);
 
     return (
         <div>
@@ -37,7 +33,7 @@ const InputField = ({
                 />
 
                 <input
-                    type={inputType}
+                    type={hiddenInput ? (showInput ? "text" : "password") : type}
                     name={name}
                     value={value}
                     placeholder={placeholder || label}
@@ -51,12 +47,12 @@ const InputField = ({
 
                 {hiddenInput && (
                     <FontAwesomeIcon
-                        icon={inputType === "password" ? faEyeSlash : faEye}
+                        icon={showInput ? faEye : faEyeSlash}
                         className={`absolute right-3 top-1/2 -translate-y-1/2 justify-center
                             ${error
                                 ? "text-error-500"
                                 : "text-neutral-400"}`}
-                        onClick={toggleInputType}
+                        onClick={() => setShowInput(prev => !prev)}
                     />
                 )}
 
