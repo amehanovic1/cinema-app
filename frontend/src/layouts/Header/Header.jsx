@@ -62,7 +62,6 @@ const Header = () => {
                                 className="flex items-center gap-1 text-neutral-0 
                                         text-semibold shadow-text text-xs sm:text-sm md:text-base 
                                         px-2 py-1 border rounded-lg rounded-neutral-0"
-                                disabled={isAuthDrawerOpen}
                             >
                                 {user.firstName && user.lastName
                                     ? `${user.firstName} ${user.lastName}`
@@ -71,14 +70,14 @@ const Header = () => {
                                 <FontAwesomeIcon
                                     icon={faAngleDown}
                                     className={`transition-transform
-                                    ${userMenuOpen ? "rotate-180 text-dark-red" : "text-neutral-400 "}`}
+                                    ${userMenuOpen ? "rotate-180 text-dark-red" : "text-neutral-400"}`}
                                 />
                             </button>
 
 
                             <ul className={`absolute left-0 right-0 z-40 mt-0 w-full bg-neutral-0 mt-1 
                                             overflow-y-auto transition-all duration-300 rounded  
-                                             ${userMenuOpen ? "max-h-60 opacity-100" : "max-h-0"}`}>
+                                             ${userMenuOpen ? "max-h-60 opacity-100" : "max-h-0 opacity-0"}`}>
                                 {userMenuItems?.map((item, index) => (
                                     <li
                                         key={index}
@@ -94,7 +93,10 @@ const Header = () => {
 
                     ) : (
                         <button
-                            onClick={() => setAuthDrawerOpen(true)}
+                            onClick={() => {
+                                setAuthDrawerOpen(true);
+                                setUserMenuOpen(false)
+                            }}
                             className="text-neutral-0 text-semibold shadow-text text-xs sm:text-sm md:text-base 
                                 px-2 py-1 border rounded-lg rounded-neutral-0"
                         >
