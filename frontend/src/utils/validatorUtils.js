@@ -28,3 +28,13 @@ export const validatePassword = (password, { requiredOnly = false, confirm} = {}
 
     return "";
 }
+
+export const validateConfirmPassword = (password, confirm ) => {
+    if (!confirm)
+        return "Password is required.";
+
+    if (password !== confirm)
+        return "Passwords do not match.";
+
+    return "";
+}

@@ -229,14 +229,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (user == null) {
             return AuthResponseDto.builder()
                     .isVerified(false)
-                    .message("Invalid email or password.")
+                    .message("Email or Password that you've entered is incorrect.")
                     .success(false)
                     .build();
         }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             return AuthResponseDto.builder()
-                    .message("Invalid email or password.")
+                    .message("Email or Password that you've entered is incorrect.")
                     .success(false)
                     .build();
         }
@@ -258,7 +258,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return AuthResponseDto.builder()
                     .isVerified(true)
                     .success(false)
-                    .message("Invalid email or password")
+                    .message("Email or Password that you've entered is incorrect.")
                     .build();
         }
 

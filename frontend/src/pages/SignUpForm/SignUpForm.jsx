@@ -2,7 +2,7 @@ import InputField from "../../components/InputField/InputField";
 import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
 import { registerUser } from "../../services/authService";
 import { useState } from "react";
-import { validateEmail, validatePassword } from "../../utils/validatorUtils";
+import { validateConfirmPassword, validateEmail, validatePassword } from "../../utils/validatorUtils";
 
 const SignUpForm = ({ setView, setEmail }) => {
     const [formData, setFormData] = useState({
@@ -20,7 +20,7 @@ const SignUpForm = ({ setView, setEmail }) => {
         const validationErrors = {};
         const emailError = validateEmail(formData.email);
         const passwordError = validatePassword(formData.password, {confirm: formData.confirmPassword});
-        const confirmPasswordError = validatePassword(formData.password, {confirm: formData.confirmPassword});
+        const confirmPasswordError = validateConfirmPassword(formData.password, formData.confirmPassword);
 
         if (emailError) validationErrors.email = emailError
         if (passwordError) validationErrors.password = passwordError
