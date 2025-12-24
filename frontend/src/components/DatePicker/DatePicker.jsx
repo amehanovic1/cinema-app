@@ -33,33 +33,35 @@ const DatePicker = ({ numberOfDays = 10, selectedValue, onChange }) => {
         );
     }
 
-    return (
-        <div className="flex flex-row flex-wrap items-center justify-between gap-2 md:gap-4 justify-start">
-            {dates.map((date, index) =>
-                <button
-                    key={index}
-                    className={`
+    return ( 
+        <div className="overflow-x-auto">
+            <div className="flex justify-start min-w-full items-center justify-between gap-2 md:gap-4">
+                {dates.map((date, index) =>
+                    <button
+                        key={index}
+                        className={`
                         flex flex-col items-center justify-center
                         px-3 py-1 sm:px-4 sm:py-2 md:px-5 md:py-3
                         rounded-xl shadow-card
                         text-xs sm:text-sm md:text-base
                         ${isSameDate(date, selectedDate)
-                            ? "bg-dark-red text-white font-bold" : "bg-neutral-0"}`}
-                    onClick={() => handleChange(date)}>
+                                ? "bg-dark-red text-white font-bold" : "bg-neutral-0"}`}
+                        onClick={() => handleChange(date)}>
 
-                    <div className="flex gap-2 font-bold">
-                        <h1>{date.toLocaleDateString('en-US', { month: 'short' })} </h1>
-                        <h1>{date.toLocaleDateString('en-US', { day: 'numeric' })} </h1>
-                    </div>
+                        <div className="flex gap-2 font-bold">
+                            <h1>{date.toLocaleDateString('en-US', { month: 'short' })} </h1>
+                            <h1>{date.toLocaleDateString('en-US', { day: 'numeric' })} </h1>
+                        </div>
 
-                    <div>
-                        <h1>{isSameDate(todayDate, date)
-                            ? "Today"
-                            : date.toLocaleDateString('en-US', { weekday: 'short' })}
-                        </h1>
-                    </div>
-                </button>
-            )}
+                        <div>
+                            <h1>{isSameDate(todayDate, date)
+                                ? "Today"
+                                : date.toLocaleDateString('en-US', { weekday: 'short' })}
+                            </h1>
+                        </div>
+                    </button>
+                )}
+            </div>
         </div>
     );
 }
