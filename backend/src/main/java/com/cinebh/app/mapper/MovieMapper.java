@@ -9,7 +9,15 @@ import org.mapstruct.MappingTarget;
 
 import java.util.Comparator;
 
-@Mapper(componentModel = "spring", uses = {MovieImageMapper.class, GenreMapper.class})
+@Mapper(
+        componentModel = "spring",
+        uses = {
+                MovieImageMapper.class,
+                GenreMapper.class,
+                MovieWriterMapper.class,
+                MovieCastMapper.class,
+                MovieRatingMapper.class
+        })
 public interface MovieMapper {
 
     MovieDto toDto(Movie movie);
