@@ -1,6 +1,6 @@
-const Card = ({ title, imageUrl, details, badge = null }) => {
+const Card = ({ title, imageUrl, details = null, badge = null, onClick }) => {
     return (
-        <div className="flex flex-col justify-between items-center w-full">
+        <div className="flex flex-col justify-between items-center w-full cursor-pointer" onClick={onClick}>
 
             <div className="w-full aspect-square overflow-hidden flex-none rounded-xl relative">
                 <img
@@ -22,11 +22,14 @@ const Card = ({ title, imageUrl, details, badge = null }) => {
                 <h1 className="font-bold text-xs sm:text-sm md:text-base lg:text-lg text-neutral-800 line-clamp-1">
                     {title}
                 </h1>
-                <div className="flex justify-start gap-1 sm:gap-1.5 md:gap-2 text-xs sm:text-sm md:text-base font-regular text-neutral-500">
-                    {details.map((detail, index) =>
-                        <span key={index}>{detail}</span>
-                    )}
-                </div>
+
+                {details &&
+                    <div className="flex justify-start gap-1 sm:gap-1.5 md:gap-2 text-xs sm:text-sm md:text-base font-regular text-neutral-500">
+                        {details.map((detail, index) =>
+                            <span key={index}>{detail}</span>
+                        )}
+                    </div>
+                }
             </div>
 
         </div>
