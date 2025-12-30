@@ -4,5 +4,5 @@ export const ROUTES = {
     TICKETS: "/tickets",
     CURRENTLY_SHOWING: "/currently-showing",
     UPCOMING_MOVIES: "/upcoming-movies",
-    MOVIE_DETAILS: "/movie-details"
+    MOVIE_DETAILS: "/movie-details/:movieId"
 }

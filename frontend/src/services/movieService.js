@@ -26,11 +26,9 @@ export async function getUpcomingMovies({ title, cityId, venueId, genreId, start
     }
 }
 
-export async function getMovieDetails({ movieId }) {
+export async function getMovieDetails(movieId) {
     try {
-        const response = await api.get("/movies/movie-details",
-            { movieId: movieId }
-        );
+        const response = await api.get(`/movies/movie-details/${movieId}`);
         return response.data;
     }
     catch (error) {
