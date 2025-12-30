@@ -2,11 +2,15 @@ import { NavLink } from "react-router-dom";
 import Pagination from "../Pagination/Pagination";
 
 const ContentSection = ({ title, linkTo = null, items, getAll, renderItem }) => {
+    const content = items?.content || [];
+    const size = items?.size || 0;
+    const emptySlots = size > content.length ? size - content.length : 0;
+
     return (
         <div>
 
             <div className="flex items-center justify-between">
-                <h1 className="font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl text-neutral-800 mb-2 sm:mb-3 md:mb-4 lg:mb-5">
+                <h1 className="font-bold text-base sm:text-xl md:text-2xl lg:text-3xl text-neutral-800 mb-2 sm:mb-3 md:mb-4 lg:mb-5">
                     {title}
                 </h1>
 
@@ -18,17 +22,20 @@ const ContentSection = ({ title, linkTo = null, items, getAll, renderItem }) => 
 
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-2.5 md:gap-3 lg:gap-3">
-                {
-                    items?.content?.length > 0 &&
-                    items.content.map(item =>
-                        <div key={item.id}
-                            className="bg-neutral-0 border border-neutral-200 rounded-2xl shadow-card flex justify-center p-2"
-                        >
-                            {renderItem(item)}
-                        </div>
-                    )
-                }
+
+            <div className="grid gap-4 justify-center grid-cols-[repeat(auto-fit,minmax(8rem,1fr))]">  {
+                items?.content?.length > 0 &&
+                items.content.map(item =>
+                    <div key={item.id}
+                        className="bg-neutral-0 border border-neutral-200 rounded-2xl shadow-card flex justify-center p-2"
+                    >
+                        {renderItem(item)}
+                    </div>
+                )
+            }
+                {[...Array(emptySlots)].map((_, i) => (
+                    <div key={`Empty Slots ${i}`} className="invisible" aria-hidden="true" />
+                ))}
             </div>
 
             {items?.content?.length > 0 && (
