@@ -83,10 +83,6 @@ const Home = () => {
     const getMovieImage = (movie, type = "poster") => {
         return movie.images?.find(img => img.type === type)?.url || "";
     }
-    
-    const handleCardClick = (movie) => {
-        navigate(ROUTES.MOVIE_DETAILS, {state: movie})
-    } 
 
     const renderCarouselItem = (movie) => {
         return (
