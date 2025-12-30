@@ -326,6 +326,7 @@ const MovieDetails = () => {
                                 }
                             />
                         </div>
+
                     </div>
                 ) : (
                     <NoDataFound
