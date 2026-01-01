@@ -10,9 +10,12 @@ import Select from "../../components/Select/Select";
 import DatePicker from "../../components/DatePicker/DatePicker";
 import MovieDetails from "../../components/MovieDetails/MovieDetails";
 import SearchInput from "../../components/SearchInput/SearchInput";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { ROUTES } from "../../routes/routes";
 
 const CurrentlyShowing = () => {
+    const navigate = useNavigate()
+
     const [searchParams, setSearchParams] = useSearchParams()
     const [currentMovies, setCurrentMovies] = useState({
         content: [],
@@ -25,7 +28,6 @@ const CurrentlyShowing = () => {
     })
 
     const [projections, setProjections] = useState({})
-
     const [venues, setVenues] = useState([])
     const [cities, setCities] = useState([])
     const [genres, setGenres] = useState([])
@@ -227,6 +229,7 @@ const CurrentlyShowing = () => {
             <MovieDetails
                 movies={currentMovies.content}
                 projections={projections}
+                onClick={(movie) => navigate(ROUTES.MOVIE_DETAILS.replace(':movieId', movie.id))}
             />
 
             {currentMovies.hasNext && currentMovies.content.length > 0 && (

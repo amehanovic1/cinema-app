@@ -110,14 +110,7 @@ const MovieDetails = () => {
 
                 const res = await filterMovieProjections(params);
 
-                const unique = Array.from(
-                    new Map(res.map(p => [p.projectionTime, p])).values()
-                );
-
-                setProjections(previousProjections => ({
-                    ...previousProjections,
-                    [movie.id]: unique || []
-                }));
+                setProjections(res || []);
 
             } catch (error) {
                 console.log(error)
@@ -273,22 +266,28 @@ const MovieDetails = () => {
                             />
 
                             <div className="flex flex-col mt-10">
-                                <h1 className="text-neutral-800 font-bold text:base md:text-xl lg:text-xl">
-                                    Standard
-                                </h1>
+                                {projections.length > 0 ? (
+                                    <>
+                                        <h1 className="text-neutral-800 font-bold text:base md:text-xl lg:text-xl">
+                                            Standard
+                                        </h1>
 
-                                <div className="flex gap-4 flex-wrap mt-2">
-                                    {projections[movie.id]?.map(projection => (
-                                        <button
-                                            key={projection.id}
-                                            className="border border-neutral-200 rounded-lg px-3 py-2 
+                                        <div className="flex gap-4 flex-wrap mt-2">
+                                            {projections.map(projection => (
+                                                <button
+                                                    key={projection.id}
+                                                    className="border border-neutral-200 rounded-lg px-3 py-2 
                                                 hover:bg-dark-red hover:text-neutral-0 transition 
                                                 font-bold text-sm lg:text-base"
-                                        >
-                                            {formatTime(projection.projectionTime)}
-                                        </button>
-                                    ))}
-                                </div>
+                                                >
+                                                    {formatTime(projection.projectionTime)}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </>
+                                ) : (
+                                    <p className="text-neutral-600 italic">No projections available for the selected date.</p>
+                                )}
                             </div>
                         </div>
 
