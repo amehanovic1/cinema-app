@@ -1,6 +1,9 @@
-const Card = ({ title, imageUrl, details = null, badge = null, onClick }) => {
+const Card = ({ title, imageUrl, details = null, badge = null, onClick = null }) => {
     return (
-        <div className="flex flex-col justify-between items-center w-full cursor-pointer" onClick={onClick}>
+        <div
+            className={`flex flex-col justify-between items-center w-full 
+                        ${onClick ? "cursor-pointer" : ""}`}
+            onClick={onClick}>
 
             <div className="w-full aspect-square overflow-hidden flex-none rounded-xl relative">
                 <img
