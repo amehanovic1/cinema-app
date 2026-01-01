@@ -2,7 +2,7 @@ import NoDataFound from "../NoDataFound/NoDataFound";
 import { formatDate, formatTime } from "../../utils/dateTimeFormatter";
 import { faFilm } from "@fortawesome/free-solid-svg-icons";
 
-const MovieDetails = ({ movies, projections }) => {
+const MovieDetails = ({ movies, projections, onClick }) => {
 
     const getLanguageName = (languageCode) => {
         const displayNames = new Intl.DisplayNames(['en'], { type: 'language' });
@@ -13,7 +13,11 @@ const MovieDetails = ({ movies, projections }) => {
         <>
             {movies.length > 0 ? (
                 movies.map(movie => (
-                    <div key={movie.id} className="flex flex-col bg-neutral-0 border border-neutral-200 rounded-3xl shadow-card mb-6">
+                    <div
+                        key={movie.id}
+                        className={`flex flex-col mb-6 bg-neutral-0 border border-neutral-200 
+                                    rounded-3xl shadow-card ${onClick ? "cursor-pointer" : ""}`}
+                        onClick={() => onClick && onClick(movie)}>
 
                         <div className="grid grid-cols-1 md:grid-cols-12 gap-4 py-6 px-4">
 
