@@ -34,7 +34,7 @@ const VerificationCodeForm = ({ setView, email }) => {
                 setServerError(res.message);
             }
             if (res.success) {
-                setView("signUpSuccess")
+                setView("signIn")
             }
         } catch (error) {
             console.log(error)
