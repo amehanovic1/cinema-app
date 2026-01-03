@@ -6,8 +6,8 @@ const Drawer = ({ onClose, title, children }) => {
     return (
         <>
             <div
-                className="fixed inset-0 z-40 bg-black bg-opacity-50 transition-opacity 
-                           duration-300 opacity-100 pointer-events-auto">
+                className="fixed top-16 left-0 right-0 bottom-0 z-40 bg-black 
+                            bg-opacity-50 transition-opacity duration-300 opacity-100 pointer-events-auto">
             </div>
 
             <div className="fixed top-16 right-0 fixed z-50 
