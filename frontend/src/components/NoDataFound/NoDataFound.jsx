@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const NoDataFound = ({ icon, title, text, actionText }) => {
     return (
-        <div className="w-full flex items-center justify-center bg-neutral-0 
+        <div className="w-full h-full flex items-center justify-center bg-neutral-0 
                         rounded-3xl border-neutarl-200 shadow-input
                         p-4 sm:p-6 md:p-8 lg:p-10">
 

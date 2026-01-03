@@ -7,6 +7,11 @@ import VenueButtonList from './VenueButtonList/VenueButtonList';
 import Card from '../../components/Card/Card';
 import { ROUTES } from '../../routes/routes';
 import { useNavigate } from 'react-router-dom';
+import { CarouselSkeleton } from '../../components/Carousel/CarouselSkeleton';
+import { VenueButtonListSkeleton } from './VenueButtonList/VenueButtonListSkeleton';
+import { faFilm } from "@fortawesome/free-solid-svg-icons";
+import { CardSkeleton } from '../../components/Card/CardSkeleton';
+import NoDataFound from '../../components/NoDataFound/NoDataFound';
 
 const Home = () => {
     const navigate = useNavigate()
@@ -16,6 +21,19 @@ const Home = () => {
     const [venues, setVenues] = useState({})
     const [carouselMovies, setCarouselMovies] = useState([])
 
+    const [isLoadingCurrentMovies, setIsLoadingCurrentMovies] = useState(true)
+    const [isLoadingUpcomingMovies, setIsLoadingUpcomingMovies] = useState(true)
+    const [isLoadingVenues, setIsLoadingVenues] = useState(true)
+    
+    const createPlaceholderItems = (count = 4) => ({
+        content: [...Array(count)].map((_, i) => ({ id: i })),
+        size: count,
+        number: 0,
+        totalElements: count,
+        hasNext: false,
+        hasPrevious: false
+    });
+
     useEffect(() => {
         fetchCurrentlyShowing();
         fetchUpcoming();
@@ -24,6 +42,7 @@ const Home = () => {
 
     const fetchCurrentlyShowing = async (page = 0, size = 4) => {
         try {
+            setIsLoadingCurrentMovies(true);
             const res = await getCurrentlyShowingMovies({ page, size });
 
             setCurrentMovies(res);
@@ -32,24 +51,32 @@ const Home = () => {
 
         } catch (error) {
             console.log(error)
+        } finally {
+            setIsLoadingCurrentMovies(false);
         }
     }
 
     const fetchUpcoming = async (page = 0, size = 4) => {
         try {
+            setIsLoadingUpcomingMovies(true)
             const res = await getUpcomingMovies({ page, size });
             setUpcomingMovies(res);
         } catch (error) {
             console.log(error)
+        } finally {
+            setIsLoadingUpcomingMovies(false);
         }
     }
 
     const fetchVenues = async (page = 0, size = 4) => {
         try {
+            setIsLoadingVenues(true)
             const res = await getAllVenues({ page, size });
             setVenues(res);
         } catch (error) {
             console.log(error)
+        } finally {
+            setIsLoadingVenues(false);
         }
     }
 
@@ -83,64 +110,106 @@ const Home = () => {
     return (
         <>
             <div className='w-full h-[60vh] sm:h-[70vh] md:h-[80vh] lg:h-[90vh]'>
-                <Carousel
-                    items={carouselMovies}
-                    getImage={(movie) => getMovieImage(movie, "backdrop")}
-                    renderItem={renderCarouselItem}
-                    autoSlide={true}
-                    autoSlideInterval={4000}
-                />
+                {isLoadingCurrentMovies
+                    ? <CarouselSkeleton />
+                    : carouselMovies?.length > 0
+                        ? <Carousel
+                            items={carouselMovies}
+                            getImage={(movie) => getMovieImage(movie, "backdrop")}
+                            renderItem={renderCarouselItem}
+                            autoSlide={true}
+                            autoSlideInterval={4000}
+                        />
+                        : <NoDataFound
+                            icon={faFilm}
+                            title={"No movies to preview"}
+                            text={"We are working on updating our schedule for currently showing movies. Stay tuned for amazing movie experience or explore our other exciting cinema features in the meantime!"}
+                        />
+                }
             </div>
 
-            <VenueButtonList />
+            {isLoadingVenues
+                ? <VenueButtonListSkeleton />
+                : <VenueButtonList />
+            }
 
             <div className='bg-neutral-25 flex flex-col gap-6 p-4 sm:p-6 md:p-8 lg:p-12'>
 
                 <ContentSection
                     title="Currently Showing"
                     linkTo={ROUTES.CURRENTLY_SHOWING}
-                    items={currentMovies}
+                    items={isLoadingCurrentMovies ? createPlaceholderItems(4) : currentMovies}
                     getAll={fetchCurrentlyShowing}
                     renderItem={(movie) =>
-                        <Card
-                            title={movie.title}
-                            imageUrl={getMovieImage(movie)}
-                            details={[`${movie.durationInMinutes} MIN |`, movie.genres?.[0]?.name]}
-                            onClick={() => navigate(ROUTES.MOVIE_DETAILS.replace(':movieId', movie.id))}
-                        />
+                        isLoadingCurrentMovies
+                            ? <CardSkeleton />
+                            : <Card
+                                title={movie.title}
+                                imageUrl={getMovieImage(movie)}
+                                details={[`${movie.durationInMinutes} MIN |`, movie.genres?.[0]?.name]}
+                                onClick={() => navigate(ROUTES.MOVIE_DETAILS.replace(':movieId', movie.id))}
+                            />
                     }
                 />
+
+
+                {!isLoadingCurrentMovies && (!currentMovies?.content || currentMovies.content.length === 0) &&
+                    <NoDataFound
+                        icon={faFilm}
+                        title={"No movies to preview"}
+                        text={"We are working on updating our schedule for currently showing movies. Stay tuned for amazing movie experience or explore our other exciting cinema features in the meantime!"}
+                    />
+                }
 
                 <ContentSection
                     title="Upcoming Movies"
                     linkTo={ROUTES.UPCOMING_MOVIES}
-                    items={upcomingMovies}
+                    items={isLoadingUpcomingMovies ? createPlaceholderItems(4) : upcomingMovies}
                     getAll={fetchUpcoming}
                     renderItem={(movie) =>
-                        <Card
-                            title={movie.title}
-                            imageUrl={getMovieImage(movie)}
-                            details={[`${movie.durationInMinutes} MIN`, "|", movie.genres?.[0]?.name]}
-                            onClick={() => navigate(ROUTES.MOVIE_DETAILS.replace(':movieId', movie.id))}
-                        />
+                        isLoadingUpcomingMovies
+                            ? <CardSkeleton />
+                            : <Card
+                                title={movie.title}
+                                imageUrl={getMovieImage(movie)}
+                                details={[`${movie.durationInMinutes} MIN`, "|", movie.genres?.[0]?.name]}
+                                onClick={() => navigate(ROUTES.MOVIE_DETAILS.replace(':movieId', movie.id))}
+                            />
                     }
                 />
+
+                {!isLoadingUpcomingMovies && (!upcomingMovies?.content || upcomingMovies.content.length === 0) &&
+                    <NoDataFound
+                        icon={faFilm}
+                        title={"No movies to preview"}
+                        text={"We are working on updating our schedule for upcoming movies. Stay tuned for amazing movie experience or explore our other exciting cinema features in the meantime!"}
+                    />
+                }
 
                 <ContentSection
                     title="Venues"
-                    items={venues}
+                    items={isLoadingVenues ? createPlaceholderItems(4) : venues}
                     getAll={fetchVenues}
                     renderItem={(venue) =>
-                        <Card
-                            title={venue.name}
-                            imageUrl={venue.imageUrl}
-                            details={[`${venue.street},`, venue.city.name]}
-                        />
+                        isLoadingVenues
+                            ? <CardSkeleton />
+                            : <Card
+                                title={venue.name}
+                                imageUrl={venue.imageUrl}
+                                details={[`${venue.street},`, venue.city.name]}
+                            />
                     }
                 />
 
-            </div>
+                {!isLoadingVenues && (!venues?.content || venues.content.length === 0) &&
+                    <NoDataFound
+                        icon={faFilm}
+                        title={"No venues to preview"}
+                        text={"We are working on updating venues. Stay tuned for amazing movie experience or explore our other exciting cinema features in the meantime!"}
+                    />
+                }
 
+            </div>
         </>
     );
 }
