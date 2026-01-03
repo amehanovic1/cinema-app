@@ -144,6 +144,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setIsVerified(true);
         userRepository.save(user);
 
+        emailService.sendUserVerificationSuccessEmail(user.getEmail());
+
         return AuthResponseDto.builder()
                 .isVerified(true)
                 .success(true)
