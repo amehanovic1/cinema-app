@@ -1,5 +1,6 @@
 package com.cinebh.app.controller;
 
+import com.cinebh.app.dto.MovieProjectionDetailsDto;
 import com.cinebh.app.dto.MovieProjectionDto;
 import com.cinebh.app.service.MovieProjectionService;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,13 +24,19 @@ public class MovieProjectionController {
     @GetMapping
     public ResponseEntity<List<MovieProjectionDto>> filterMovieProjections(
             @RequestParam UUID movieId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  LocalDate projectionDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate projectionDate,
             @RequestParam(required = false) UUID cityId,
             @RequestParam(required = false) UUID venueId
-            ) {
+    ) {
         return ResponseEntity.ok(movieProjectionService.filterMovieProjections(
-                movieId, projectionDate, cityId, venueId
+                        movieId, projectionDate, cityId, venueId
                 )
         );
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<MovieProjectionDetailsDto> getMovieProjection(@PathVariable UUID id) {
+        return ResponseEntity.ok(movieProjectionService.getMovieProjection(id));
+    }
+
 }
