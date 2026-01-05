@@ -57,7 +57,6 @@ export async function getCurrentUser() {
         return response.data;
     }
     catch (error) {
-        console.log("Get user profile failed:", error);
         return null;
     }
 }
