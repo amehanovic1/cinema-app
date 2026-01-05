@@ -8,6 +8,7 @@ import Layout from './layouts/Layout/Layout';
 import CurrentlyShowing from './pages/CurrentlyShowing/CurrentlyShowing';
 import UpcomingMovies from './pages/UpcomingMovies/UpcomingMovies';
 import MovieDetails from './pages/MovieDetails/MovieDetails';
+import Booking from './pages/Booking/Booking';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path={ROUTES.CURRENTLY_SHOWING} element={<CurrentlyShowing />} />
         <Route path={ROUTES.UPCOMING_MOVIES} element={<UpcomingMovies />} />
         <Route path={ROUTES.MOVIE_DETAILS} element={<MovieDetails />} />
+        <Route path={ROUTES.BOOKING} element={<Booking />} />
       </Routes>
     </Layout>
   );
