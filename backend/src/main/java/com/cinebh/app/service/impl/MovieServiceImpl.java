@@ -7,6 +7,7 @@ import com.cinebh.app.mapper.MovieMapper;
 import com.cinebh.app.repository.MovieRepository;
 import com.cinebh.app.service.MovieService;
 import com.cinebh.app.specification.MovieSpecification;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -53,6 +54,14 @@ public class MovieServiceImpl implements MovieService {
                 MovieSpecification.upcomingSpecification(title, cityId, venueId, genreId, startDate, endDate);
 
         return mapToPaginatedResponse(movieRepository.findAll(movieSpecification, pageable));
+    }
+
+    @Override
+    public MovieDto getMovieDetails(UUID movieId) {
+        Movie movie = movieRepository.findById(movieId)
+                .orElseThrow(() -> new EntityNotFoundException("Movie not found"));
+
+        return movieMapper.toDto(movie);
     }
 
     private PageDto<MovieDto> mapToPaginatedResponse(Page<Movie> page) {

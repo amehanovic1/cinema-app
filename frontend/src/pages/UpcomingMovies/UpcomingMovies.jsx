@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { getVenuesByCityId } from "../../services/venueService";
 import { getCities } from "../../services/cityService";
 import { getGenres } from "../../services/genreService";
@@ -12,8 +12,11 @@ import DateRangePicker from "../../components/DateRangePicker/DateRangePicker";
 import NoDataFound from "../../components/NoDataFound/NoDataFound";
 import { format } from "date-fns"
 import { isDateThisWeek } from "../../utils/dateTimeUtils";
+import { ROUTES } from "../../routes/routes";
 
 const UpcomingMovies = () => {
+    const navigate = useNavigate()
+
     const [searchParams, setSearchParams] = useSearchParams()
     const [upcomingMovies, setUpcomingMovies] = useState({
         content: [],
@@ -130,13 +133,11 @@ const UpcomingMovies = () => {
         setSearchParams(newParams);
     }
 
-
     const handleLoadMore = () => {
         const newParams = new URLSearchParams(searchParams);
         newParams.set("page", page + 1);
         setSearchParams(newParams);
     }
-
 
     const getMovieImage = (movie, type = "poster") => {
         return movie.images?.find(img => img.type === type)?.url || "";
@@ -188,7 +189,6 @@ const UpcomingMovies = () => {
                 />
             </div>
 
-
             {upcomingMovies.content.length > 0 ? (
                 <>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -204,6 +204,7 @@ const UpcomingMovies = () => {
                                             ? `Opens ${format(movie.projectionStartDate, "EEEE")}`
                                             : format(movie.projectionStartDate, "EEE, MMM dd, yyyy")
                                     }
+                                    onClick={() => navigate(ROUTES.MOVIE_DETAILS.replace(':movieId', movie.id))}
                                 />
                             </div>
                         )}

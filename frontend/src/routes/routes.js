@@ -3,5 +3,6 @@ export const ROUTES = {
     ABOUT_US: "/about-us",
     TICKETS: "/tickets",
     CURRENTLY_SHOWING: "/currently-showing",
-    UPCOMING_MOVIES: "/upcoming-movies"
+    UPCOMING_MOVIES: "/upcoming-movies",
+    MOVIE_DETAILS: "/movie-details/:movieId"
 }

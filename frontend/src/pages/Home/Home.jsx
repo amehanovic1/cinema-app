@@ -6,8 +6,10 @@ import Carousel from '../../components/Carousel/Carousel';
 import VenueButtonList from './VenueButtonList/VenueButtonList';
 import Card from '../../components/Card/Card';
 import { ROUTES } from '../../routes/routes';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+    const navigate = useNavigate()
 
     const [currentMovies, setCurrentMovies] = useState({})
     const [upcomingMovies, setUpcomingMovies] = useState({})
@@ -90,8 +92,9 @@ const Home = () => {
                 />
             </div>
 
-            <div className='flex flex-col gap-6 bg-neutral-25'>
-                <VenueButtonList />
+            <VenueButtonList />
+
+            <div className='bg-neutral-25 flex flex-col gap-6 p-4 sm:p-6 md:p-8 lg:p-12'>
 
                 <ContentSection
                     title="Currently Showing"
@@ -103,6 +106,7 @@ const Home = () => {
                             title={movie.title}
                             imageUrl={getMovieImage(movie)}
                             details={[`${movie.durationInMinutes} MIN |`, movie.genres?.[0]?.name]}
+                            onClick={() => navigate(ROUTES.MOVIE_DETAILS.replace(':movieId', movie.id))}
                         />
                     }
                 />
@@ -117,6 +121,7 @@ const Home = () => {
                             title={movie.title}
                             imageUrl={getMovieImage(movie)}
                             details={[`${movie.durationInMinutes} MIN`, "|", movie.genres?.[0]?.name]}
+                            onClick={() => navigate(ROUTES.MOVIE_DETAILS.replace(':movieId', movie.id))}
                         />
                     }
                 />

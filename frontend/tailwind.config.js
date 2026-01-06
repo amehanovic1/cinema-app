@@ -21,7 +21,8 @@ module.exports = {
         'neutral-600': '#475467',
         'neutral-300': '#D0D5DD',
         'error-300': '#FDA29B',
-        'error-500': '#F04438'
+        'error-500': '#F04438',
+        'neutral-900': '#101828'
       },
       fontFamily: {
         urbanist: ["Urbanist", "sans-serif"]

@@ -17,4 +17,6 @@ public interface MovieService {
     PageDto<MovieDto> getUpcomingMovies(
             String title, UUID cityId, UUID venueId, UUID genreId,
             LocalDate startDate, LocalDate endDate, Pageable pageable);
+
+    MovieDto getMovieDetails(UUID movieId);
 }
