@@ -8,10 +8,11 @@ import { times } from "../../data/timesData";
 import { faClock, faLocationDot, faBuilding, faVideo } from "@fortawesome/free-solid-svg-icons";
 import Select from "../../components/Select/Select";
 import DatePicker from "../../components/DatePicker/DatePicker";
-import MovieDetails from "../../components/MovieDetails/MovieDetails";
+import MovieCard from "../../components/MovieCard/MovieCard";
 import SearchInput from "../../components/SearchInput/SearchInput";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ROUTES } from "../../routes/routes";
+import MovieCardSkeleton from "../../components/MovieCard/MovieCardSkeleton";
 
 const CurrentlyShowing = () => {
     const navigate = useNavigate()
@@ -31,6 +32,8 @@ const CurrentlyShowing = () => {
     const [venues, setVenues] = useState([])
     const [cities, setCities] = useState([])
     const [genres, setGenres] = useState([])
+
+    const [isLoading, setIsLoading] = useState(true)
 
     const page = Number(searchParams.get("page") || 0)
     const size = searchParams.get("size") || 5
@@ -60,6 +63,7 @@ const CurrentlyShowing = () => {
 
     const fetchCurrentlyShowing = async () => {
         try {
+            setIsLoading(true);
 
             const city = cities.find(c => c.name === selectedCity);
             const venue = venues.find(v => v.name === selectedVenue);
@@ -85,6 +89,8 @@ const CurrentlyShowing = () => {
             fetchMovieProjections(res.content)
         } catch (error) {
             console.log(error)
+        } finally {
+            setTimeout(() => setIsLoading(false), 200);
         }
     }
 
@@ -170,7 +176,6 @@ const CurrentlyShowing = () => {
         setSearchParams(newParams);
     }
 
-
     return (
         <div className="flex flex-col gap-4 px-6 md:px-14 py-4 md:py-5 bg-neutral-25">
 
@@ -226,20 +231,23 @@ const CurrentlyShowing = () => {
                 Quick reminder that our cinema schedule is on a ten-day update cycle.
             </h1>
 
-            <MovieDetails
-                movies={currentMovies.content}
-                projections={projections}
-                onClick={(movie) => navigate(ROUTES.MOVIE_DETAILS.replace(':movieId', movie.id))}
-            />
+            {isLoading
+                ? <MovieCardSkeleton />
+                : <MovieCard
+                    movies={currentMovies.content}
+                    projections={projections}
+                    onClick={(movie) => navigate(ROUTES.MOVIE_DETAILS.replace(':movieId', movie.id))} />
+            }
 
-            {currentMovies.hasNext && currentMovies.content.length > 0 && (
+            {currentMovies.hasNext && currentMovies.content.length > 0 &&
                 <button
                     onClick={handleLoadMore}
                     className="flex justify-center text-urbanist text-dark-red 
                         text-semibold text-sm sm:text-base md:text-lg lg:text-lg underline">
                     Load more
                 </button>
-            )}
+            }
+
 
         </div>
     );

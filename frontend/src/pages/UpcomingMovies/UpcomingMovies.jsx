@@ -13,6 +13,7 @@ import NoDataFound from "../../components/NoDataFound/NoDataFound";
 import { format } from "date-fns"
 import { isDateThisWeek } from "../../utils/dateTimeUtils";
 import { ROUTES } from "../../routes/routes";
+import { CardSkeleton } from "../../components/Card/CardSkeleton";
 
 const UpcomingMovies = () => {
     const navigate = useNavigate()
@@ -30,6 +31,8 @@ const UpcomingMovies = () => {
     const [venues, setVenues] = useState([])
     const [cities, setCities] = useState([])
     const [genres, setGenres] = useState([])
+
+    const [isLoading, setIsLoading] = useState(true)
 
     const page = Number(searchParams.get("page") || 0)
     const size = searchParams.get("size") || 4
@@ -59,6 +62,7 @@ const UpcomingMovies = () => {
 
     const fetchUpcoming = async () => {
         try {
+            setIsLoading(true);
 
             const city = cities.find(c => c.name === selectedCity);
             const venue = venues.find(v => v.name === selectedVenue);
@@ -81,9 +85,10 @@ const UpcomingMovies = () => {
                 ? res
                 : { ...res, content: [...upcomingMovies.content, ...res.content] })
 
-
         } catch (error) {
             console.log(error)
+        } finally {
+            setTimeout(() => setIsLoading(false), 200);
         }
     }
 
@@ -189,10 +194,15 @@ const UpcomingMovies = () => {
                 />
             </div>
 
-            {upcomingMovies.content.length > 0 ? (
-                <>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                        {upcomingMovies.content.map((movie) =>
+            {isLoading || upcomingMovies.content.length > 0
+                ? (<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                    {isLoading
+                        ? Array.from({ length: 4 }).map((_, i) => (
+                            <div key={i} className="bg-neutral-0 border border-neutral-200 rounded-2xl shadow-card p-2">
+                                <CardSkeleton />
+                            </div>
+                        ))
+                        : upcomingMovies.content.map((movie) =>
                             <div key={movie.id} className="bg-neutral-0 border border-neutral-200 rounded-2xl shadow-card flex justify-center p-2">
 
                                 <Card
@@ -208,25 +218,24 @@ const UpcomingMovies = () => {
                                 />
                             </div>
                         )}
-                    </div>
-
-                    {upcomingMovies.hasNext && upcomingMovies.content.length > 0 && (
-                        <button
-                            onClick={handleLoadMore}
-                            className="flex justify-center text-urbanist text-dark-red 
-                                        text-semibold text-sm sm:text-base md:text-lg lg:text-lg underline">
-                            Load more
-                        </button>
-                    )}
-                </>
-            ) : (
-                <NoDataFound
+                </div>
+                ) : <NoDataFound
                     icon={faFilm}
                     title={"No movies to preview for current range"}
                     text={"We are working on updating our schedule for upcoming movies. Stay tuned for amazing movie experience or explore our other exciting cinema features in the meantime!"}
                     actionText={"Explore Upcoming Movies"}
                 />
-            )}
+            }
+
+            {upcomingMovies.hasNext && upcomingMovies.content.length > 0 &&
+                <button
+                    onClick={handleLoadMore}
+                    className="flex justify-center text-urbanist text-dark-red 
+                                text-semibold text-sm sm:text-base md:text-lg lg:text-lg underline">
+                    Load more
+                </button>
+            }
+
         </div>
     );
 }
