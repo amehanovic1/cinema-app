@@ -9,18 +9,23 @@ import CurrentlyShowing from './pages/CurrentlyShowing/CurrentlyShowing';
 import UpcomingMovies from './pages/UpcomingMovies/UpcomingMovies';
 import MovieDetails from './pages/MovieDetails/MovieDetails';
 import Booking from './pages/Booking/Booking';
+import { useContext } from 'react';
+import AuthContext from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 
 function App() {
+  const { user } = useContext(AuthContext)
+
   return (
     <Layout>
       <Routes>
         <Route path={ROUTES.HOME} element={<Home />} />
-        <Route path={ROUTES.ABOUT_US} element={<AboutUs />} /> 
+        <Route path={ROUTES.ABOUT_US} element={<AboutUs />} />
         <Route path={ROUTES.TICKETS} element={<Tickets />} />
         <Route path={ROUTES.CURRENTLY_SHOWING} element={<CurrentlyShowing />} />
         <Route path={ROUTES.UPCOMING_MOVIES} element={<UpcomingMovies />} />
         <Route path={ROUTES.MOVIE_DETAILS} element={<MovieDetails />} />
-        <Route path={ROUTES.BOOKING} element={<Booking />} />
+        <Route path={ROUTES.BOOKING} element={<ProtectedRoute isAuthenticated={!!user} > <Booking /> </ProtectedRoute>} />
       </Routes>
     </Layout>
   );

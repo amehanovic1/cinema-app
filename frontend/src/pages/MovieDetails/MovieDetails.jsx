@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { getCurrentlyShowingMovies, getMovieDetails } from "../../services/movieService";
 import { useNavigate, useParams } from "react-router-dom";
 import { format } from "date-fns";
@@ -17,10 +17,12 @@ import { ROUTES } from "../../routes/routes";
 import MovieDetailsSkeleton from "./MovieDetailsSkeleton";
 import { faFilm } from "@fortawesome/free-solid-svg-icons";
 import NoDataFound from "../../components/NoDataFound/NoDataFound";
+import AuthContext from "../../context/AuthContext";
 
 const MovieDetails = () => {
     const navigate = useNavigate()
     const { movieId } = useParams()
+    const { user } = useContext(AuthContext)
 
     const [movie, setMovie] = useState(null)
     const [venues, setVenues] = useState([])
@@ -318,20 +320,25 @@ const MovieDetails = () => {
                                     </p>
                                 )}
 
-                                
-                                <div className="mt-auto">
-                                    <hr className="mb-2 bg-neutral-700"/>
-                                    <button className={` w-1/2 mb-4 font-bold py-2 px-2 rounded-lg transition
+                                {user && (
+                                    <div className="mt-auto">
+
+                                        <hr className="mt-auto mb-2 bg-neutral-700" />
+
+                                        <div className="flex gap-2">
+                                            <button className={`w-1/2 mb-4 font-bold py-2 px-2 border border-dark-red rounded-lg transition
                                             ${selectedCity && selectedVenue && selectedProjection
-                                            ? "bg-dark-red text-white"
-                                            : "bg-neutral-200 text-neutral-500 cursor-not-allowed"
-                                        }`}
-                                        disabled={!(selectedCity && selectedVenue && selectedProjection)}
-                                        onClick={() => navigate(ROUTES.BOOKING.replace(':id', selectedProjection.id))}
-                                    >
-                                        Buy ticket
-                                    </button>
-                                </div>
+                                                    ? "bg-neutral-0 text-dark-red"
+                                                    : "border-neutral-200 bg-neutral-200 text-neutral-500 cursor-not-allowed"
+                                                }`}
+                                                disabled={!(selectedCity && selectedVenue && selectedProjection)}
+                                                onClick={() => navigate(ROUTES.BOOKING.replace(':id', selectedProjection.id))}
+                                            >
+                                                Reserve Ticket
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
 
 
                             </div>
