@@ -50,7 +50,7 @@ public class MovieController {
         return movieService.getCurrentlyShowingMovies(title, cityId, venueId, genreId, date, time, pageable);
     }
 
-    @GetMapping("/movie-details/{movieId}")
+    @GetMapping("/{movieId}")
     public ResponseEntity<MovieDto> getMovieDetails(@PathVariable UUID movieId) {
         return ResponseEntity.ok(movieService.getMovieDetails(movieId));
     }
