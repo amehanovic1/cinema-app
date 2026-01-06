@@ -1,4 +1,4 @@
-const MovieDetailsSkeleton = ({ size = 3 }) => {
+const MovieCardSkeleton = ({ size = 3 }) => {
     const skeletons = Array.from({ length: size });
 
     return (
@@ -46,4 +46,4 @@ const MovieDetailsSkeleton = ({ size = 3 }) => {
     );
 }
 
-export default MovieDetailsSkeleton;
+export default MovieCardSkeleton;

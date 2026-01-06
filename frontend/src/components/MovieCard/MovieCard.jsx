@@ -2,7 +2,7 @@ import NoDataFound from "../NoDataFound/NoDataFound";
 import { formatDate, formatTime } from "../../utils/dateTimeFormatter";
 import { faFilm } from "@fortawesome/free-solid-svg-icons";
 
-const MovieDetails = ({ movies, projections, onClick }) => {
+const MovieCard = ({ movies, projections, onClick }) => {
 
     const getLanguageName = (languageCode) => {
         const displayNames = new Intl.DisplayNames(['en'], { type: 'language' });
@@ -87,4 +87,4 @@ const MovieDetails = ({ movies, projections, onClick }) => {
     );
 }
 
-export default MovieDetails;
+export default MovieCard;

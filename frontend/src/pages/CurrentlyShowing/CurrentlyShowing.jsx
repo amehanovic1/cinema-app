@@ -8,11 +8,11 @@ import { times } from "../../data/timesData";
 import { faClock, faLocationDot, faBuilding, faVideo } from "@fortawesome/free-solid-svg-icons";
 import Select from "../../components/Select/Select";
 import DatePicker from "../../components/DatePicker/DatePicker";
-import MovieDetails from "../../components/MovieDetails/MovieDetails";
+import MovieCard from "../../components/MovieCard/MovieCard";
 import SearchInput from "../../components/SearchInput/SearchInput";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ROUTES } from "../../routes/routes";
-import MovieDetailsSkeleton from "../../components/MovieDetails/MovieDetailsSkeleton";
+import MovieCardSkeleton from "../../components/MovieCard/MovieCardSkeleton";
 
 const CurrentlyShowing = () => {
     const navigate = useNavigate()
@@ -232,8 +232,8 @@ const CurrentlyShowing = () => {
             </h1>
 
             {isLoading
-                ? <MovieDetailsSkeleton />
-                : <MovieDetails
+                ? <MovieCardSkeleton />
+                : <MovieCard
                     movies={currentMovies.content}
                     projections={projections}
                     onClick={(movie) => navigate(ROUTES.MOVIE_DETAILS.replace(':movieId', movie.id))} />
