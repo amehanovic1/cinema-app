@@ -1,6 +1,6 @@
 package com.cinebh.app.mapper;
 
-import com.cinebh.app.dto.BookingDto;
+import com.cinebh.app.dto.booking.BookingDto;
 import com.cinebh.app.entity.Booking;
 import org.mapstruct.Mapper;
 

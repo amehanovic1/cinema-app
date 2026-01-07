@@ -1,5 +1,6 @@
-package com.cinebh.app.dto;
+package com.cinebh.app.dto.booking;
 
+import com.cinebh.app.dto.UserDto;
 import com.cinebh.app.enums.BookingStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
