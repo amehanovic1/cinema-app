@@ -1,5 +1,6 @@
 package com.cinebh.app.dto;
 
+import com.cinebh.app.dto.booking.BookingDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

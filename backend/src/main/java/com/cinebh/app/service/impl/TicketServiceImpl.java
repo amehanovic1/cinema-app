@@ -15,9 +15,10 @@ public class TicketServiceImpl implements TicketService {
     private final TicketRepository ticketRepository;
 
     @Override
-    public List<String> getReservedSeatsForProjection(UUID projectionId) {
-        return ticketRepository.findByProjectionId(projectionId).stream()
-                .map(ticket -> ticket.getHallSeat().getSeatCode())
+    public List<UUID> getReservedSeatsForProjection(UUID projectionId) {
+        return ticketRepository.findByProjectionId(projectionId)
+                .stream()
+                .map(ticket -> ticket.getHallSeat().getId())
                 .toList();
     }
 }

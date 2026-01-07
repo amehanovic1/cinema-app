@@ -5,5 +5,6 @@ import java.util.UUID;
 
 public interface TicketService {
 
-    List<String> getReservedSeatsForProjection(UUID projectionId);
+    List<UUID> getReservedSeatsForProjection(UUID projectionId);
+
 }

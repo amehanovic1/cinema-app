@@ -8,9 +8,7 @@ import com.cinebh.app.enums.ImageType;
 import com.cinebh.app.mapper.CinemaHallMapper;
 import com.cinebh.app.mapper.MovieProjectionMapper;
 import com.cinebh.app.repository.MovieProjectionRepository;
-import com.cinebh.app.repository.TicketRepository;
 import com.cinebh.app.service.MovieProjectionService;
-import com.cinebh.app.service.TicketService;
 import com.cinebh.app.specification.MovieProjectionSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +26,6 @@ public class MovieProjectionServiceImpl implements MovieProjectionService {
     private final MovieProjectionRepository movieProjectionRepository;
     private final MovieProjectionMapper movieProjectionMapper;
     private final CinemaHallMapper cinemaHallMapper;
-    private final TicketRepository ticketRepository;
-    private final TicketService ticketService;
 
     @Override
     public List<MovieProjectionDto> filterMovieProjections(
@@ -58,9 +54,8 @@ public class MovieProjectionServiceImpl implements MovieProjectionService {
                 .map(MovieImage::getUrl)
                 .orElse(null);
 
-        CinemaHallDto cinemaHallDto = cinemaHallMapper.toDto(cinemaHall);
 
-        List<String> reservedSeats = ticketService.getReservedSeatsForProjection(id);
+        CinemaHallDto cinemaHallDto = cinemaHallMapper.toDto(cinemaHall);
 
         return new MovieProjectionDetailsDto(
                 movieProjection.getId(),
@@ -71,8 +66,7 @@ public class MovieProjectionServiceImpl implements MovieProjectionService {
                 movie.getLanguage(),
                 movie.getDurationInMinutes(),
                 posterUrl,
-                cinemaHallDto,
-                reservedSeats
+                cinemaHallDto
         );
     }
 }
