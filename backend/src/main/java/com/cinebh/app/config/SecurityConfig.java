@@ -50,7 +50,8 @@ public class SecurityConfig {
                                 "/api/genres/**",
                                 "/api/venues/**",
                                 "/api/movie-projections/**",
-                                "/api/seat-types/**"
+                                "/api/seat-types/**",
+                                "/api/hall-seats/**"
                         ).permitAll()
                         .requestMatchers(
                                 "/swagger-ui/**",

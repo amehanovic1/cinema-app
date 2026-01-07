@@ -15,5 +15,4 @@ public class HallSeatDto {
     private UUID id;
     private String seatCode;
     private SeatTypeDto seatType;
-    private CinemaHallDto cinemaHall;
 }
