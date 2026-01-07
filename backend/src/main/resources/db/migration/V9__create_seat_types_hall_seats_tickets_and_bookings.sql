@@ -1,8 +1,3 @@
-CREATE TYPE "booking_status" AS ENUM (
-    'reserved',
-    'paid'
-);
-
 CREATE TABLE "seat_types"
 (
     "id"          uuid PRIMARY KEY     DEFAULT gen_random_uuid(),
@@ -33,7 +28,7 @@ CREATE TABLE "bookings"
     "id"           uuid PRIMARY KEY        DEFAULT gen_random_uuid(),
     "user_id"      uuid           NOT NULL,
     "ticket_count" integer        NOT NULL,
-    "status"       booking_status NOT NULL,
+    "status"       varchar NOT NULL,
     "created_at"   timestamptz    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at"   timestamptz             DEFAULT CURRENT_TIMESTAMP,
 
