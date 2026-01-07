@@ -31,7 +31,9 @@ public class EmailServiceImpl implements EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
             Context context = new Context();
-            context.setVariable("code", text);
+            if(text != null) {
+                context.setVariable("code", text);
+            }
             String html = templateEngine.process(template, context);
 
             helper.setFrom(fromEmail);
@@ -50,5 +52,11 @@ public class EmailServiceImpl implements EmailService {
     @Async
     public void sendUserVerificationEmail(String email, String verificationCode) {
         sendEmail(email, "Account Activation", verificationCode, "verification_email.html");
+    }
+
+    @Override
+    @Async
+    public void sendUserVerificationSuccessEmail(String email) {
+        sendEmail(email, "Account Verified", null, "verification_success_email.html");
     }
 }
