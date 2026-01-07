@@ -18,11 +18,14 @@ import MovieDetailsSkeleton from "./MovieDetailsSkeleton";
 import { faFilm } from "@fortawesome/free-solid-svg-icons";
 import NoDataFound from "../../components/NoDataFound/NoDataFound";
 import AuthContext from "../../context/AuthContext";
+import AuthDrawer from "../AuthDrawer/AuthDrawer";
 
 const MovieDetails = () => {
     const navigate = useNavigate()
     const { movieId } = useParams()
     const { user } = useContext(AuthContext)
+    const [authDrawerOpen, setAuthDrawerOpen] = useState(false)
+
 
     const [movie, setMovie] = useState(null)
     const [venues, setVenues] = useState([])
@@ -152,6 +155,14 @@ const MovieDetails = () => {
             console.log(error)
         }
     }, [])
+
+    const handleReservation = () => {
+        if (user) {
+            navigate(ROUTES.BOOKING.replace(':projectionId', selectedProjection.id))
+        }
+
+        setAuthDrawerOpen(true);
+    }
 
     const getLanguageName = (languageCode) => {
         const displayNames = new Intl.DisplayNames(['en'], { type: 'language' });
@@ -320,25 +331,23 @@ const MovieDetails = () => {
                                     </p>
                                 )}
 
-                                {user && (
-                                    <div className="mt-auto">
+                                <div className="mt-auto">
 
-                                        <hr className="mt-auto mb-2 bg-neutral-700" />
+                                    <hr className="mt-auto mb-2 bg-neutral-700" />
 
-                                        <div className="flex gap-2">
-                                            <button className={`w-1/2 mb-4 font-bold py-2 px-2 border border-dark-red rounded-lg transition
+                                    <div className="flex gap-2">
+                                        <button className={`w-1/2 mb-4 font-bold py-2 px-2 border border-dark-red rounded-lg transition
                                             ${selectedCity && selectedVenue && selectedProjection
-                                                    ? "bg-neutral-0 text-dark-red"
-                                                    : "border-neutral-200 bg-neutral-200 text-neutral-500 cursor-not-allowed"
-                                                }`}
-                                                disabled={!(selectedCity && selectedVenue && selectedProjection)}
-                                                onClick={() => navigate(ROUTES.BOOKING.replace(':id', selectedProjection.id))}
-                                            >
-                                                Reserve Ticket
-                                            </button>
-                                        </div>
+                                                ? "bg-neutral-0 text-dark-red"
+                                                : "border-neutral-200 bg-neutral-200 text-neutral-500 cursor-not-allowed"
+                                            }`}
+                                            disabled={!(selectedCity && selectedVenue && selectedProjection)}
+                                            onClick={handleReservation}
+                                        >
+                                            Reserve Ticket
+                                        </button>
                                     </div>
-                                )}
+                                </div>
 
 
                             </div>
@@ -359,6 +368,10 @@ const MovieDetails = () => {
                                 }
                             />
                         </div>
+
+                        {authDrawerOpen &&
+                            <AuthDrawer onClose={() => setAuthDrawerOpen(false)}/>
+                        }
                     </div>
                 ) : (
                     <NoDataFound
