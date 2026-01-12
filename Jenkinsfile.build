@@ -105,13 +105,13 @@ pipeline {
                             if [ "$RUN_TESTS" = "true" ]; then
                                 ./mvnw clean package
                             else
-                                ./mvnw clean package -DskipTests
+                                ./mvnw clean package -Dmaven.test.skip=true
                             fi
                         else
                             if [ "$RUN_TESTS" = "true" ]; then
                                 mvn clean package
                             else
-                                mvn clean package -DskipTests
+                                mvn clean package -Dmaven.test.skip=true
                             fi
                         fi
                     '''
