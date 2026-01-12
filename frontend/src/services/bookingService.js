@@ -1,9 +1,9 @@
 import { api } from "./api";
 
-export async function makeBooking({ userId, projectionId, hallSeatsId, status }) {
+export async function reserve({ userId, projectionId, hallSeatsId }) {
     try {
-        const response = await api.post("/booking",
-            { userId, projectionId, hallSeatsId, status });
+        const response = await api.post("/booking/reserve",
+            { userId, projectionId, hallSeatsId });
         return response.data;
     }
     catch (error) {

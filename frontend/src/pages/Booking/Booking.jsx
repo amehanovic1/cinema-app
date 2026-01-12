@@ -7,7 +7,7 @@ import CinemaHallSeatBooking from "../../components/CinemaHallSeatBooking/Cinema
 import { getSeatTypes } from "../../services/seatTypeService";
 import { getCinemaHallSeats, getReservedSeatsForProjection } from "../../services/hallSeatService";
 import AuthContext from "../../context/AuthContext";
-import { makeBooking } from "../../services/bookingService";
+import { reserve } from "../../services/bookingService";
 import PopUp from "../../components/PopUp/PopUp";
 import { ROUTES } from "../../routes/routes";
 import BookingSkeleton from "./BookingSkeleton";
@@ -89,8 +89,8 @@ const Booking = () => {
         const hallSeatsId = selectedSeats.map(seat => seat.id)
 
         try {
-            await makeBooking({
-                userId: user.id, projectionId: projectionId, hallSeatsId: hallSeatsId, status: "reserved"
+            await reserve({
+                userId: user.id, projectionId: projectionId, hallSeatsId: hallSeatsId
             });
             setIsBookingSuccessful(true);
         } catch (error) {
