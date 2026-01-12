@@ -129,7 +129,7 @@ pipeline {
 
                 dir('frontend') {
                     sh '''
-                        npm ci
+                        npm install
                         npm run build
                     '''
                     echo "[OK] Frontend built successfully"
