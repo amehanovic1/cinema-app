@@ -9,7 +9,7 @@ pipeline {
         )
         string(
             name: 'BRANCH_NAME',
-            defaultValue: 'develop',
+            defaultValue: 'main',
             description: 'Branch to build from'
         )
         booleanParam(
@@ -54,7 +54,8 @@ pipeline {
                     $class: 'GitSCM',
                     branches: [[name: "*/${params.BRANCH_NAME}"]],
                     userRemoteConfigs: [[
-                        url: env.GIT_URL
+                        url: env.GIT_URL,
+                        credentialsId: 'github-token'
                     ]]
                 ])
 
