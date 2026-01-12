@@ -16,8 +16,8 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
-    @PostMapping
-    public ResponseEntity<BookingResponseDto> createBooking(@RequestBody BookingRequestDto requestDto) {
-        return bookingService.createBooking(requestDto);
+    @PostMapping("/reserve")
+    public ResponseEntity<BookingResponseDto> reserve(@RequestBody BookingRequestDto requestDto) {
+        return bookingService.reserve(requestDto);
     }
 }

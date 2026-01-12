@@ -28,7 +28,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional
     @Override
-    public ResponseEntity<BookingResponseDto> createBooking(BookingRequestDto requestDto) {
+    public ResponseEntity<BookingResponseDto> reserve(BookingRequestDto requestDto) {
         try {
             User user = userRepository.findById(requestDto.getUserId())
                     .orElseThrow(() -> new EntityNotFoundException("User not found"));
@@ -38,7 +38,7 @@ public class BookingServiceImpl implements BookingService {
 
             Booking newBooking = new Booking();
             newBooking.setTicketCount(requestDto.getHallSeatsId().size());
-            newBooking.setStatus(BookingStatus.valueOf(requestDto.getStatus()));
+            newBooking.setStatus(BookingStatus.reserved);
             newBooking.setUser(user);
 
             bookingRepository.save(newBooking);

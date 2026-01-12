@@ -16,5 +16,4 @@ public class BookingRequestDto {
     private UUID userId;
     private UUID projectionId;
     private List<UUID> hallSeatsId;
-    private String status;
 }

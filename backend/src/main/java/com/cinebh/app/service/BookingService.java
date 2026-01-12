@@ -6,5 +6,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface BookingService {
 
-    ResponseEntity<BookingResponseDto> createBooking(BookingRequestDto requestDto);
+    ResponseEntity<BookingResponseDto> reserve(BookingRequestDto requestDto);
 }
