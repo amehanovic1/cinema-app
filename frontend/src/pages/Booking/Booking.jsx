@@ -5,8 +5,7 @@ import { format } from "date-fns";
 import { formatTime } from "../../utils/dateTimeFormatter";
 import CinemaHallSeatBooking from "../../components/CinemaHallSeatBooking/CinemaHallSeatBooking";
 import { getSeatTypes } from "../../services/seatTypeService";
-import { getCinemaHallSeats } from "../../services/hallSeatService";
-import { getReservedSeatsForProjection } from "../../services/ticketService";
+import { getCinemaHallSeats, getReservedSeatsForProjection } from "../../services/hallSeatService";
 import AuthContext from "../../context/AuthContext";
 import { makeBooking } from "../../services/bookingService";
 import PopUp from "../../components/PopUp/PopUp";
@@ -165,7 +164,7 @@ const Booking = () => {
                     <PopUp
                         showPopUp={isBookingSuccessful}
                         title="Seats Reserved!"
-                        text={"Your reservation confirmation has been sent to your email. You can also see your reservation details on your User profile and set a reminder for ticket purchasing."}
+                        text={"Your reservation confirmation has been sent to your email."}
                         buttonText={"Back To Home"}
                         navigateTo={() => navigate(ROUTES.HOME)}
                     />

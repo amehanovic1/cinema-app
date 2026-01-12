@@ -10,3 +10,14 @@ export async function getCinemaHallSeats(hallId) {
         throw error;
     }
 }
+
+export async function getReservedSeatsForProjection(projectionId) {
+    try {
+        const response = await api.get(`/hall-seats/reserved/${projectionId}`);
+        return response.data;
+    }
+    catch (error) {
+        console.log("Error fetching reserved hall seats:", error);
+        throw error;
+    }
+}
