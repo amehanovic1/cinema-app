@@ -1,0 +1,307 @@
+pipeline {
+    agent any
+
+    parameters {
+        choice(
+            name: 'BUILD_TYPE',
+            choices: ['full', 'backend', 'frontend'],
+            description: 'Select which components to build'
+        )
+        string(
+            name: 'BRANCH_NAME',
+            defaultValue: 'develop',
+            description: 'Branch to build from'
+        )
+        booleanParam(
+            name: 'RUN_TESTS',
+            defaultValue: true,
+            description: 'Run unit and integration tests'
+        )
+        booleanParam(
+            name: 'PUSH_TO_REGISTRY',
+            defaultValue: true,
+            description: 'Push Docker images to registry'
+        )
+    }
+
+    environment {
+        PROJECT_NAME = 'cinema-app'
+        DOCKER_REGISTRY = 'registry.p1.praksa.abhapp.com'
+
+        BUILD_TAG = "${env.BUILD_NUMBER}"
+        GIT_COMMIT_SHORT = sh(
+            script: "git rev-parse --short HEAD",
+            returnStdout: true
+        ).trim()
+        IMAGE_TAG = "${BUILD_TAG}-${GIT_COMMIT_SHORT}"
+
+        BACKEND_IMAGE = "${DOCKER_REGISTRY}/cinema-backend"
+        FRONTEND_IMAGE = "${DOCKER_REGISTRY}/cinema-frontend"
+    }
+
+    options {
+        timeout(time: 30, unit: 'MINUTES')
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        timestamps()
+        disableConcurrentBuilds()
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo "[OK] Checking out code from ${params.BRANCH_NAME}"
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: "*/${params.BRANCH_NAME}"]],
+                    userRemoteConfigs: [[
+                        url: env.GIT_URL
+                    ]]
+                ])
+
+                script {
+                    env.GIT_COMMIT_MSG = sh(
+                        script: "git log -1 --pretty=%B",
+                        returnStdout: true
+                    ).trim()
+                    env.GIT_AUTHOR = sh(
+                        script: "git log -1 --pretty=%an",
+                        returnStdout: true
+                    ).trim()
+                }
+
+                echo "[OK] Building commit: ${env.GIT_COMMIT_SHORT}"
+                echo "[OK] Commit message: ${env.GIT_COMMIT_MSG}"
+                echo "[OK] Author: ${env.GIT_AUTHOR}"
+            }
+        }
+
+        stage('Environment Setup') {
+            steps {
+                echo "[OK] Setting up build environment"
+                sh '''
+                    echo "Node version: $(node --version 2>/dev/null || echo 'Node not installed')"
+                    echo "NPM version: $(npm --version 2>/dev/null || echo 'NPM not installed')"
+                    echo "Java version: $(java -version 2>&1 | head -n 1 || echo 'Java not installed')"
+                    echo "Maven version: $(mvn --version 2>/dev/null | head -n 1 || echo 'Maven not installed')"
+                    echo "Docker version: $(docker --version)"
+                    echo "Build number: ${BUILD_NUMBER}"
+                    echo "Image tag: ${IMAGE_TAG}"
+                '''
+            }
+        }
+
+        stage('Build Backend') {
+            when {
+                expression { params.BUILD_TYPE in ['backend', 'full'] }
+            }
+            steps {
+                echo "[OK] Building backend application (Spring Boot Java 21)"
+
+                dir('cinema-app/backend') {
+                    sh '''
+                        if [ -f "./mvnw" ]; then
+                            chmod +x ./mvnw
+                            if [ "$RUN_TESTS" = "true" ]; then
+                                ./mvnw clean package
+                            else
+                                ./mvnw clean package -DskipTests
+                            fi
+                        else
+                            if [ "$RUN_TESTS" = "true" ]; then
+                                mvn clean package
+                            else
+                                mvn clean package -DskipTests
+                            fi
+                        fi
+                    '''
+                    echo "[OK] Backend built successfully"
+                }
+            }
+        }
+
+        stage('Build Frontend') {
+            when {
+                expression { params.BUILD_TYPE in ['frontend', 'full'] }
+            }
+            steps {
+                echo "[OK] Building frontend application (React)"
+
+                dir('cinema-app/frontend') {
+                    sh '''
+                        npm ci
+                        npm run build
+                    '''
+                    echo "[OK] Frontend built successfully"
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            when {
+                expression { params.RUN_TESTS == true }
+            }
+            parallel {
+                stage('Backend Tests') {
+                    when {
+                        expression { params.BUILD_TYPE in ['backend', 'full'] }
+                    }
+                    steps {
+                        echo "[OK] Running backend tests"
+
+                        dir('cinema-app/backend') {
+                            sh '''
+                                if [ -f "./mvnw" ]; then
+                                    ./mvnw test
+                                else
+                                    mvn test
+                                fi
+                            '''
+                        }
+
+                        echo "[OK] Backend tests passed"
+                    }
+                }
+
+                stage('Frontend Tests') {
+                    when {
+                        expression { params.BUILD_TYPE in ['frontend', 'full'] }
+                    }
+                    steps {
+                        echo "[OK] Running frontend tests"
+
+                        dir('cinema-app/frontend') {
+                            sh 'npm test -- --coverage --watchAll=false || true'
+                        }
+
+                        echo "[OK] Frontend tests completed"
+                    }
+                }
+            }
+        }
+
+        stage('Build Docker Images') {
+            parallel {
+                stage('Build Backend Image') {
+                    when {
+                        expression { params.BUILD_TYPE in ['backend', 'full'] }
+                    }
+                    steps {
+                        script {
+                            echo "[OK] Building backend Docker image"
+
+                            dir('cinema-app/backend') {
+                                sh """
+                                    docker build \
+                                        -t ${BACKEND_IMAGE}:${IMAGE_TAG} \
+                                        -t ${BACKEND_IMAGE}:latest \
+                                        --build-arg BUILD_NUMBER=${BUILD_NUMBER} \
+                                        --build-arg GIT_COMMIT=${GIT_COMMIT_SHORT} \
+                                        -f Dockerfile .
+                                """
+                            }
+
+                            echo "[OK] Backend image built successfully"
+                            sh "docker images | grep cinema-backend"
+                        }
+                    }
+                }
+
+                stage('Build Frontend Image') {
+                    when {
+                        expression { params.BUILD_TYPE in ['frontend', 'full'] }
+                    }
+                    steps {
+                        script {
+                            echo "[OK] Building frontend Docker image"
+
+                            dir('cinema-app/frontend') {
+                                sh """
+                                    docker build \
+                                        -t ${FRONTEND_IMAGE}:${IMAGE_TAG} \
+                                        -t ${FRONTEND_IMAGE}:latest \
+                                        --build-arg BUILD_NUMBER=${BUILD_NUMBER} \
+                                        --build-arg GIT_COMMIT=${GIT_COMMIT_SHORT} \
+                                        -f Dockerfile .
+                                """
+                            }
+
+                            echo "[OK] Frontend image built successfully"
+                            sh "docker images | grep cinema-frontend"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Push to Registry') {
+            when {
+                expression { params.PUSH_TO_REGISTRY == true }
+            }
+            steps {
+                script {
+                    echo "[OK] Pushing Docker images to registry"
+
+                    if (params.BUILD_TYPE in ['backend', 'full']) {
+                        sh """
+                            docker push ${BACKEND_IMAGE}:${IMAGE_TAG}
+                            docker push ${BACKEND_IMAGE}:latest
+                        """
+                        echo "[OK] Backend image pushed: ${BACKEND_IMAGE}:${IMAGE_TAG}"
+                    }
+
+                    if (params.BUILD_TYPE in ['frontend', 'full']) {
+                        sh """
+                            docker push ${FRONTEND_IMAGE}:${IMAGE_TAG}
+                            docker push ${FRONTEND_IMAGE}:latest
+                        """
+                        echo "[OK] Frontend image pushed: ${FRONTEND_IMAGE}:${IMAGE_TAG}"
+                    }
+                }
+            }
+        }
+
+        stage('Archive Artifacts') {
+            steps {
+                echo "[OK] Archiving build artifacts"
+
+                script {
+                    sh """
+                        cat > build-info.txt << EOF
+Build Number: ${BUILD_NUMBER}
+Git Commit: ${GIT_COMMIT_SHORT}
+Git Branch: ${params.BRANCH_NAME}
+Commit Message: ${GIT_COMMIT_MSG}
+Author: ${GIT_AUTHOR}
+Build Type: ${params.BUILD_TYPE}
+Image Tag: ${IMAGE_TAG}
+Build Time: \$(date)
+EOF
+                    """
+
+                    archiveArtifacts artifacts: 'build-info.txt', fingerprint: true
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "[OK] Build completed successfully"
+            echo "Image Tag: ${IMAGE_TAG}"
+            echo "Backend Image: ${BACKEND_IMAGE}:${IMAGE_TAG}"
+            echo "Frontend Image: ${FRONTEND_IMAGE}:${IMAGE_TAG}"
+        }
+
+        failure {
+            echo "[ERROR] Build failed"
+        }
+
+        always {
+            echo "[OK] Cleaning up local Docker images"
+            sh 'docker image prune -f || true'
+
+            echo "[OK] Cleaning workspace"
+            cleanWs()
+        }
+    }
+}

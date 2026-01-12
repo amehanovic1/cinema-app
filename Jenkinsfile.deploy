@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+
+    environment {
+        COMPOSE_FILE = 'docker-compose.prod.yaml'
+    }
+
+    stages {
+        stage('Pull Latest Images') {
+            steps {
+                script {
+                    echo '[OK] Pulling latest images from registry'
+                    sh 'docker compose -f ${COMPOSE_FILE} pull'
+                }
+            }
+        }
+
+        stage('Stop Running Containers') {
+            steps {
+                script {
+                    echo '[OK] Stopping running containers'
+                    sh 'docker compose -f ${COMPOSE_FILE} down || true'
+                }
+            }
+        }
+
+        stage('Deploy Application') {
+            steps {
+                script {
+                    echo '[OK] Deploying Cinema application'
+                    sh 'docker compose -f ${COMPOSE_FILE} up -d'
+                }
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                script {
+                    echo '[OK] Verifying deployment'
+                    sh 'docker compose -f ${COMPOSE_FILE} ps'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '[OK] Cinema app deployment completed successfully'
+        }
+        failure {
+            echo '[ERROR] Cinema app deployment failed'
+        }
+    }
+}

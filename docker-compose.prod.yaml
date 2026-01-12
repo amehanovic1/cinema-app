@@ -1,0 +1,97 @@
+services:
+  cinema-db:
+    image: postgres:16-alpine
+    container_name: cinema-db
+    environment:
+      POSTGRES_DB: ${CINEMA_DB_NAME:-cinebh}
+      POSTGRES_USER: ${CINEMA_DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${CINEMA_DB_PASSWORD:-postgres}
+    ports:
+      - "5433:5432"
+    volumes:
+      - cinema_postgres_data:/var/lib/postgresql/data
+    networks:
+      - cinema-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${CINEMA_DB_USERNAME:-postgres} -d ${CINEMA_DB_NAME:-cinebh}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  cinema-backend:
+    image: registry.p1.praksa.abhapp.com/cinema-backend:latest
+    container_name: cinema-backend
+    environment:
+      DB_URL: jdbc:postgresql://cinema-db:5432/${CINEMA_DB_NAME:-cinebh}
+      DB_USERNAME: ${CINEMA_DB_USERNAME:-postgres}
+      DB_PASSWORD: ${CINEMA_DB_PASSWORD:-postgres}
+      FRONTEND_URL: https://cinema.p1.praksa.abhapp.com
+      SERVER_PORT: 8443
+      SERVER_SSL_KEY_STORE_PASSWORD: changeit
+      MAIL_USERNAME: ${CINEMA_MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${CINEMA_MAIL_PASSWORD:-}
+      MAIL_FROM: ${CINEMA_MAIL_FROM:-noreply@cinebh.com}
+      JWT_SECRET: ${CINEMA_JWT_SECRET:-yourjwtsecretkeychangeinproduction123456789}
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "9000:8443"
+    volumes:
+      - ./backend/.cert:/app/.cert:ro
+    networks:
+      - cinema-network
+    depends_on:
+      cinema-db:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-kf", "https://localhost:8443/api/cities"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  cinema-frontend:
+    image: registry.p1.praksa.abhapp.com/cinema-frontend:latest
+    container_name: cinema-frontend
+    environment:
+      REACT_APP_API_URL: https://cinema-api.p1.praksa.abhapp.com/api
+      PORT: 3000
+    ports:
+      - "8000:3000"
+    networks:
+      - cinema-network
+    depends_on:
+      - cinema-backend
+    restart: unless-stopped
+
+  cinema-db-init:
+    image: postgres:16-alpine
+    container_name: cinema-db-init
+    volumes:
+      - ./backend/src/main/resources/db/seed/seed_data.sql:/seed_data.sql
+    environment:
+      PGPASSWORD: ${CINEMA_DB_PASSWORD:-postgres}
+    networks:
+      - cinema-network
+    depends_on:
+      cinema-backend:
+        condition: service_started
+    command: >
+      sh -c "
+        echo '[OK] Waiting for backend to complete migrations...' &&
+        sleep 20 &&
+        echo '[OK] Loading seed data...' &&
+        psql -h cinema-db -U ${CINEMA_DB_USERNAME:-postgres} -d ${CINEMA_DB_NAME:-cinebh} -f /seed_data.sql &&
+        echo '[OK] Seed data loaded successfully!'
+      "
+    restart: on-failure
+
+networks:
+  cinema-network:
+    driver: bridge
+    name: cinema-network
+
+volumes:
+  cinema_postgres_data:
+    name: cinema_postgres_data
