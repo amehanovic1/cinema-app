@@ -1,5 +1,6 @@
 package com.cinebh.app.entity;
 
+import com.cinebh.app.enums.SeatCategory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,8 +24,9 @@ public class SeatType extends Auditable {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "seat_type", nullable = false)
-    private String seatType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category", nullable = false)
+    private SeatCategory category;
 
     @Column(name = "price", nullable = false)
     private Double price;

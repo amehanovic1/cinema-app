@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class SeatTypeDto {
     private UUID id;
-    private String seatType;
+    private String category;
     private Double price;
     private String description;
 }

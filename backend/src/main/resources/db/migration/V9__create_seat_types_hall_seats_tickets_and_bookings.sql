@@ -1,11 +1,17 @@
+CREATE TYPE "seat_category" AS ENUM (
+    'regular',
+    'vip',
+    'love'
+);
+
 CREATE TABLE "seat_types"
 (
-    "id"          uuid PRIMARY KEY     DEFAULT gen_random_uuid(),
-    "seat_type"   varchar     NOT NULL,
-    "price"       decimal     NOT NULL,
-    "description" varchar     NOT NULL,
-    "created_at"  timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at"  timestamptz          DEFAULT CURRENT_TIMESTAMP
+    "id"          uuid PRIMARY KEY       DEFAULT gen_random_uuid(),
+    "category"    seat_category NOT NULL,
+    "price"       decimal       NOT NULL,
+    "description" varchar       NOT NULL,
+    "created_at"  timestamptz   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at"  timestamptz            DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE "hall_seats"
