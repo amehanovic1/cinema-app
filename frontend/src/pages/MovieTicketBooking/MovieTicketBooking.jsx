@@ -8,7 +8,7 @@ import { getSeatTypes } from "../../services/seatTypeService";
 import { getCinemaHallSeats, getReservedSeatsForProjection } from "../../services/hallSeatService";
 import AuthContext from "../../context/AuthContext";
 import { reserve } from "../../services/bookingService";
-import PopUp from "../../components/PopUp/PopUp";
+import Modal from "../../components/Modal/Modal";
 import { ROUTES } from "../../routes/routes";
 import MovieTicketBookingSkeleton from "./MovieTicketBookingSkeleton";
 
@@ -22,7 +22,7 @@ const MovieTicketBooking = () => {
     const [seatTypes, setSeatTypes] = useState([])
     const [reservedSeats, setReservedSeats] = useState([])
 
-    const [isBookingSuccessful, setIsBookingSuccessful] = useState(false);
+    const [isReservationSuccessful, setIsReservationSuccessful] = useState(false);
     const [isLoading, setIsLoading] = useState(true)
 
     const cinemaHall = projectionDetails?.cinemaHall;
@@ -92,13 +92,13 @@ const MovieTicketBooking = () => {
             await reserve({
                 userId: user.id, projectionId: projectionId, hallSeatsId: hallSeatsId
             });
-            setIsBookingSuccessful(true);
+            setIsReservationSuccessful(true);
         } catch (error) {
             console.log(error);
         }
     }
 
-    if(isLoading) return <MovieTicketBookingSkeleton />
+    if (isLoading) return <MovieTicketBookingSkeleton />
 
     return (
         <>
@@ -161,14 +161,21 @@ const MovieTicketBooking = () => {
                         handleClick={handleReservation}
                     />
 
-                    <PopUp
-                        showPopUp={isBookingSuccessful}
-                        title="Seats Reserved!"
-                        text={"Your reservation confirmation has been sent to your email."}
-                        buttonText={"Back To Home"}
-                        navigateTo={() => navigate(ROUTES.HOME)}
-                    />
-
+                    {isReservationSuccessful &&
+                        <Modal>
+                            <Modal.Header description={"Seats Reserved!"} />
+                            <Modal.Body>
+                                <p>Your reservation confirmation has been sent to your email.</p>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <button
+                                    className="px-2 py-1 border rounded-md border-dark-red text-dark-red font-bold text-xs md:text-sm"
+                                    onClick={() => navigate(ROUTES.HOME)}>
+                                    Back To Home
+                                </button>
+                            </Modal.Footer>
+                        </Modal>
+                    }
                 </div>
             )}
         </>
