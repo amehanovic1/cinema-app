@@ -6,6 +6,19 @@ pipeline {
     }
 
     stages {
+        stage('Prepare SSL Certificates') {
+            steps {
+                script {
+                    echo '[OK] Copying SSL certificates to workspace'
+                    sh '''
+                        mkdir -p backend/.cert
+                        cp -p /home/ec2-user/cinema-app/backend/.cert/keystore.p12 backend/.cert/
+                        ls -la backend/.cert/
+                    '''
+                }
+            }
+        }
+
         stage('Pull Latest Images') {
             steps {
                 script {
@@ -19,7 +32,11 @@ pipeline {
             steps {
                 script {
                     echo '[OK] Stopping running containers'
-                    sh 'docker-compose -f ${COMPOSE_FILE} down || true'
+                    sh '''
+                        docker stop cinema-frontend cinema-backend cinema-db cinema-db-init 2>/dev/null || true
+                        docker rm cinema-frontend cinema-backend cinema-db cinema-db-init 2>/dev/null || true
+                        docker-compose -f ${COMPOSE_FILE} down || true
+                    '''
                 }
             }
         }
