@@ -1,4 +1,4 @@
-const BookingSkeleton = () => {
+const MovieTicketBookingSkeleton = () => {
     return (
         <div className="animate-pulse p-4 md:p-6 space-y-4">
 
@@ -72,4 +72,4 @@ const BookingSkeleton = () => {
     );
 };
 
-export default BookingSkeleton;
+export default MovieTicketBookingSkeleton;

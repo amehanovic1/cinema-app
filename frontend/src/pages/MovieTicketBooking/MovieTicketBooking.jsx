@@ -10,9 +10,9 @@ import AuthContext from "../../context/AuthContext";
 import { reserve } from "../../services/bookingService";
 import PopUp from "../../components/PopUp/PopUp";
 import { ROUTES } from "../../routes/routes";
-import BookingSkeleton from "./BookingSkeleton";
+import MovieTicketBookingSkeleton from "./MovieTicketBookingSkeleton";
 
-const Booking = () => {
+const MovieTicketBooking = () => {
     const { projectionId } = useParams()
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -98,7 +98,7 @@ const Booking = () => {
         }
     }
 
-    if(isLoading) return <BookingSkeleton />
+    if(isLoading) return <MovieTicketBookingSkeleton />
 
     return (
         <>
@@ -175,4 +175,4 @@ const Booking = () => {
     )
 }
 
-export default Booking;
+export default MovieTicketBooking;
