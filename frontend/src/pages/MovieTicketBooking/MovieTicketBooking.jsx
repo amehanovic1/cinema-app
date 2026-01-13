@@ -3,7 +3,7 @@ import { getMovieProjectionDetails } from "../../services/movieProjectionService
 import { useNavigate, useParams } from "react-router-dom";
 import { format } from "date-fns";
 import { formatTime } from "../../utils/dateTimeFormatter";
-import CinemaHallSeatBooking from "../../components/CinemaHallSeatBooking/CinemaHallSeatBooking";
+import CinemaHallSeatBooking from "./CinemaHallSeatBooking/CinemaHallSeatBooking";
 import { getSeatTypes } from "../../services/seatTypeService";
 import { getCinemaHallSeats, getReservedSeatsForProjection } from "../../services/hallSeatService";
 import AuthContext from "../../context/AuthContext";

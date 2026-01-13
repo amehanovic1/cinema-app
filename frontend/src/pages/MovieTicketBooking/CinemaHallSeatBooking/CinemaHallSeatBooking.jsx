@@ -21,25 +21,22 @@ const CinemaHallSeatBooking = ({ seatTypes, hallSeats = [], reservedSeats, handl
 
 
     const getSeatClassName = (seat) => {
-        const baseClassName = "flex justify-center items-center border h-10 px-4 py-2" +
-            "border-neutral-200 rounded text-sm text-neutral-800 cursor-pointer";
+        const baseClassName =
+            "flex justify-center items-center border h-10 px-4 py-2 border-neutral-200 rounded text-sm text-neutral-800";
 
-        if (seat.seatType.seatType === "Love") {
-            if (seat.status === "booked")
-                return `${baseClassName} w-24 bg-neutral-200 text-white cursor-not-allowed`;
-            if (seat.selected)
-                return `${baseClassName} w-24 bg-dark-red text-white border-dark-red`;
-            return `${baseClassName} w-24`;
+        const widthClass = seat.seatType.category === "Love" ? "w-24" : "w-12";
+
+        let colorClass = "";
+        if (seat.status === "booked") {
+            colorClass = "bg-neutral-200 text-white";
+        } else if (seat.selected) {
+            colorClass = "bg-dark-red text-white border-dark-red";
         }
 
-        if (seat.status === "booked")
-            return `${baseClassName} w-12 bg-neutral-200 text-white cursor-not-allowed`
+        const cursorClass = seat.status === "booked" ? "cursor-not-allowed" : "cursor-pointer";
 
-        if (seat.selected)
-            return `${baseClassName} w-12 bg-dark-red text-white border border-dark-red`
-
-        return `${baseClassName} w-12`;
-    }
+        return `${baseClassName} ${widthClass} ${colorClass} ${cursorClass}`;
+    };
 
     const handleSeatClick = (seat) => {
         if (seat.status === "booked") return;
@@ -68,30 +65,30 @@ const CinemaHallSeatBooking = ({ seatTypes, hallSeats = [], reservedSeats, handl
             <div className="md:row-span-3 flex flex-col items-center gap-4">
                 <h1 className="text-neutral-800 font-regular text-sm md:text-base">Cinema Screen</h1>
 
-                    <svg className="h-4">
-                        <ellipse
-                            cx="50%"
-                            cy="100%"
-                            rx="50%"
-                            ry="100%"
-                            fill="none"
-                            stroke="#B22222"
-                            strokeWidth="3"
-                        />
-                    </svg>
+                <svg className="h-4">
+                    <ellipse
+                        cx="50%"
+                        cy="100%"
+                        rx="50%"
+                        ry="100%"
+                        fill="none"
+                        stroke="#B22222"
+                        strokeWidth="3"
+                    />
+                </svg>
 
                 <div className="overflow-x-auto">
                     <div className="flex flex-wrap justify-center items-center">
 
                         {seats.map((seat, index) => {
-                            const isLoveSeat = seat.seatType.seatType === "Love";
+                            const isLoveSeat = seat.seatType.category === "Love";
                             return (
                                 <React.Fragment key={seat.id}>
                                     <div
                                         className={getSeatClassName(seat)}
                                         onClick={() => handleSeatClick(seat)}>
 
-                                        {seat.seatType.seatType === "VIP" && (
+                                        {seat.seatType.category === "VIP" && (
                                             <FontAwesomeIcon
                                                 icon={faStar}
                                                 className={`w-3 h-3 ${seat.selected ? "text-white" : "text-neutral-400"}`}

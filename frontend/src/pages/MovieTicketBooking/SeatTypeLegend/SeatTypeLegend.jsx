@@ -25,21 +25,21 @@ const SeatTypeLegend = ({ seatTypes }) => {
             <div className="flex flex-col gap-2">
 
                 {seatTypes.map((type) => (
-                    <div key={type.seatType} className="flex items-center gap-2 text-sm">
+                    <div key={type.category} className="flex items-center gap-2 text-sm">
                         <span
                             className={`h-6 md:h-8 px-2 py-1 flex items-center justify-center 
                                         bg-neutral-0 border border-neutral-200 rounded 
-                                        ${type.seatType === "VIP"
+                                        ${type.category === "VIP"
                                     ? "bg-neutral-0 w-8 md:w-10"
-                                    : type.seatType === "Love" ? "w-16 md:w-20" : "w-8 md:w-10"}`}
+                                    : type.category === "Love" ? "w-16 md:w-20" : "w-8 md:w-10"}`}
                         >
-                            {type.seatType === "VIP" && (
+                            {type.category === "VIP" && (
                                 <FontAwesomeIcon
                                     icon={faStar}
                                     className={"w-2 h-2 md:w-3 md:h-3 text-neutral-400"} />
                             )}
                             XY </span>
-                        <span className="text-sm text-neutral-700">{type.seatType} Seats ({type.price} BAM)</span>
+                        <span className="text-sm text-neutral-700">{type.category} Seats ({type.price} BAM)</span>
                     </div>
                 ))}
             </div>
