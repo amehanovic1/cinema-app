@@ -10,7 +10,7 @@ pipeline {
             steps {
                 script {
                     echo '[OK] Pulling latest images from registry'
-                    sh 'docker compose -f ${COMPOSE_FILE} pull'
+                    sh 'docker-compose -f ${COMPOSE_FILE} pull'
                 }
             }
         }
@@ -19,7 +19,7 @@ pipeline {
             steps {
                 script {
                     echo '[OK] Stopping running containers'
-                    sh 'docker compose -f ${COMPOSE_FILE} down || true'
+                    sh 'docker-compose -f ${COMPOSE_FILE} down || true'
                 }
             }
         }
@@ -28,7 +28,7 @@ pipeline {
             steps {
                 script {
                     echo '[OK] Deploying Cinema application'
-                    sh 'docker compose -f ${COMPOSE_FILE} up -d'
+                    sh 'docker-compose -f ${COMPOSE_FILE} up -d'
                 }
             }
         }
@@ -37,7 +37,7 @@ pipeline {
             steps {
                 script {
                     echo '[OK] Verifying deployment'
-                    sh 'docker compose -f ${COMPOSE_FILE} ps'
+                    sh 'docker-compose -f ${COMPOSE_FILE} ps'
                 }
             }
         }
