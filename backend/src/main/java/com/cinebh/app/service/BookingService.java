@@ -7,4 +7,6 @@ import org.springframework.http.ResponseEntity;
 public interface BookingService {
 
     ResponseEntity<BookingResponseDto> reserve(BookingRequestDto requestDto);
+
+    void deleteExpiredReservations();
 }
