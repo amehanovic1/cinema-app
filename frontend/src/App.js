@@ -26,7 +26,7 @@ function App() {
         <Route path={ROUTES.UPCOMING_MOVIES} element={<UpcomingMovies />} />
         <Route path={ROUTES.MOVIE_DETAILS} element={<MovieDetails />} />
         <Route
-          path={ROUTES.BOOKING}
+          path={ROUTES.MOVIE_TICKET_BOOKING}
           element={<ProtectedRoute isAuthenticated={!!user} > <MovieTicketBooking /> </ProtectedRoute>}
         />
       </Routes>

@@ -158,7 +158,7 @@ const MovieDetails = () => {
 
     const handleReservation = () => {
         if (user) {
-            navigate(ROUTES.BOOKING.replace(':projectionId', selectedProjection.id))
+            navigate(ROUTES.MOVIE_TICKET_BOOKING.replace(':projectionId', selectedProjection.id))
         }
 
         setAuthDrawerOpen(true);
