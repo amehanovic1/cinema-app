@@ -3,6 +3,10 @@ pipeline {
 
     environment {
         COMPOSE_FILE = 'docker-compose.prod.yaml'
+        CINEMA_DB_PASSWORD = credentials('cinema-db-password')
+        CINEMA_JWT_SECRET = credentials('cinema-jwt-secret')
+        CINEMA_MAIL_USERNAME = credentials('cinema-mail-username')
+        CINEMA_MAIL_PASSWORD = credentials('cinema-mail-password')
     }
 
     stages {
