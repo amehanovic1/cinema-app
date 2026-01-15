@@ -1,9 +1,9 @@
 import { Navigate } from 'react-router-dom';
 import { ROUTES } from '../../routes/routes';
 
-const ProtectedRoute = ({ isAuthenticated, children }) => {
+const ProtectedRoute = ({ isAuthenticated, isLoading, children }) => {
 
-    if (!isAuthenticated) {
+    if (!isAuthenticated && !isLoading) {
         return <Navigate to={ROUTES.HOME} replace />;
     }
 

@@ -14,7 +14,7 @@ import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import MovieTicketBooking from './pages/MovieTicketBooking/MovieTicketBooking';
 
 function App() {
-  const { user } = useContext(AuthContext)
+  const { user, isLoading } = useContext(AuthContext)
 
   return (
     <Layout>
@@ -27,7 +27,11 @@ function App() {
         <Route path={ROUTES.MOVIE_DETAILS} element={<MovieDetails />} />
         <Route
           path={ROUTES.MOVIE_TICKET_BOOKING}
-          element={<ProtectedRoute isAuthenticated={!!user} > <MovieTicketBooking /> </ProtectedRoute>}
+          element={
+            <ProtectedRoute isAuthenticated={user} isLoading={isLoading}>
+              <MovieTicketBooking />
+            </ProtectedRoute>
+          }
         />
       </Routes>
     </Layout>
