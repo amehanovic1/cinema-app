@@ -26,7 +26,6 @@ const MovieDetails = () => {
     const { user } = useContext(AuthContext)
     const [authDrawerOpen, setAuthDrawerOpen] = useState(false)
 
-
     const [movie, setMovie] = useState(null)
     const [venues, setVenues] = useState([])
     const [cities, setCities] = useState([])
@@ -158,9 +157,8 @@ const MovieDetails = () => {
 
     const handleReservation = () => {
         if (user) {
-            navigate(ROUTES.MOVIE_TICKET_BOOKING.replace(':projectionId', selectedProjection.id))
+            return navigate(ROUTES.MOVIE_TICKET_BOOKING.replace(':projectionId', selectedProjection.id));
         }
-
         setAuthDrawerOpen(true);
     }
 

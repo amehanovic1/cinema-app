@@ -10,15 +10,21 @@ const CinemaHallSeatBooking = ({ bookingId, projectionId, seatTypes, hallSeats, 
 
     useEffect(() => {
         const initializeSeats = () => {
-            return hallSeats.map((seat) => ({
-                ...seat,
-                status: reservedSeats?.includes(seat.id) ? "booked" : "available",
-                selected: false
-            }))
+
+            return hallSeats.map((seat) => {
+                const isBooked = reservedSeats?.includes(seat.id);
+
+                const isCurrentSelection = selectedSeats.some(s => s.id === seat.id);
+                return {
+                    ...seat,
+                    status: isBooked && !isCurrentSelection ? "booked" : "available",
+                    selected: isCurrentSelection
+                }
+            })
         }
 
         setSeats(initializeSeats())
-    }, [hallSeats, reservedSeats])
+    }, [hallSeats, reservedSeats, selectedSeats])
 
 
     const getSeatClassName = (seat) => {

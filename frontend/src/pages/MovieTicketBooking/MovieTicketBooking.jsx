@@ -13,6 +13,8 @@ import MovieTicketBookingSkeleton from "./MovieTicketBookingSkeleton";
 import useTimer from "../../hooks/useTimer";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import SockJS from "sockjs-client";
+import { Client } from "@stomp/stompjs";
 
 const MovieTicketBooking = () => {
     const { projectionId } = useParams()
@@ -89,7 +91,7 @@ const MovieTicketBooking = () => {
     const resetBookingSession = async () => {
         setIsSessionExpired(false);
         setIsLoading(true);
-        
+
         try {
             await startBookingSession();
             await fetchReservedSeatsForProjection();
@@ -107,7 +109,6 @@ const MovieTicketBooking = () => {
         startBookingSession();
     }, []);
 
-
     useEffect(() => {
         if (projectionDetails) {
             fetchCinemaHallSeats();
@@ -115,12 +116,41 @@ const MovieTicketBooking = () => {
         }
     }, [projectionDetails]);
 
-
     useEffect(() => {
         if (minutes === 0 && seconds === 0 && !isLoading && bookingId) {
             setIsSessionExpired(true);
         }
     }, [minutes, seconds, isLoading, bookingId]);
+
+    useEffect(() => {
+        const socket = process.env.REACT_APP_WS_URL;
+
+        const stompClient = new Client({
+            webSocketFactory: () => new SockJS(socket),
+            reconnectDelay: 5000,
+            onConnect: () => {
+                stompClient.subscribe(`/topic/projection/${projectionId}`, (message) => {
+                    if (message.body === "REFRESH_SEATS") {
+                        fetchReservedSeatsForProjection();
+                    }
+                });
+
+                stompClient.subscribe('/topic/global-updates', (message) => {
+                    if (message.body === "REFRESH_ALL") {
+                        fetchReservedSeatsForProjection();
+                    }
+                });
+            },
+            onStompError: (frame) => {
+                console.error("Broker reported error: " + frame.headers["message"]);
+            },
+        });
+
+        stompClient.activate();
+        return () => {
+            if (stompClient) stompClient.deactivate();
+        };
+    }, [projectionId]);
 
     const handleReservation = async () => {
         try {
