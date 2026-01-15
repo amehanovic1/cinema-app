@@ -2,9 +2,13 @@ package com.cinebh.app.controller;
 
 import com.cinebh.app.dto.booking.BookingRequestDto;
 import com.cinebh.app.dto.booking.BookingResponseDto;
+import com.cinebh.app.entity.User;
 import com.cinebh.app.service.BookingService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/booking")
@@ -16,8 +20,18 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
-    @PostMapping("/reserve")
-    public ResponseEntity<BookingResponseDto> reserve(@RequestBody BookingRequestDto requestDto) {
-        return bookingService.reserve(requestDto);
+    @PostMapping
+    public ResponseEntity<BookingResponseDto> createBookingSession(@AuthenticationPrincipal User currentUser) {
+        return ResponseEntity.ok(bookingService.createBookingSession(currentUser));
+    }
+
+    @PostMapping("/update-seats")
+    public ResponseEntity<BookingResponseDto> updateSeatSelection(@RequestBody BookingRequestDto requestDto) {
+        return ResponseEntity.ok(bookingService.updateSeatSelection(requestDto));
+    }
+
+    @PostMapping("/reserve/{bookingId}")
+    public ResponseEntity<BookingResponseDto> reserve(@PathVariable UUID bookingId) {
+        return ResponseEntity.ok(bookingService.reserve(bookingId));
     }
 }

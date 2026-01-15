@@ -2,11 +2,15 @@ package com.cinebh.app.service;
 
 import com.cinebh.app.dto.booking.BookingRequestDto;
 import com.cinebh.app.dto.booking.BookingResponseDto;
-import org.springframework.http.ResponseEntity;
+import com.cinebh.app.entity.User;
+
+import java.util.UUID;
 
 public interface BookingService {
 
-    ResponseEntity<BookingResponseDto> reserve(BookingRequestDto requestDto);
+    BookingResponseDto createBookingSession(User currentUser);
 
-    void deleteExpiredReservations();
+    BookingResponseDto updateSeatSelection(BookingRequestDto requestDto);
+
+    BookingResponseDto reserve(UUID bookingId);
 }
