@@ -6,30 +6,14 @@ pipeline {
     }
 
     stages {
-        stage('Prepare SSL Certificates') {
-            steps {
-                script {
-                    echo '[OK] Generating SSL certificates for backend'
-                    sh '''
-                        mkdir -p backend/.cert
-
-                        # Generate keystore.p12 with mkcert
-                        mkcert -pkcs12 -p12-file backend/.cert/keystore.p12 \
-                          cinema-api.p1.praksa.abhapp.com localhost 127.0.0.1
-
-                        # Verify certificate was created
-                        ls -lah backend/.cert/keystore.p12
-                        echo "[OK] SSL keystore generated successfully"
-                    '''
-                }
-            }
-        }
-
         stage('Pull Latest Images') {
             steps {
                 script {
                     echo '[OK] Pulling latest images from registry'
-                    sh 'docker-compose -f ${COMPOSE_FILE} pull'
+                    sh '''
+                        cd /home/ec2-user/cinema-app
+                        docker-compose -f ${COMPOSE_FILE} pull
+                    '''
                 }
             }
         }
@@ -39,6 +23,7 @@ pipeline {
                 script {
                     echo '[OK] Stopping running containers'
                     sh '''
+                        cd /home/ec2-user/cinema-app
                         docker stop cinema-frontend cinema-backend cinema-db cinema-db-init 2>/dev/null || true
                         docker rm cinema-frontend cinema-backend cinema-db cinema-db-init 2>/dev/null || true
                         docker-compose -f ${COMPOSE_FILE} down || true
@@ -51,7 +36,10 @@ pipeline {
             steps {
                 script {
                     echo '[OK] Deploying Cinema application'
-                    sh 'docker-compose -f ${COMPOSE_FILE} up -d'
+                    sh '''
+                        cd /home/ec2-user/cinema-app
+                        docker-compose -f ${COMPOSE_FILE} up -d
+                    '''
                 }
             }
         }
@@ -60,7 +48,10 @@ pipeline {
             steps {
                 script {
                     echo '[OK] Verifying deployment'
-                    sh 'docker-compose -f ${COMPOSE_FILE} ps'
+                    sh '''
+                        cd /home/ec2-user/cinema-app
+                        docker-compose -f ${COMPOSE_FILE} ps
+                    '''
                 }
             }
         }
