@@ -18,14 +18,47 @@
             Your reservation has been successfully created. Here are your reservation details:
         </p>
 
-        <div style="padding: 24px; border-radius: 12px; margin-bottom: 32px">
-            <p><strong>Movie:</strong> <span th:text="${movieTitle}"></span></p>
-            <p><strong>Date:</strong> <span th:text="${projectionDate}"></span></p>
-            <p><strong>Time:</strong> <span th:text="${projectionTime}"></span></p>
-            <p><strong>Cinema:</strong> <span th:text="${cinemaName}"></span></p>
-            <p><strong>Address:</strong> <span th:text="${venueAddress}"></span></p>
-            <p><strong>Seats:</strong> <span th:text="${seats}"></span></p>
-            <p><strong>Total Price:</strong> KM<span th:text="${totalPrice}"></span></p>
+        <div style="padding: 24px; border-radius: 12px; margin-bottom: 32px; background-color: #F9FAFB;">
+            <div style="margin-bottom: 20px; border-bottom: 1px solid #EAECF0; padding-bottom: 12px;">
+                <p style="margin: 0; font-size: 14px; color: #667085;">Movie</p>
+                <p style="margin: 4px 0 0 0; font-size: 18px; font-weight: 700; color: #101828;" th:text="${movieTitle}"></p>
+            </div>
+
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                <tr>
+                    <td style="width: 50%; vertical-align: top; padding-right: 10px;">
+                        <p style="margin: 0; font-size: 12px; color: #667085;">DATE</p>
+                        <p style="margin: 4px 0 0 0; font-weight: 600; color: #344054;" th:text="${projectionDate}"></p>
+                    </td>
+                    <td style="width: 50%; vertical-align: top;">
+                        <p style="margin: 0; font-size: 12px; color: #667085;">TIME</p>
+                        <p style="margin: 4px 0 0 0; font-weight: 600; color: #344054;" th:text="${projectionTime}"></p>
+                    </td>
+                </tr>
+            </table>
+
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                <tr>
+                    <td style="width: 50%; vertical-align: top; padding-right: 10px;">
+                        <p style="margin: 0; font-size: 12px; color: #667085;">CINEMA HALL</p>
+                        <p style="margin: 4px 0 0 0; font-weight: 600; color: #344054;" th:text="${cinemaName}"></p>
+                    </td>
+                    <td style="width: 50%; vertical-align: top;">
+                        <p style="margin: 0; font-size: 12px; color: #667085;">SEATS</p>
+                        <p style="margin: 4px 0 0 0; font-weight: 600; color: #B22222;" th:text="${seats}"></p>
+                    </td>
+                </tr>
+            </table>
+
+            <div style="border-top: 1px dashed #D0D5DD; padding-top: 16px;">
+                <p style="margin: 0; font-size: 12px; color: #667085;">LOCATION</p>
+                <p style="margin: 4px 0 16px 0; font-size: 14px; color: #344054;" th:text="${venueAddress}"></p>
+
+                <div style="text-align: right;">
+                    <span style="font-size: 14px; color: #667085;">Total Price:</span>
+                    <span style="font-size: 20px; font-weight: 700; color: #101828; margin-left: 8px;" th:text="${totalPrice} + ' KM'"></span>
+                </div>
+            </div>
         </div>
 
         <div style="background: #FEF3F2; border-left: 4px solid #B22222; padding: 16px; border-radius: 8px; margin-bottom: 32px;">

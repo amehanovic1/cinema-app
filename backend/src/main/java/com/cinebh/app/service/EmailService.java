@@ -3,6 +3,8 @@ package com.cinebh.app.service;
 import com.cinebh.app.entity.Booking;
 import org.thymeleaf.context.Context;
 
+import java.util.UUID;
+
 
 public interface EmailService {
 
@@ -12,5 +14,5 @@ public interface EmailService {
 
     void sendUserVerificationSuccessEmail(String email);
 
-    void sendBookingDetailsEmail(Booking booking);
+    void sendBookingDetailsEmail(UUID bookingId);
 }

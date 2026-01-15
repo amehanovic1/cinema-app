@@ -1,6 +1,7 @@
 package com.cinebh.app.service.impl;
 
 import com.cinebh.app.entity.*;
+import com.cinebh.app.repository.BookingRepository;
 import com.cinebh.app.service.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -11,9 +12,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 @Service
 public class EmailServiceImpl implements EmailService {
 
+    private final BookingRepository bookingRepository;
     @Value("${mail.from}")
     private String fromEmail;
 
@@ -64,7 +68,11 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     @Async
-    public void sendBookingDetailsEmail(Booking booking) {
+    @Transactional(readOnly = true)
+    public void sendBookingDetailsEmail(UUID bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found for email"));
+
         String seats = booking.getTickets().stream()
                 .map(t -> t.getHallSeat().getSeatCode())
                 .collect(Collectors.joining(", "));
@@ -78,7 +86,7 @@ public class EmailServiceImpl implements EmailService {
         CinemaHall hall = projection.getCinemaHall();
         Venue venue = hall.getVenue();
         String cinemaName = hall.getName();
-        String venueAddress = venue.getStreet() + " " + venue.getStreetNumber() + ", " + venue.getCity().getName();
+        String venueAddress = venue.getName() + ", " + venue.getStreet() + " " + venue.getStreetNumber() + ", " + venue.getCity().getName();
 
         Context context = new Context();
         context.setVariable("movieTitle", projection.getMovie().getTitle());
