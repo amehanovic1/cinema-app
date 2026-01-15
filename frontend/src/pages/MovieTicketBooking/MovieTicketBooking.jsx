@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getMovieProjectionDetails } from "../../services/movieProjectionService";
 import { useNavigate, useParams } from "react-router-dom";
 import { format } from "date-fns";
@@ -6,24 +6,33 @@ import { formatTime } from "../../utils/dateTimeFormatter";
 import CinemaHallSeatBooking from "./CinemaHallSeatBooking/CinemaHallSeatBooking";
 import { getSeatTypes } from "../../services/seatTypeService";
 import { getCinemaHallSeats, getReservedSeatsForProjection } from "../../services/hallSeatService";
-import AuthContext from "../../context/AuthContext";
-import { reserve } from "../../services/bookingService";
+import { reserve, createBookingSession } from "../../services/bookingService";
 import Modal from "../../components/Modal/Modal";
 import { ROUTES } from "../../routes/routes";
 import MovieTicketBookingSkeleton from "./MovieTicketBookingSkeleton";
+import useTimer from "../../hooks/useTimer";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const MovieTicketBooking = () => {
     const { projectionId } = useParams()
-    const { user } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const [projectionDetails, setProjectionDetails] = useState(null)
     const [hallSeats, setHallSeats] = useState([])
     const [seatTypes, setSeatTypes] = useState([])
     const [reservedSeats, setReservedSeats] = useState([])
+    const [bookingId, setBookingId] = useState(null);
 
-    const [isReservationSuccessful, setIsReservationSuccessful] = useState(false);
     const [isLoading, setIsLoading] = useState(true)
+    const [isReservationSuccessful, setIsReservationSuccessful] = useState(false);
+    const [isSessionExpired, setIsSessionExpired] = useState(false);
+    const [showSessionInfo, setShowSessionInfo] = useState(false);
+
+    const { minutes, seconds, reset } = useTimer({
+        initialMinutes: 5,
+        initialSeconds: 0
+    });
 
     const cinemaHall = projectionDetails?.cinemaHall;
     const venue = cinemaHall?.venue;
@@ -68,10 +77,36 @@ const MovieTicketBooking = () => {
         }
     }
 
+    const startBookingSession = async () => {
+        try {
+            const sessionData = await createBookingSession();
+            setBookingId(sessionData.bookingId);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const resetBookingSession = async () => {
+        setIsSessionExpired(false);
+        setIsLoading(true);
+        
+        try {
+            await startBookingSession();
+            await fetchReservedSeatsForProjection();
+            reset();
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     useEffect(() => {
         fetchDetails();
         fetchSeatTypes();
+        startBookingSession();
     }, []);
+
 
     useEffect(() => {
         if (projectionDetails) {
@@ -80,22 +115,31 @@ const MovieTicketBooking = () => {
         }
     }, [projectionDetails]);
 
-    const getLanguageName = (languageCode) => {
-        const displayNames = new Intl.DisplayNames(['en'], { type: 'language' });
-        return displayNames.of(languageCode);
-    }
 
-    const handleReservation = async (selectedSeats) => {
-        const hallSeatsId = selectedSeats.map(seat => seat.id)
+    useEffect(() => {
+        if (minutes === 0 && seconds === 0 && !isLoading && bookingId) {
+            setIsSessionExpired(true);
+        }
+    }, [minutes, seconds, isLoading, bookingId]);
 
+    const handleReservation = async () => {
         try {
-            await reserve({
-                userId: user.id, projectionId: projectionId, hallSeatsId: hallSeatsId
-            });
-            setIsReservationSuccessful(true);
+            const res = await reserve(bookingId);
+            if (res.success) setIsReservationSuccessful(true);
         } catch (error) {
             console.log(error);
         }
+    }
+
+    const getFormattedTime = () => {
+        const formattedSeconds = seconds.toString().padStart(2, '0');
+        const formattedMinutes = minutes.toString().padStart(2, '0');
+        return `${formattedMinutes}:${formattedSeconds}`
+    }
+
+    const getLanguageName = (languageCode) => {
+        const displayNames = new Intl.DisplayNames(['en'], { type: 'language' });
+        return displayNames.of(languageCode);
     }
 
     if (isLoading) return <MovieTicketBookingSkeleton />
@@ -104,9 +148,40 @@ const MovieTicketBooking = () => {
         <>
             {projectionDetails && (
                 <div>
-                    <h1 className="m-4 md:m-8 text-neutral-800 font-bold text-2xl">
-                        Seat Options
-                    </h1>
+                    <div className="flex justify-between m-4 md:m-8 text-neutral-800 ">
+                        <h1 className="font-bold text-2xl">
+                            Seat Options
+                        </h1>
+
+                        <div className="flex items-center gap-2">
+
+                            <div
+                                className="relative cursor-pointer"
+                                onMouseEnter={() => setShowSessionInfo(true)}
+                                onMouseLeave={() => setShowSessionInfo(false)}
+                            >
+                                <FontAwesomeIcon
+                                    icon={faInfoCircle}
+                                    className="text-neutral-400 hover:text-dark-red transition-colors"
+                                />
+
+                                {showSessionInfo && (
+                                    <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-64 p-3 bg-neutral-800 text-center font-regular text-neutral-0 text-xs rounded-lg shadow-xl z-50 animate-fade-in">
+                                        <p>Session will expire in 5 minutes and selected seats will be refreshed</p>
+                                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-8 border-transparent border-b-neutral-800"></div>
+                                    </div>
+                                )}
+                            </div>
+
+                            <h1 className="font-regular text-sm md:text-base text-center">
+                                Session duration
+                            </h1>
+
+                            <div className="text-center font-bold px-2 py-1 bg-neutral-0 border rounded-md border-neutral-200 w-16">
+                                {getFormattedTime()}
+                            </div>
+                        </div>
+                    </div>
 
                     <div className="w-full h-1 flex rounded">
                         <div className="bg-dark-red w-1/2 h-full"></div>
@@ -155,6 +230,8 @@ const MovieTicketBooking = () => {
                     <div className="w-full h-1 bg-neutral-200" />
 
                     <CinemaHallSeatBooking
+                        bookingId={bookingId}
+                        projectionId={projectionId}
                         seatTypes={seatTypes}
                         hallSeats={hallSeats}
                         reservedSeats={reservedSeats}
@@ -172,6 +249,23 @@ const MovieTicketBooking = () => {
                                     className="px-2 py-1 border rounded-md border-dark-red text-dark-red font-bold text-xs md:text-sm"
                                     onClick={() => navigate(ROUTES.HOME)}>
                                     Back To Home
+                                </button>
+                            </Modal.Footer>
+                        </Modal>
+                    }
+
+                    {isSessionExpired &&
+                        <Modal>
+                            <Modal.Header description={"Session Expired"} />
+                            <Modal.Body>
+                                <p>Your session expired and seats have been refreshed and updated.</p>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <button
+                                    className="px-2 py-1 border rounded-md bg-dark-red text-neutral-0 font-bold text-xs md:text-sm"
+                                    onClick={resetBookingSession}
+                                >
+                                    Okay
                                 </button>
                             </Modal.Footer>
                         </Modal>
