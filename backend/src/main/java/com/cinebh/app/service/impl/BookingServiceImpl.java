@@ -10,6 +10,7 @@ import com.cinebh.app.service.EmailService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,7 @@ public class BookingServiceImpl implements BookingService {
     private final MovieProjectionRepository movieProjectionRepository;
     private final HallSeatRepository hallSeatRepository;
     private final EmailService emailService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     @Transactional
     @Override
@@ -86,6 +88,10 @@ public class BookingServiceImpl implements BookingService {
                 booking.setTicketCount(booking.getTicketCount() + 1);
             }
             bookingRepository.save(booking);
+
+            String topic = "/topic/projection/" + requestDto.getProjectionId();
+            simpMessagingTemplate.convertAndSend(topic, "REFRESH_SEATS");
+
             return new BookingResponseDto(true, "Seat selection updated successfully", booking.getId());
         } catch (Exception e) {
             return new BookingResponseDto(false, "Failed to update seat selection", requestDto.getBookingId());
@@ -108,7 +114,7 @@ public class BookingServiceImpl implements BookingService {
             booking.setExpiresAt(projection.getProjectionDate().atTime(projection.getProjectionTime()).minusHours(1));
             bookingRepository.save(booking);
 
-            emailService.sendBookingDetailsEmail(booking);
+            emailService.sendBookingDetailsEmail(bookingId);
 
             return new BookingResponseDto(true, "Reservation confirmed", booking.getId());
         } catch (Exception e) {
@@ -116,7 +122,7 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 15000)
     @Transactional
     public void clearExpiredBookings() {
         LocalDateTime now = LocalDateTime.now();
@@ -132,6 +138,7 @@ public class BookingServiceImpl implements BookingService {
 
             if (deletedCount > 0) {
                 log.info("Action: Deleted {} expired bookings.", deletedCount);
+                simpMessagingTemplate.convertAndSend("/topic/global-updates", "REFRESH_ALL");
             } else {
                 log.info("Action: No expired bookings found to delete.");
             }
