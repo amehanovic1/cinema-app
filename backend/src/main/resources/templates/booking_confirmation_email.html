@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cinebh Reservation Confirmation</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #F9FAFB; padding: 0; margin: 0;">
+<div style="max-width: 600px; margin: 40px auto; background-color: #FFFFFF; border-radius: 12px; overflow: hidden;">
+
+    <div style="background: #B22222; padding: 32px 40px; text-align: center;">
+        <h1 style="color: #FFFFFF; font-size: 28px; font-weight: 700; margin: 0;">Cinebh</h1>
+    </div>
+
+    <div style="padding: 40px;">
+        <h2 style="color: #101828; font-size: 24px; font-weight: 600; margin: 0 0 16px 0;">Reservation Confirmed!</h2>
+
+        <p style="font-size: 16px; color: #475467; margin: 0 0 32px 0;">
+            Your reservation has been successfully created. Here are your reservation details:
+        </p>
+
+        <div style="padding: 24px; border-radius: 12px; margin-bottom: 32px">
+            <p><strong>Movie:</strong> <span th:text="${movieTitle}"></span></p>
+            <p><strong>Date:</strong> <span th:text="${projectionDate}"></span></p>
+            <p><strong>Time:</strong> <span th:text="${projectionTime}"></span></p>
+            <p><strong>Cinema:</strong> <span th:text="${cinemaName}"></span></p>
+            <p><strong>Address:</strong> <span th:text="${venueAddress}"></span></p>
+            <p><strong>Seats:</strong> <span th:text="${seats}"></span></p>
+            <p><strong>Total Price:</strong> KM<span th:text="${totalPrice}"></span></p>
+        </div>
+
+        <div style="background: #FEF3F2; border-left: 4px solid #B22222; padding: 16px; border-radius: 8px; margin-bottom: 32px;">
+            <p style="font-size: 14px; color: #344054; margin: 0;">
+                <strong>Important:</strong> This reservation will expire <strong>1 hour before the projection time</strong>.
+            </p>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>
