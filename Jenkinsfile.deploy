@@ -9,11 +9,17 @@ pipeline {
         stage('Prepare SSL Certificates') {
             steps {
                 script {
-                    echo '[OK] Copying SSL certificates to workspace'
+                    echo '[OK] Generating SSL certificates for backend'
                     sh '''
                         mkdir -p backend/.cert
-                        cp -p /home/ec2-user/cinema-app/backend/.cert/keystore.p12 backend/.cert/
-                        ls -la backend/.cert/
+
+                        # Generate keystore.p12 with mkcert
+                        mkcert -pkcs12 -p12-file backend/.cert/keystore.p12 \
+                          cinema-api.p1.praksa.abhapp.com localhost 127.0.0.1
+
+                        # Verify certificate was created
+                        ls -lah backend/.cert/keystore.p12
+                        echo "[OK] SSL keystore generated successfully"
                     '''
                 }
             }
