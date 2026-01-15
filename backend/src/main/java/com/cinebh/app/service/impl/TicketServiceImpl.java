@@ -16,9 +16,6 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public List<UUID> getReservedSeatsForProjection(UUID projectionId) {
-        return ticketRepository.findByProjectionId(projectionId)
-                .stream()
-                .map(ticket -> ticket.getHallSeat().getId())
-                .toList();
+        return ticketRepository.findAllSeatIdsByProjectionId(projectionId);
     }
 }
