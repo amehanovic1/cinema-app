@@ -1,6 +1,6 @@
 package com.cinebh.app.controller;
 
-import com.cinebh.app.dto.booking.BookingRequestDto;
+import com.cinebh.app.dto.booking.ReservationRequestDto;
 import com.cinebh.app.dto.booking.BookingResponseDto;
 import com.cinebh.app.entity.User;
 import com.cinebh.app.service.BookingService;
@@ -26,7 +26,7 @@ public class BookingController {
     }
 
     @PostMapping("/update-seats")
-    public ResponseEntity<BookingResponseDto> updateSeatSelection(@RequestBody BookingRequestDto requestDto) {
+    public ResponseEntity<BookingResponseDto> updateSeatSelection(@RequestBody ReservationRequestDto requestDto) {
         return ResponseEntity.ok(bookingService.updateSeatSelection(requestDto));
     }
 

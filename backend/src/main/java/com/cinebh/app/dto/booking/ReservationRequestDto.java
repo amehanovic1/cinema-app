@@ -11,7 +11,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookingRequestDto {
+public class ReservationRequestDto {
     private UUID bookingId;
     private UUID seatId;
     private UUID projectionId;

@@ -1,6 +1,6 @@
 package com.cinebh.app.service.impl;
 
-import com.cinebh.app.dto.booking.BookingRequestDto;
+import com.cinebh.app.dto.booking.ReservationRequestDto;
 import com.cinebh.app.dto.booking.BookingResponseDto;
 import com.cinebh.app.entity.*;
 import com.cinebh.app.enums.BookingStatus;
@@ -49,7 +49,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional
     @Override
-    public BookingResponseDto updateSeatSelection(BookingRequestDto requestDto) {
+    public BookingResponseDto updateSeatSelection(ReservationRequestDto requestDto) {
         try {
             Booking booking = bookingRepository.findById(requestDto.getBookingId())
                     .orElseThrow(() -> new RuntimeException("Session not found"));
