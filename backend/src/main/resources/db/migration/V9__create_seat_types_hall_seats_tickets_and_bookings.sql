@@ -31,12 +31,13 @@ CREATE TABLE "hall_seats"
 
 CREATE TABLE "bookings"
 (
-    "id"           uuid PRIMARY KEY        DEFAULT gen_random_uuid(),
-    "user_id"      uuid           NOT NULL,
-    "ticket_count" integer        NOT NULL,
-    "status"       varchar NOT NULL,
-    "created_at"   timestamptz    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at"   timestamptz             DEFAULT CURRENT_TIMESTAMP,
+    "id"           uuid PRIMARY KEY     DEFAULT gen_random_uuid(),
+    "user_id"      uuid        NOT NULL,
+    "ticket_count" integer     NOT NULL,
+    "status"       varchar     NOT NULL,
+    "created_at"   timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "expires_at"   timestamptz,
+    "updated_at"   timestamptz          DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "fk_booking_user" FOREIGN KEY ("user_id")
         REFERENCES "users" ("id") ON DELETE CASCADE
