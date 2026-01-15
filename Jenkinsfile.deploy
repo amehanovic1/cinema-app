@@ -10,10 +10,7 @@ pipeline {
             steps {
                 script {
                     echo '[OK] Pulling latest images from registry'
-                    sh '''
-                        cd /home/ec2-user/cinema-app
-                        docker-compose -f ${COMPOSE_FILE} pull
-                    '''
+                    sh 'docker-compose -f ${COMPOSE_FILE} pull'
                 }
             }
         }
@@ -23,7 +20,6 @@ pipeline {
                 script {
                     echo '[OK] Stopping running containers'
                     sh '''
-                        cd /home/ec2-user/cinema-app
                         docker stop cinema-frontend cinema-backend cinema-db cinema-db-init 2>/dev/null || true
                         docker rm cinema-frontend cinema-backend cinema-db cinema-db-init 2>/dev/null || true
                         docker-compose -f ${COMPOSE_FILE} down || true
@@ -36,10 +32,7 @@ pipeline {
             steps {
                 script {
                     echo '[OK] Deploying Cinema application'
-                    sh '''
-                        cd /home/ec2-user/cinema-app
-                        docker-compose -f ${COMPOSE_FILE} up -d
-                    '''
+                    sh 'docker-compose -f ${COMPOSE_FILE} up -d'
                 }
             }
         }
@@ -48,10 +41,7 @@ pipeline {
             steps {
                 script {
                     echo '[OK] Verifying deployment'
-                    sh '''
-                        cd /home/ec2-user/cinema-app
-                        docker-compose -f ${COMPOSE_FILE} ps
-                    '''
+                    sh 'docker-compose -f ${COMPOSE_FILE} ps'
                 }
             }
         }
