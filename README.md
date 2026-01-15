@@ -26,6 +26,7 @@ The ERD for this project is available at the link: [View ERD on dbdiagram.io](ht
 - JWT (JSON Web Token)
 - Mail
 - Thymeleaf
+- Spring WebSocket
 
 **Frontend**: 
 - React 19
@@ -35,6 +36,8 @@ The ERD for this project is available at the link: [View ERD on dbdiagram.io](ht
 - FontAwesome
 - react-datepicker
 - date-fns
+- stompjs
+- sockjs-client
 
 ---
 ## Setup
@@ -183,6 +186,9 @@ HTTPS=true
 SSL_CRT_FILE=./.cert/cert.pem 
 SSL_KEY_FILE=./.cert/key.pem
 HOST=cinebh.yourdomain.com
+
+# WebSocket
+REACT_APP_WS_URL=https://cinebh-api.yourdomain.com:8080/ws-cinema
 ```
 
 Install dependencies and run:
