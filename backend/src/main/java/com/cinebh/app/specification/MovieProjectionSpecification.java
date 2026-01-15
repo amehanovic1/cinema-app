@@ -5,6 +5,7 @@ import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -33,12 +34,12 @@ public class MovieProjectionSpecification {
                     predicates.add(criteriaBuilder.equal(root.get("movie").get("id"), movieId));
                 }
 
-                if(date != null) {
-                    predicates.add(criteriaBuilder.equal(
-                            root.get("projectionDate"), date));
-                } else {
-                    predicates.add(criteriaBuilder.equal(
-                            root.get("projectionDate"), LocalDate.now()));
+                LocalDate filterDate = (date != null) ? date : LocalDate.now();
+                predicates.add(criteriaBuilder.equal(root.get("projectionDate"), filterDate));
+
+                if (filterDate.equals(LocalDate.now())) {
+                    predicates.add(criteriaBuilder.greaterThan(
+                            root.get("projectionTime"), LocalTime.now()));
                 }
 
                 if(cityId != null) {

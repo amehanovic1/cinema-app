@@ -63,10 +63,14 @@ public class MovieSpecification {
                             root.join("genres", JoinType.INNER).get("id"), genreId));
                 }
 
-                if(date != null) {
-                    predicates.add(criteriaBuilder.equal(projectionJoin.get("projectionDate"), date));
-                } else {
-                    predicates.add(criteriaBuilder.equal(projectionJoin.get("projectionDate"), LocalDate.now()));
+                LocalDate filterDate = (date != null) ? date : LocalDate.now();
+                predicates.add(criteriaBuilder.equal(projectionJoin.get("projectionDate"), filterDate));
+
+                if (filterDate.equals(LocalDate.now())) {
+                    predicates.add(criteriaBuilder.greaterThan(
+                            projectionJoin.get("projectionTime"),
+                            LocalTime.now()
+                    ));
                 }
 
                 if(time != null) {
