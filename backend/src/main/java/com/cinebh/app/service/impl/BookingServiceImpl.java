@@ -38,7 +38,7 @@ public class BookingServiceImpl implements BookingService {
         try {
             Booking booking = new Booking();
             booking.setUser(user);
-            booking.setStatus(BookingStatus.lock);
+            booking.setStatus(BookingStatus.locked);
             booking.setTicketCount(0);
             booking.setExpiresAt(LocalDateTime.now().plusMinutes(5));
 

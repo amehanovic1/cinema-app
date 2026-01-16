@@ -250,7 +250,7 @@ const MovieTicketBooking = () => {
                             <h1 className="text-neutral-800 font-bold text-lg md:text-xl">Booking Details</h1>
                             <div className="flex flex-col gap-2 flex-wrap mt-2">
                                 <p>{format(projectionDetails.projectionDate, 'EEEE, MMM d')} at {formatTime(projectionDetails.projectionTime)}</p>
-                                <p>{venue.name} : Cinebh, {venue.street} {venue.streetNumber},  {city.name}</p>
+                                <p>{venue.name} : {venue.street} {venue.streetNumber},  {city.name}</p>
                                 <p className="mb-2">{cinemaHall.name}</p>
                             </div>
                         </div>
