@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import Logo from "../../components/Logo/Logo";
 import { ROUTES } from "../../routes/routes";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import AuthContext from "../../context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
@@ -16,6 +16,10 @@ const Header = () => {
     ]
 
     const [authDrawerOpen, setAuthDrawerOpen] = useState(false)
+
+    useEffect(() => {
+        setUserMenuOpen(false);
+    }, [user]);
 
     return (
         <header className="w-full h-16 bg-neutral-800 border-b border-neutral-500 

@@ -1,5 +1,7 @@
 package com.cinebh.app.service.impl;
 
+import com.cinebh.app.entity.*;
+import com.cinebh.app.repository.BookingRepository;
 import com.cinebh.app.service.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -10,14 +12,19 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
+
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class EmailServiceImpl implements EmailService {
 
+    private final BookingRepository bookingRepository;
     @Value("${mail.from}")
     private String fromEmail;
 
@@ -25,15 +32,11 @@ public class EmailServiceImpl implements EmailService {
     private final SpringTemplateEngine templateEngine;
 
     @Override
-    public void sendEmail(String to, String subject, String text, String template) {
+    public void sendEmail(String to, String subject, Context context, String template) {
         try {
             MimeMessage message = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-            Context context = new Context();
-            if(text != null) {
-                context.setVariable("code", text);
-            }
             String html = templateEngine.process(template, context);
 
             helper.setFrom(fromEmail);
@@ -51,12 +54,52 @@ public class EmailServiceImpl implements EmailService {
     @Override
     @Async
     public void sendUserVerificationEmail(String email, String verificationCode) {
-        sendEmail(email, "Account Activation", verificationCode, "verification_email.html");
+        Context context = new Context();
+        context.setVariable("code", verificationCode);
+        sendEmail(email, "Account Activation", context, "verification_email.html");
     }
 
     @Override
     @Async
     public void sendUserVerificationSuccessEmail(String email) {
-        sendEmail(email, "Account Verified", null, "verification_success_email.html");
+        Context context = new Context();
+        sendEmail(email, "Account Verified", context, "verification_success_email.html");
+    }
+
+    @Override
+    @Async
+    @Transactional(readOnly = true)
+    public void sendBookingDetailsEmail(UUID bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found for email"));
+
+        String seats = booking.getTickets().stream()
+                .map(t -> t.getHallSeat().getSeatCode())
+                .collect(Collectors.joining(", "));
+
+        double totalPrice = booking.getTickets().stream()
+                .mapToDouble(t -> t.getHallSeat().getSeatType().getPrice())
+                .sum();
+
+        Ticket firstTicket = booking.getTickets().getFirst();
+        MovieProjection projection = firstTicket.getProjection();
+        CinemaHall hall = projection.getCinemaHall();
+        Venue venue = hall.getVenue();
+        String cinemaName = hall.getName();
+        String venueAddress = venue.getName() + ", " + venue.getStreet() + " " + venue.getStreetNumber() + ", " + venue.getCity().getName();
+
+        Context context = new Context();
+        context.setVariable("movieTitle", projection.getMovie().getTitle());
+        context.setVariable("projectionDate", projection.getProjectionDate());
+        context.setVariable("projectionTime", projection.getProjectionTime());
+        context.setVariable("cinemaName", cinemaName);
+        context.setVariable("venueAddress", venueAddress);
+        context.setVariable("seats", seats);
+        context.setVariable("totalPrice", totalPrice);
+
+        User user = booking.getUser();
+        String email = user.getEmail();
+
+        sendEmail(email, "Your Cinebh Booking Details", context, "booking_confirmation_email.html");
     }
 }

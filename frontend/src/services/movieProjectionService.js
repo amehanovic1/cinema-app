@@ -14,3 +14,14 @@ export async function filterMovieProjections(
         throw error;
     }
 }
+
+export async function getMovieProjectionDetails(id) {
+    try {
+        const response = await api.get(`/movie-projections/${id}`);
+        return response.data;
+    }
+    catch (error) {
+        console.log("Error fetching movie projection:", error);
+        throw error;
+    }
+}

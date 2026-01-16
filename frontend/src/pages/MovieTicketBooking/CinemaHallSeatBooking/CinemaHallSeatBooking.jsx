@@ -1,0 +1,180 @@
+import React, { useEffect, useState } from "react";
+import SeatTypeLegend from "../SeatTypeLegend/SeatTypeLegend";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { updateSeatSelection } from "../../../services/bookingService";
+
+const CinemaHallSeatBooking = ({ bookingId, projectionId, seatTypes, hallSeats, reservedSeats, handleClick }) => {
+    const [seats, setSeats] = useState([])
+    const [selectedSeats, setSelectedSeats] = useState([])
+
+    useEffect(() => {
+        const initializeSeats = () => {
+
+            return hallSeats.map((seat) => {
+                const isBooked = reservedSeats?.includes(seat.id);
+
+                const isCurrentSelection = selectedSeats.some(s => s.id === seat.id);
+                return {
+                    ...seat,
+                    status: isBooked && !isCurrentSelection ? "booked" : "available",
+                    selected: isCurrentSelection
+                }
+            })
+        }
+
+        setSeats(initializeSeats())
+    }, [hallSeats, reservedSeats, selectedSeats])
+
+
+    const getSeatClassName = (seat) => {
+        const baseClassName = "flex justify-center items-center border rounded transition-all";
+
+        const isLove = seat.seatType.category === "Love";
+        const widthClass = isLove ? "col-span-2 h-10 w-full" : "col-span-1 h-10 w-full";
+
+        let colorClass = "";
+        if (seat.status === "booked") {
+            colorClass = "bg-neutral-200 text-white cursor-not-allowed border-neutral-200";
+        } else if (seat.selected) {
+            colorClass = "bg-dark-red text-white border-dark-red shadow-md";
+        } else {
+            colorClass = "bg-white text-neutral-800 border-neutral-200 hover:border-dark-red cursor-pointer";
+        }
+
+        return `${baseClassName} ${widthClass} ${colorClass}`;
+    };
+
+    const handleSeatClick = async (seat) => {
+        if (seat.status === "booked") return;
+        if (!bookingId) return;
+
+        try {
+            await updateSeatSelection({
+                bookingId,
+                seatId: seat.id,
+                projectionId
+            });
+
+            setSeats((prev) =>
+                prev.map((s) =>
+                    s.id === seat.id ? { ...s, selected: !s.selected } : s
+                )
+            );
+
+            if (!seat.selected)
+                setSelectedSeats((prev) => [...prev, seat]);
+            else
+                setSelectedSeats((prev) => prev.filter((s) => s.id !== seat.id));
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const getTotalPrice = () => {
+        return selectedSeats.reduce((total, seat) => total + seat.seatType.price, 0);
+    }
+
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 m-8 items-stretch">
+
+            <div className="flex flex-col items-center gap-4">
+                <h1 className="text-neutral-800 font-regular text-sm md:text-base">Cinema Screen</h1>
+
+                <svg className="h-4">
+                    <ellipse
+                        cx="50%"
+                        cy="100%"
+                        rx="50%"
+                        ry="100%"
+                        fill="none"
+                        stroke="#B22222"
+                        strokeWidth="3"
+                    />
+                </svg>
+
+                <div className="w-full overflow-x-auto pb-4">
+                    <div className="grid grid-cols-9 gap-2 min-w-[600px] items-center">
+                        {seats.map((seat, index) => {
+                            const isLoveSeat = seat.seatType.category === "Love";
+
+                            const isAisleSlot = isLoveSeat
+                                ? (index % 4 === 1)
+                                : (index % 8 === 3);
+
+                            return (
+                                <React.Fragment key={seat.id}>
+                                    <div
+                                        className={getSeatClassName(seat)}
+                                        onClick={() => handleSeatClick(seat)}
+                                    >
+                                        {seat.seatType.category === "VIP" && (
+                                            <FontAwesomeIcon icon={faStar} className="mr-1 w-3 h-3" />
+                                        )}
+                                        {seat.seatCode}
+                                    </div>
+
+                                    {isAisleSlot && <div className="col-span-1 h-10"></div>}
+                                </React.Fragment>
+                            );
+                        })}
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div className="flex flex-col h-full justify-between py-6">
+                <div className="flex flex-col gap-2">
+                    <h1 className="font-regular text-sm md:text-base text-neutral-800 text-center">
+                        Seat Guide
+                    </h1>
+
+                    <SeatTypeLegend seatTypes={seatTypes} />
+
+                    <hr className="bg-neutral-200" />
+                </div>
+
+                <div className="flex flex-col text-center">
+                    <h1 className="font-regular text-sm md:text-base text-neutral-800">
+                        Chosen Seats
+                    </h1>
+
+                    <div className="flex justify-between text-sm text-neutral-500">
+                        <span>Seat(s)</span>
+                        <span>Total price</span>
+                    </div>
+
+                    <hr className="bg-neutral-200" />
+
+                    <div className="flex gap-4 w-full justify-between text-lg md:text-xl text-neutral-800 font-bold">
+                        {getTotalPrice() !== 0 && (
+                            <>
+                                <div className="w-1/2 text-left">{selectedSeats.map(seat => seat.seatCode).join(", ")}</div>
+                                <div className="w-1/2 text-right">{getTotalPrice()} KM</div>
+                            </>
+                        )}
+                    </div>
+                </div>
+
+                <div className="justify-center">
+                    <button
+                        className={`
+                            ${selectedSeats.length === 0
+                                ? "bg-neutral-300 cursor-not-allowed"
+                                : "bg-dark-red hover:bg-red-700 active:scale-95"
+                            } text-neutral-25 font-semibold text-sm md:text-base rounded-lg w-full py-2 transition-all duration-200`}
+                        onClick={() => handleClick(selectedSeats)}>
+                        Make Reservation
+
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    );
+}
+
+export default CinemaHallSeatBooking;

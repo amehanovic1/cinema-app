@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { getCurrentlyShowingMovies, getMovieDetails } from "../../services/movieService";
 import { useNavigate, useParams } from "react-router-dom";
 import { format } from "date-fns";
@@ -17,10 +17,14 @@ import { ROUTES } from "../../routes/routes";
 import MovieDetailsSkeleton from "./MovieDetailsSkeleton";
 import { faFilm } from "@fortawesome/free-solid-svg-icons";
 import NoDataFound from "../../components/NoDataFound/NoDataFound";
+import AuthContext from "../../context/AuthContext";
+import AuthDrawer from "../AuthDrawer/AuthDrawer";
 
 const MovieDetails = () => {
     const navigate = useNavigate()
     const { movieId } = useParams()
+    const { user } = useContext(AuthContext)
+    const [authDrawerOpen, setAuthDrawerOpen] = useState(false)
 
     const [movie, setMovie] = useState(null)
     const [venues, setVenues] = useState([])
@@ -28,6 +32,8 @@ const MovieDetails = () => {
     const [selectedDate, setSelectedDate] = useState(new Date().toLocaleDateString('sv-SE'))
     const [selectedCity, setSelectedCity] = useState("")
     const [selectedVenue, setSelectedVenue] = useState("")
+    const [selectedProjection, setSelectedProjection] = useState(null);
+
     const [currentMovies, setCurrentMovies] = useState({})
     const [projections, setProjections] = useState({})
 
@@ -44,6 +50,7 @@ const MovieDetails = () => {
                 setMovie(null);
                 setSelectedCity("");
                 setSelectedVenue("");
+                setSelectedProjection("");
                 setVenues([])
                 setProjections({});
 
@@ -84,6 +91,9 @@ const MovieDetails = () => {
     }, [movie])
 
     useEffect(() => {
+        setSelectedVenue("")
+        setSelectedProjection("")
+
         if (!selectedCity || !cities.length) {
             setVenues([]);
             return;
@@ -107,6 +117,8 @@ const MovieDetails = () => {
 
 
     useEffect(() => {
+        setSelectedProjection("");
+
         if (!movie) return;
 
         const city = cities.find(c => c.name === selectedCity);
@@ -142,6 +154,13 @@ const MovieDetails = () => {
             console.log(error)
         }
     }, [])
+
+    const handleReservation = () => {
+        if (user) {
+            return navigate(ROUTES.MOVIE_TICKET_BOOKING.replace(':projectionId', selectedProjection.id));
+        }
+        setAuthDrawerOpen(true);
+    }
 
     const getLanguageName = (languageCode) => {
         const displayNames = new Intl.DisplayNames(['en'], { type: 'language' });
@@ -282,32 +301,53 @@ const MovieDetails = () => {
                                     onChange={(value) => setSelectedDate(value)}
                                 />
 
-                                <div className="flex flex-col mt-10">
-                                    {projections.length > 0 ? (
-                                        <>
-                                            <h1 className="text-neutral-800 font-bold text:base md:text-xl lg:text-xl">
-                                                Standard
-                                            </h1>
+                                {projections.length > 0 ? (
+                                    <>
+                                        <h1 className="text-neutral-800 font-bold text:base md:text-xl lg:text-xl">
+                                            Standard
+                                        </h1>
 
-                                            <div className="flex gap-4 flex-wrap mt-2">
-                                                {projections.map(projection => (
-                                                    <button
-                                                        key={projection.id}
-                                                        className="border border-neutral-200 rounded-lg px-3 py-2 
-                                                                    hover:bg-dark-red hover:text-neutral-0 transition 
-                                                                     font-bold text-sm lg:text-base"
-                                                    >
-                                                        {formatTime(projection.projectionTime)}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <p className="text-neutral-600 italic">
-                                            No projections available for the selected date.
-                                        </p>
-                                    )}
+                                        <div className="flex gap-4 flex-wrap mt-2">
+                                            {projections.map(projection => (
+                                                <button
+                                                    key={projection.id}
+                                                    onClick={() => setSelectedProjection(projection)}
+                                                    className={`border rounded-lg px-3 py-2 font-bold text-sm lg:text-base transition 
+                                                            ${projection.id === selectedProjection?.id
+                                                            ? "bg-dark-red text-white"
+                                                            : "border-neutral-200 hover:bg-dark-red hover:text-white"
+                                                        }`}
+                                                >
+                                                    {formatTime(projection.projectionTime)}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </>
+                                ) : (
+                                    <p className="text-neutral-600 italic">
+                                        No projections available for the selected date.
+                                    </p>
+                                )}
+
+                                <div className="mt-auto">
+
+                                    <hr className="mt-auto mb-2 bg-neutral-700" />
+
+                                    <div className="flex gap-2">
+                                        <button className={`w-1/2 mb-4 font-bold py-2 px-2 border border-dark-red rounded-lg transition
+                                            ${selectedCity && selectedVenue && selectedProjection
+                                                ? "bg-neutral-0 text-dark-red"
+                                                : "border-neutral-200 bg-neutral-200 text-neutral-500 cursor-not-allowed"
+                                            }`}
+                                            disabled={!(selectedCity && selectedVenue && selectedProjection)}
+                                            onClick={handleReservation}
+                                        >
+                                            Reserve Ticket
+                                        </button>
+                                    </div>
                                 </div>
+
+
                             </div>
 
                         </div>
@@ -326,6 +366,10 @@ const MovieDetails = () => {
                                 }
                             />
                         </div>
+
+                        {authDrawerOpen &&
+                            <AuthDrawer onClose={() => setAuthDrawerOpen(false)}/>
+                        }
                     </div>
                 ) : (
                     <NoDataFound
