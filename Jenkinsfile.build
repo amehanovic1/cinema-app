@@ -12,6 +12,11 @@ pipeline {
             defaultValue: 'main',
             description: 'Branch to build from'
         )
+        string(
+            name: 'FRONTEND_API_URL',
+            defaultValue: 'https://cinema-api.p1.praksa.abhapp.com/api',
+            description: 'Backend API URL for frontend build'
+        )
         booleanParam(
             name: 'RUN_TESTS',
             defaultValue: true,
@@ -222,7 +227,8 @@ pipeline {
                                         -t ${FRONTEND_IMAGE}:latest \
                                         --build-arg BUILD_NUMBER=${BUILD_NUMBER} \
                                         --build-arg GIT_COMMIT=${GIT_COMMIT_SHORT} \
-                                        -f Dockerfile .
+                                        --build-arg REACT_APP_API_URL=${params.FRONTEND_API_URL} \
+                                        -f Dockerfile.prod .
                                 """
                             }
 

@@ -54,9 +54,6 @@ services:
   cinema-frontend:
     image: registry.p1.praksa.abhapp.com/cinema-frontend:latest
     container_name: cinema-frontend
-    environment:
-      REACT_APP_API_URL: https://cinema-api.p1.praksa.abhapp.com/api
-      PORT: 3000
     ports:
       - "8000:3000"
     networks:
