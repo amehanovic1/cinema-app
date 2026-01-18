@@ -52,3 +52,7 @@ cookie:
   secure: true
   http-only: true
   same-site: None
+
+stripe:
+  secret:
+    key: ${STRIPE_SECRET_KEY}
