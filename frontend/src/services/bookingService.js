@@ -33,3 +33,23 @@ export async function reserve(bookingId) {
         throw error;
     }
 }
+
+export async function getBookingDetails(bookingId) {
+    try {
+        const response = await api.get(`/booking/${bookingId}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching booking details:", error);
+        throw error;
+    }
+}
+
+export async function confirmPayment(bookingId) {
+    try {
+        const response = await api.post(`/booking/pay/${bookingId}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error confirming payment on backend:", error);
+        throw error;
+    }
+}
