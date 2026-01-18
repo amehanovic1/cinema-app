@@ -1,5 +1,6 @@
 package com.cinebh.app.controller;
 
+import com.cinebh.app.dto.booking.BookingCheckoutDto;
 import com.cinebh.app.dto.booking.ReservationRequestDto;
 import com.cinebh.app.dto.booking.BookingResponseDto;
 import com.cinebh.app.entity.User;
@@ -33,5 +34,15 @@ public class BookingController {
     @PostMapping("/reserve/{bookingId}")
     public ResponseEntity<BookingResponseDto> reserve(@PathVariable UUID bookingId) {
         return ResponseEntity.ok(bookingService.reserve(bookingId));
+    }
+
+    @GetMapping("/{bookingId}")
+    public ResponseEntity<BookingCheckoutDto> getBooking(@PathVariable UUID bookingId) {
+        return ResponseEntity.ok(bookingService.getBookingById(bookingId));
+    }
+
+    @PostMapping("/pay/{bookingId}")
+    public ResponseEntity<BookingResponseDto> confirmPayment(@PathVariable UUID bookingId) {
+        return ResponseEntity.ok(bookingService.confirmPayment(bookingId));
     }
 }

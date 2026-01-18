@@ -1,9 +1,11 @@
 package com.cinebh.app.service.impl;
 
+import com.cinebh.app.dto.booking.BookingCheckoutDto;
 import com.cinebh.app.dto.booking.ReservationRequestDto;
 import com.cinebh.app.dto.booking.BookingResponseDto;
 import com.cinebh.app.entity.*;
 import com.cinebh.app.enums.BookingStatus;
+import com.cinebh.app.mapper.BookingMapper;
 import com.cinebh.app.repository.*;
 import com.cinebh.app.service.BookingService;
 import com.cinebh.app.service.EmailService;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -31,6 +34,7 @@ public class BookingServiceImpl implements BookingService {
     private final HallSeatRepository hallSeatRepository;
     private final EmailService emailService;
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final BookingMapper bookingMapper;
 
     @Transactional
     @Override
@@ -119,6 +123,43 @@ public class BookingServiceImpl implements BookingService {
             return new BookingResponseDto(true, "Reservation confirmed", booking.getId());
         } catch (Exception e) {
             return new BookingResponseDto(false, "Reservation failed", bookingId);
+        }
+    }
+
+    @Override
+    public BookingCheckoutDto getBookingById(UUID bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new EntityNotFoundException("Booking session not found"));
+
+        MovieProjection projection = booking.getTickets().isEmpty()
+                ? null
+                : booking.getTickets().getFirst().getProjection();
+
+        BookingCheckoutDto dto = bookingMapper.toCheckoutDto(booking, projection);
+
+        long remaining = ChronoUnit.SECONDS.between(LocalDateTime.now(), booking.getExpiresAt());
+        dto.setRemainingSeconds(Math.max(0, remaining));
+
+        return dto;
+    }
+
+    @Transactional
+    @Override
+    public BookingResponseDto confirmPayment(UUID bookingId) {
+        try {
+            Booking booking = bookingRepository.findById(bookingId)
+                    .orElseThrow(() -> new EntityNotFoundException("Booking not found"));
+
+            booking.setStatus(BookingStatus.paid);
+            booking.setExpiresAt(LocalDateTime.now().plusYears(1));
+
+            bookingRepository.save(booking);
+
+            emailService.sendBookingDetailsEmail(bookingId);
+
+            return new BookingResponseDto(true, "Payment successful and booking updated", bookingId);
+        } catch (Exception e) {
+            return new BookingResponseDto(false, "Failed to update booking status", bookingId);
         }
     }
 
