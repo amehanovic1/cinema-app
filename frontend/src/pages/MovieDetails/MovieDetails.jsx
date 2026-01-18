@@ -155,12 +155,13 @@ const MovieDetails = () => {
         }
     }, [])
 
-    const handleReservation = () => {
+    const handleContinueToBooking = (action) => {
         if (user) {
-            return navigate(ROUTES.MOVIE_TICKET_BOOKING.replace(':projectionId', selectedProjection.id));
+            navigate(`/booking/${selectedProjection.id}/seats/${action}`);
+        } else {
+            setAuthDrawerOpen(true);
         }
-        setAuthDrawerOpen(true);
-    }
+    };
 
     const getLanguageName = (languageCode) => {
         const displayNames = new Intl.DisplayNames(['en'], { type: 'language' });
@@ -340,11 +341,23 @@ const MovieDetails = () => {
                                                 : "border-neutral-200 bg-neutral-200 text-neutral-500 cursor-not-allowed"
                                             }`}
                                             disabled={!(selectedCity && selectedVenue && selectedProjection)}
-                                            onClick={handleReservation}
+                                            onClick={() => handleContinueToBooking("reserve")}
                                         >
                                             Reserve Ticket
                                         </button>
+
+                                        <button className={`w-1/2 mb-4 font-bold py-2 px-2 border border-dark-red rounded-lg transition
+                                            ${selectedCity && selectedVenue && selectedProjection
+                                                ? "bg-dark-red text-neutral-0"
+                                                : "border-neutral-200 bg-neutral-200 text-neutral-500 cursor-not-allowed"
+                                            }`}
+                                            disabled={!(selectedCity && selectedVenue && selectedProjection)}
+                                            onClick={() => handleContinueToBooking("payment")}
+                                        >
+                                            Buy Ticket
+                                        </button>
                                     </div>
+
                                 </div>
 
 
@@ -368,7 +381,7 @@ const MovieDetails = () => {
                         </div>
 
                         {authDrawerOpen &&
-                            <AuthDrawer onClose={() => setAuthDrawerOpen(false)}/>
+                            <AuthDrawer onClose={() => setAuthDrawerOpen(false)} />
                         }
                     </div>
                 ) : (
