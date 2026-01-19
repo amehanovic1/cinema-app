@@ -157,7 +157,7 @@ const MovieDetails = () => {
 
     const handleContinueToBooking = (action) => {
         if (user) {
-            navigate(`/booking/${selectedProjection.id}/seats/${action}`);
+            navigate(`/movie-ticket-booking/${selectedProjection.id}/seats/${action}`);
         } else {
             setAuthDrawerOpen(true);
         }
