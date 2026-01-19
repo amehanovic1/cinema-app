@@ -1,8 +1,10 @@
 import { api } from "./api";
 
-export async function createBookingSession() {
+export async function createBookingSession(projectionId) {
     try {
-        const response = await api.post("/booking");
+        const response = await api.post("/booking", null, {
+            params: { projectionId }
+        });
         return response.data;
     } catch (error) {
         console.log("Error creating booking session:", error);
