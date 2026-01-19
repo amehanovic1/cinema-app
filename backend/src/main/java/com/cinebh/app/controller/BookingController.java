@@ -22,8 +22,8 @@ public class BookingController {
     }
 
     @PostMapping
-    public ResponseEntity<BookingResponseDto> createBookingSession(@AuthenticationPrincipal User currentUser) {
-        return ResponseEntity.ok(bookingService.createBookingSession(currentUser));
+    public ResponseEntity<BookingResponseDto> createBookingSession(@AuthenticationPrincipal User currentUser, UUID projectionId) {
+        return ResponseEntity.ok(bookingService.createBookingSession(currentUser, projectionId));
     }
 
     @PostMapping("/update-seats")

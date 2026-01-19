@@ -38,19 +38,29 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional
     @Override
-    public BookingResponseDto createBookingSession(User user) {
-        try {
-            Booking booking = new Booking();
-            booking.setUser(user);
-            booking.setStatus(BookingStatus.locked);
-            booking.setTicketCount(0);
-            booking.setExpiresAt(LocalDateTime.now().plusMinutes(5));
+    public BookingResponseDto createBookingSession(User user, UUID projectionId) {
+        List<Booking> activeSessions = bookingRepository.findByUserAndStatusAndExpiresAtAfter(
+                user, BookingStatus.locked, LocalDateTime.now());
 
-            Booking saved = bookingRepository.save(booking);
-            return new BookingResponseDto(true, "Booking session initialized", saved.getId());
-        } catch (Exception e) {
-            return new BookingResponseDto(false, "Failed to start booking session", null);
+        for (Booking booking : activeSessions) {
+            if (!booking.getTickets().isEmpty()) {
+                UUID sessionMovieId = booking.getTickets().getFirst().getProjection().getId();
+                if (sessionMovieId.equals(projectionId)) {
+                    return new BookingResponseDto(true, "Session resumed", booking.getId());
+                }
+            } else {
+                bookingRepository.delete(booking);
+            }
         }
+
+        Booking newBooking = new Booking();
+        newBooking.setUser(user);
+        newBooking.setStatus(BookingStatus.locked);
+        newBooking.setTicketCount(0);
+        newBooking.setExpiresAt(LocalDateTime.now().plusMinutes(5));
+
+        Booking saved = bookingRepository.save(newBooking);
+        return new BookingResponseDto(true, "New session created", saved.getId());
     }
 
     @Transactional

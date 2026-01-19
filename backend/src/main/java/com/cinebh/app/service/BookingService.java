@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface BookingService {
 
-    BookingResponseDto createBookingSession(User currentUser);
+    BookingResponseDto createBookingSession(User currentUser, UUID projectionId);
 
     BookingResponseDto updateSeatSelection(ReservationRequestDto requestDto);
 
