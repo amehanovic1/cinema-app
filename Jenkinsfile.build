@@ -96,6 +96,12 @@ pipeline {
             }
         }
 
+        stage('Stopping Docker Containers') {
+            steps {
+                sh 'docker stop cinema-backend cinema-frontend 2>/dev/null || true'
+            }
+        }
+
         stage('Build Backend') {
             when {
                 expression { params.BUILD_TYPE in ['backend', 'full'] }
