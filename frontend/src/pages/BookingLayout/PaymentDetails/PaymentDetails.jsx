@@ -5,6 +5,7 @@ import { createPaymentIntent } from "../../../services/paymentService";
 import { format } from "date-fns";
 import { formatTime } from "../../../utils/dateTimeFormatter";
 import PaymentForm from "../PaymentForm/PaymentForm";
+import PaymentDetailsSkeleton from "./PaymentDetailsSkeleton";
 
 const SummaryRow = ({ label, value }) => (
     <div>
@@ -58,9 +59,7 @@ const PaymentDetails = ({ bookingData }) => {
     const formattedSeats = selectedSeats.map(s => s.seatCode).join(", ");
 
     if (isLoading || !clientSecret || !bookingData) return (
-        <div className="flex w-full h-full justify-center items-center p-20 text-dark-red font-bold">
-            Loading payment details...
-        </div>
+        <PaymentDetailsSkeleton />
     );
 
     return (
