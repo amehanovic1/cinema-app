@@ -4,28 +4,34 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { updateSeatSelection } from "../../../services/bookingService";
 
-const CinemaHallSeatBooking = ({ bookingId, projectionId, seatTypes, hallSeats, reservedSeats, handleClick }) => {
-    const [seats, setSeats] = useState([])
-    const [selectedSeats, setSelectedSeats] = useState([])
+const CinemaHallSeatBooking = ({
+    bookingData,
+    projectionDetails,
+    seatTypes,
+    hallSeats,
+    reservedSeats,
+    handleClick,
+    mode = "reserve"
+}) => {
+    const { id: bookingId, selectedSeats: initialSelectedSeats = [] } = bookingData || {};
+    const { id: projectionId } = projectionDetails || {};
+
+    const [selectedSeats, setSelectedSeats] = useState(initialSelectedSeats);
 
     useEffect(() => {
-        const initializeSeats = () => {
+        setSelectedSeats(initialSelectedSeats);
+    }, [initialSelectedSeats]);
 
-            return hallSeats.map((seat) => {
-                const isBooked = reservedSeats?.includes(seat.id);
+    const seats = hallSeats.map((seat) => {
+        const isBooked = reservedSeats?.includes(seat.id);
+        const isCurrentSelection = selectedSeats.some(s => s.id === seat.id);
 
-                const isCurrentSelection = selectedSeats.some(s => s.id === seat.id);
-                return {
-                    ...seat,
-                    status: isBooked && !isCurrentSelection ? "booked" : "available",
-                    selected: isCurrentSelection
-                }
-            })
-        }
-
-        setSeats(initializeSeats())
-    }, [hallSeats, reservedSeats, selectedSeats])
-
+        return {
+            ...seat,
+            status: isBooked && !isCurrentSelection ? "booked" : "available",
+            selected: isCurrentSelection
+        };
+    });
 
     const getSeatClassName = (seat) => {
         const baseClassName = "flex justify-center items-center border rounded transition-all";
@@ -37,7 +43,7 @@ const CinemaHallSeatBooking = ({ bookingId, projectionId, seatTypes, hallSeats, 
         if (seat.status === "booked") {
             colorClass = "bg-neutral-200 text-white cursor-not-allowed border-neutral-200";
         } else if (seat.selected) {
-            colorClass = "bg-dark-red text-white border-dark-red shadow-md";
+            colorClass = "bg-dark-red text-white border-dark-red shadow-md cursor-pointer";
         } else {
             colorClass = "bg-white text-neutral-800 border-neutral-200 hover:border-dark-red cursor-pointer";
         }
@@ -56,16 +62,11 @@ const CinemaHallSeatBooking = ({ bookingId, projectionId, seatTypes, hallSeats, 
                 projectionId
             });
 
-            setSeats((prev) =>
-                prev.map((s) =>
-                    s.id === seat.id ? { ...s, selected: !s.selected } : s
-                )
+            setSelectedSeats((prev) =>
+                seat.selected
+                    ? prev.filter((s) => s.id !== seat.id)
+                    : [...prev, seat]
             );
-
-            if (!seat.selected)
-                setSelectedSeats((prev) => [...prev, seat]);
-            else
-                setSelectedSeats((prev) => prev.filter((s) => s.id !== seat.id));
 
         } catch (error) {
             console.log(error);
@@ -166,8 +167,7 @@ const CinemaHallSeatBooking = ({ bookingId, projectionId, seatTypes, hallSeats, 
                                 : "bg-dark-red hover:bg-red-700 active:scale-95"
                             } text-neutral-25 font-semibold text-sm md:text-base rounded-lg w-full py-2 transition-all duration-200`}
                         onClick={() => handleClick(selectedSeats)}>
-                        Make Reservation
-
+                        {mode === "payment" ? "Continue to Payment" : "Make Reservation"}
                     </button>
                 </div>
 

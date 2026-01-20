@@ -1,6 +1,5 @@
 package com.cinebh.app.service;
 
-import com.cinebh.app.entity.Booking;
 import org.thymeleaf.context.Context;
 
 import java.util.UUID;

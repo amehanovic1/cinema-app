@@ -1,6 +1,7 @@
 package com.cinebh.app.service.impl;
 
 import com.cinebh.app.entity.*;
+import com.cinebh.app.enums.BookingStatus;
 import com.cinebh.app.repository.BookingRepository;
 import com.cinebh.app.service.EmailService;
 import jakarta.mail.MessagingException;
@@ -73,6 +74,9 @@ public class EmailServiceImpl implements EmailService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found for email"));
 
+        boolean isPaid = booking.getStatus() == BookingStatus.paid;
+        String subject = isPaid ? "Your Cinebh Ticket Confirmation" : "Your Cinebh Booking Details";
+
         String seats = booking.getTickets().stream()
                 .map(t -> t.getHallSeat().getSeatCode())
                 .collect(Collectors.joining(", "));
@@ -89,6 +93,7 @@ public class EmailServiceImpl implements EmailService {
         String venueAddress = venue.getName() + ", " + venue.getStreet() + " " + venue.getStreetNumber() + ", " + venue.getCity().getName();
 
         Context context = new Context();
+        context.setVariable("isPaid", isPaid);
         context.setVariable("movieTitle", projection.getMovie().getTitle());
         context.setVariable("projectionDate", projection.getProjectionDate());
         context.setVariable("projectionTime", projection.getProjectionTime());
@@ -100,6 +105,6 @@ public class EmailServiceImpl implements EmailService {
         User user = booking.getUser();
         String email = user.getEmail();
 
-        sendEmail(email, "Your Cinebh Booking Details", context, "booking_confirmation_email.html");
+        sendEmail(email, subject, context, "booking_confirmation_email.html");
     }
 }

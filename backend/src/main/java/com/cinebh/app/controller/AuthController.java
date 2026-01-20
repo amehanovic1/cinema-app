@@ -55,7 +55,11 @@ public class AuthController {
             HttpServletRequest request,
             HttpServletResponse response
     ) {
-        return ResponseEntity.ok(authenticationService.refresh(request, response));
+        AuthResponseDto authResponse = authenticationService.refresh(request, response);
+        if (!authResponse.getSuccess()) {
+            return ResponseEntity.status(401).body(authResponse);
+        }
+        return ResponseEntity.ok(authResponse);
     }
 
     @PostMapping("/logout")

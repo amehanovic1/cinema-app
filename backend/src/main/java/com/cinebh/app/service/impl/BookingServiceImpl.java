@@ -1,9 +1,11 @@
 package com.cinebh.app.service.impl;
 
+import com.cinebh.app.dto.booking.BookingCheckoutDto;
 import com.cinebh.app.dto.booking.ReservationRequestDto;
 import com.cinebh.app.dto.booking.BookingResponseDto;
 import com.cinebh.app.entity.*;
 import com.cinebh.app.enums.BookingStatus;
+import com.cinebh.app.mapper.BookingMapper;
 import com.cinebh.app.repository.*;
 import com.cinebh.app.service.BookingService;
 import com.cinebh.app.service.EmailService;
@@ -31,22 +33,25 @@ public class BookingServiceImpl implements BookingService {
     private final HallSeatRepository hallSeatRepository;
     private final EmailService emailService;
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final BookingMapper bookingMapper;
 
     @Transactional
     @Override
-    public BookingResponseDto createBookingSession(User user) {
-        try {
-            Booking booking = new Booking();
-            booking.setUser(user);
-            booking.setStatus(BookingStatus.locked);
-            booking.setTicketCount(0);
-            booking.setExpiresAt(LocalDateTime.now().plusMinutes(5));
+    public BookingResponseDto createBookingSession(User user, UUID projectionId) {
+        List<Booking> activeSessions = bookingRepository.findByUserAndStatusAndExpiresAtAfter(
+                user, BookingStatus.locked, LocalDateTime.now()
+        );
 
-            Booking saved = bookingRepository.save(booking);
-            return new BookingResponseDto(true, "Booking session initialized", saved.getId());
-        } catch (Exception e) {
-            return new BookingResponseDto(false, "Failed to start booking session", null);
-        }
+        bookingRepository.deleteAll(activeSessions);
+
+        Booking newBooking = new Booking();
+        newBooking.setUser(user);
+        newBooking.setStatus(BookingStatus.locked);
+        newBooking.setTicketCount(0);
+        newBooking.setExpiresAt(LocalDateTime.now().plusMinutes(5));
+
+        Booking saved = bookingRepository.save(newBooking);
+        return new BookingResponseDto(true, "New session created", saved.getId());
     }
 
     @Transactional
@@ -119,6 +124,38 @@ public class BookingServiceImpl implements BookingService {
             return new BookingResponseDto(true, "Reservation confirmed", booking.getId());
         } catch (Exception e) {
             return new BookingResponseDto(false, "Reservation failed", bookingId);
+        }
+    }
+
+    @Override
+    public BookingCheckoutDto getBookingById(UUID bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new EntityNotFoundException("Booking session not found"));
+
+        MovieProjection projection = booking.getTickets().isEmpty()
+                ? null
+                : booking.getTickets().getFirst().getProjection();
+
+        return bookingMapper.toCheckoutDto(booking, projection);
+    }
+
+    @Transactional
+    @Override
+    public BookingResponseDto confirmPayment(UUID bookingId) {
+        try {
+            Booking booking = bookingRepository.findById(bookingId)
+                    .orElseThrow(() -> new EntityNotFoundException("Booking not found"));
+
+            booking.setStatus(BookingStatus.paid);
+            booking.setExpiresAt(LocalDateTime.now().plusYears(1));
+
+            bookingRepository.save(booking);
+
+            emailService.sendBookingDetailsEmail(bookingId);
+
+            return new BookingResponseDto(true, "Payment successful and booking updated", bookingId);
+        } catch (Exception e) {
+            return new BookingResponseDto(false, "Failed to update booking status", bookingId);
         }
     }
 

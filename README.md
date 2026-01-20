@@ -132,6 +132,10 @@ MAIL_FROM=noreply@cinebh.com
 
 # JWT Configuration
 JWT_SECRET=your_jwt_secret_here
+
+# Stripe Configuration
+STRIPE_SECRET_KEY=sk_test_...your_secret_key...
+STRIPE_WEBHOOK_SECRET=whsec_...your_webhook_secret...
 ```
 ***Mail Configuration (Turbo-SMTP)***
 
@@ -189,6 +193,9 @@ HOST=cinebh.yourdomain.com
 
 # WebSocket
 REACT_APP_WS_URL=https://cinebh-api.yourdomain.com:8080/ws-cinema
+
+# Stripe configuration
+REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_test_...your_publishable_key...
 ```
 
 Install dependencies and run:
@@ -197,6 +204,23 @@ cd frontend
 npm install 
 npm start
 ```
+
+### Stripe Setup
+
+**Secret & Publishable Keys** 
+1. Log in to your Stripe Dashboard
+3. Copy Publishable key (`pk_test_...`) to frontend `.env`
+4. Copy Secret key (`sk_test_...`) to backend `.env`
+
+**Install Stripe CLI**
+
+Download and install the CLI for your OS: [Stripe CLI Releases](https://github.com/stripe/stripe-cli/releases)
+
+**Configure Local Webhook**
+1. Login: `stripe login`
+2. Listen:
+`stripe listen --forward-to https://cinebh-api.yourdomain.com:8080/api/webhooks/stripe`
+3. Secret: Copy the `whsec_...` from the terminal to your backend `.env`.
 
 ## Running Backend Tests
 
