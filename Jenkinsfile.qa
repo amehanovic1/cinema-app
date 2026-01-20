@@ -14,12 +14,12 @@ pipeline {
         )
         string(
             name: 'FRONTEND_URL',
-            defaultValue: 'https://cinema.p1.praksa.abhapp.com',
+            defaultValue: 'https://cinema.p1.praksa.abhapp.com/',
             description: 'Frontend URL'
         )
         string(
             name: 'BACKEND_API_URL',
-            defaultValue: 'https://cinema-api.p1.praksa.abhapp.com/api',
+            defaultValue: 'https://cinema-api.p1.praksa.abhapp.com/api/',
             description: 'Backend API URL'
         )
         string(
