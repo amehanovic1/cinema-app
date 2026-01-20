@@ -45,13 +45,3 @@ export async function getBookingDetails(bookingId) {
         throw error;
     }
 }
-
-export async function confirmPayment(bookingId) {
-    try {
-        const response = await api.post(`/booking/pay/${bookingId}`);
-        return response.data;
-    } catch (error) {
-        console.error("Error confirming payment on backend:", error);
-        throw error;
-    }
-}

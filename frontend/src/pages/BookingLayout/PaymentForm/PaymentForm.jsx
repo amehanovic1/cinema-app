@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { confirmPayment } from "../../../services/bookingService";
 import Modal from "../../../components/Modal/Modal";
 import { ROUTES } from "../../../routes/routes";
 
@@ -33,18 +32,12 @@ const PaymentForm = ({ clientSecret, bookingData }) => {
             redirect: "if_required"
         });
 
-        if (error) {
+        if (paymentIntent && paymentIntent.status === "succeeded") {
+            setIsPaymentSuccessful(true);
+        } else if (error) {
             console.log(error);
-        } else if (paymentIntent && paymentIntent.status === "succeeded") {
-            try {
-                const res = await confirmPayment(bookingId);
-                if (res.success) {
-                    setIsPaymentSuccessful(true);
-                }
-            } catch (error) {
-                console.log(error);
-            }
         }
+
         setIsProcessing(false);
     };
 
