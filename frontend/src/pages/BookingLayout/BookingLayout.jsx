@@ -14,7 +14,7 @@ const BookingLayout = () => {
     const { projectionId, step, action } = useParams();
     const navigate = useNavigate();
 
-    const { minutes, seconds, reset } = useTimer();
+    const { minutes, seconds, reset } = useTimer({ initialMinutes: 5, initialSeconds: 0 })
 
     const [projectionDetails, setProjectionDetails] = useState(null);
     const [bookingData, setBookingData] = useState(null);
@@ -25,20 +25,26 @@ const BookingLayout = () => {
     const [showSessionInfo, setShowSessionInfo] = useState(false);
     const isCheckout = step === "checkout";
 
+    const refreshBookingData = async (id) => {
+        try {
+            const sessionData = await getBookingDetails(id);
+            setBookingData(sessionData);
+            return sessionData;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const startBookingSession = async () => {
         try {
             setIsLayoutLoading(true);
-
             const sessionStatus = await createBookingSession(projectionId);
             const currentId = sessionStatus.bookingId;
-            setBookingId(currentId);
 
             if (currentId) {
-                const sessionData = await getBookingDetails(currentId);
-                setBookingData(sessionData);
-
-                const remaining = sessionData.remainingSeconds || 0;
-                reset(Math.floor(remaining / 60), remaining % 60);
+                setBookingId(currentId);
+                await refreshBookingData(currentId);
+                reset(5, 0);
             }
         } catch (error) {
             console.log(error);
@@ -47,11 +53,16 @@ const BookingLayout = () => {
         }
     };
 
-    const resetBookingSession = async () => {
-        setIsSessionExpired(false);
+    const handleContinue = async () => {
         setIsLayoutLoading(true);
-
-        await startBookingSession();
+        try {
+            await refreshBookingData(bookingId);
+            navigate(`/movie-ticket-booking/${projectionId}/checkout/${action}`);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsLayoutLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -59,14 +70,21 @@ const BookingLayout = () => {
             try {
                 const details = await getMovieProjectionDetails(projectionId);
                 setProjectionDetails(details);
-            } catch (error) {
-                console.log(error);
-            }
+            } catch (error) { console.error(error); }
         };
         fetchProjection();
     }, [projectionId]);
 
-    useEffect(() => { startBookingSession(); }, [projectionId, step]);
+    useEffect(() => {
+        if (!bookingId) {
+            if (isCheckout) {
+                navigate(`/movie-ticket-booking/${projectionId}/seats/${action}`);
+            }
+            startBookingSession();
+        } else if (isCheckout) {
+            refreshBookingData(bookingId);
+        }
+    }, [projectionId, bookingId, isCheckout]);
 
     useEffect(() => {
         if (!isLayoutLoading && bookingId && minutes === 0 && seconds === 0) {
@@ -128,7 +146,7 @@ const BookingLayout = () => {
                     projectionDetails={projectionDetails}
                     bookingData={bookingData}
                     mode={action}
-                    onContinue={() => navigate(`/movie-ticket-booking/${projectionId}/checkout/${action}`)}
+                    onContinue={handleContinue}
                 />
             )}
 
@@ -142,9 +160,9 @@ const BookingLayout = () => {
                         <button
                             className="px-2 py-1 border rounded-md bg-dark-red text-neutral-0 font-bold text-xs md:text-sm"
                             onClick={() => {
-                                resetBookingSession();
+                                setIsSessionExpired(false);
+                                startBookingSession();
                                 navigate(`/movie-ticket-booking/${projectionId}/seats/${action}`);
-
                             }}
                         >
                             Okay
