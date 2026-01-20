@@ -14,11 +14,7 @@ public class WebhookController {
 
     @PostMapping("/stripe")
     public ResponseEntity<String> handleStripeWebhook(@RequestBody String payload, @RequestHeader("Stripe-Signature") String sigHeader) {
-        try {
             webhookService.processEvent(payload, sigHeader);
             return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body("Webhook Error: " + e.getMessage());
-        }
     }
 }

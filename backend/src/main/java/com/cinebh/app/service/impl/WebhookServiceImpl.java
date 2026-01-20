@@ -7,7 +7,9 @@ import com.stripe.model.PaymentIntent;
 import com.stripe.net.Webhook;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -20,21 +22,25 @@ public class WebhookServiceImpl implements WebhookService {
     @Value("${stripe.webhook.secret}")
     private String endpointSecret;
 
-    public void processEvent(String payload, String sigHeader) throws Exception {
-        Event event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
+    public void processEvent(String payload, String sigHeader) {
+        try {
+            Event event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
 
-        if ("payment_intent.succeeded".equals(event.getType())) {
-            PaymentIntent paymentIntent = (PaymentIntent) event.getDataObjectDeserializer().getObject().orElse(null);
+            if ("payment_intent.succeeded".equals(event.getType())) {
+                PaymentIntent paymentIntent = (PaymentIntent) event.getDataObjectDeserializer().getObject().orElse(null);
 
-            if (paymentIntent == null)
-                paymentIntent = (PaymentIntent) event.getDataObjectDeserializer().deserializeUnsafe();
+                if (paymentIntent == null)
+                    paymentIntent = (PaymentIntent) event.getDataObjectDeserializer().deserializeUnsafe();
 
-            if (paymentIntent != null) {
-                String bookingId = paymentIntent.getMetadata().get("bookingId");
-                if (bookingId != null) {
-                    bookingService.confirmPayment(UUID.fromString(bookingId));
+                if (paymentIntent != null) {
+                    String bookingId = paymentIntent.getMetadata().get("bookingId");
+                    if (bookingId != null) {
+                        bookingService.confirmPayment(UUID.fromString(bookingId));
+                    }
                 }
             }
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Webhook Error: " + e.getMessage());
         }
     }
 }
