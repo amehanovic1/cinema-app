@@ -24,7 +24,6 @@ public interface BookingMapper {
     @Mapping(target = "projectionDetails", source = "projection")
     @Mapping(target = "selectedSeats", source = "booking.tickets")
     @Mapping(target = "totalPrice", source = "booking", qualifiedByName = "mapPrice")
-    @Mapping(target = "remainingSeconds", ignore = true)
     BookingCheckoutDto toCheckoutDto(Booking booking, MovieProjection projection);
 
     @Mapping(target = "id", source = "hallSeat.id")

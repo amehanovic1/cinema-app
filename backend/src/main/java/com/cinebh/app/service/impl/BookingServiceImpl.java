@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -40,18 +39,10 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingResponseDto createBookingSession(User user, UUID projectionId) {
         List<Booking> activeSessions = bookingRepository.findByUserAndStatusAndExpiresAtAfter(
-                user, BookingStatus.locked, LocalDateTime.now());
+                user, BookingStatus.locked, LocalDateTime.now()
+        );
 
-        for (Booking booking : activeSessions) {
-            if (!booking.getTickets().isEmpty()) {
-                UUID sessionMovieId = booking.getTickets().getFirst().getProjection().getId();
-                if (sessionMovieId.equals(projectionId)) {
-                    return new BookingResponseDto(true, "Session resumed", booking.getId());
-                }
-            } else {
-                bookingRepository.delete(booking);
-            }
-        }
+        bookingRepository.deleteAll(activeSessions);
 
         Booking newBooking = new Booking();
         newBooking.setUser(user);
@@ -145,12 +136,7 @@ public class BookingServiceImpl implements BookingService {
                 ? null
                 : booking.getTickets().getFirst().getProjection();
 
-        BookingCheckoutDto dto = bookingMapper.toCheckoutDto(booking, projection);
-
-        long remaining = ChronoUnit.SECONDS.between(LocalDateTime.now(), booking.getExpiresAt());
-        dto.setRemainingSeconds(Math.max(0, remaining));
-
-        return dto;
+        return bookingMapper.toCheckoutDto(booking, projection);
     }
 
     @Transactional

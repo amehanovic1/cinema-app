@@ -14,7 +14,6 @@ import java.util.UUID;
 public class BookingCheckoutDto {
     private UUID id;
     private LocalDateTime expiresAt;
-    private Long remainingSeconds;
     private MovieProjectionDetailsDto projectionDetails;
     private List<HallSeatDto> selectedSeats;
     private Double totalPrice;
