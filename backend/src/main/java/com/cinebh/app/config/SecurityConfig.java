@@ -45,13 +45,15 @@ public class SecurityConfig {
                                 "/api/auth/refresh",
                                 "/api/auth/resend-code",
                                 "/api/auth/verify",
+                                "/api/auth/check",
                                 "/api/cities/**",
                                 "/api/movies/**",
                                 "/api/genres/**",
                                 "/api/venues/**",
                                 "/api/movie-projections/**",
                                 "/api/seat-types/**",
-                                "/api/hall-seats/**"
+                                "/api/hall-seats/**",
+                                "/api/webhooks/stripe"
                         ).permitAll()
                         .requestMatchers(
                                 "/swagger-ui/**",
