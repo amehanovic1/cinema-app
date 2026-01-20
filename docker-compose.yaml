@@ -47,6 +47,7 @@ services:
     container_name: cinebh-frontend
     environment:
       REACT_APP_API_URL: https://localhost:8443/api
+      REACT_APP_WS_URL: https://localhost:8443/ws-cinema
       HTTPS: "true"
       HOST: 0.0.0.0
       SSL_CRT_FILE: /app/.cert/cert.pem
