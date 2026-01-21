@@ -79,6 +79,7 @@ const OtpInput = ({ value, valueLength, onChange }) => {
             {valueItems.map((_, idx) => (
                 <input
                     key={idx}
+                    data-testid={`otp-input-field-${idx}`}
                     type="text"
                     inputMode="numeric"
                     autoComplete="one-time-code"
