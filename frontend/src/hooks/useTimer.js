@@ -1,32 +1,28 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-const useTimer = ({ initialMinutes = 0, initialSeconds = 0 }) => {
-    const [minutes, setMinutes] = useState(initialMinutes)
-    const [seconds, setSeconds] = useState(initialSeconds)
+const useTimer = ({ initialMinutes = 0, initialSeconds = 0 } = {}) => {
+    const [minutes, setMinutes] = useState(initialMinutes);
+    const [seconds, setSeconds] = useState(initialSeconds);
+
+    const reset = useCallback((newMins, newSecs) => {
+        setMinutes(newMins);
+        setSeconds(newSecs);
+    }, []);
 
     useEffect(() => {
         const myInterval = setInterval(() => {
             if (seconds > 0) {
-                setSeconds(seconds - 1);
-            }
-            if (seconds === 0) {
-                if (minutes === 0) {
-                    clearInterval(myInterval);
-                } else {
-                    setMinutes(minutes - 1);
-                    setSeconds(59);
-                }
+                setSeconds(prev => prev - 1);
+            } else if (minutes > 0) {
+                setMinutes(prev => prev - 1);
+                setSeconds(59);
+            } else {
+                clearInterval(myInterval);
             }
         }, 1000);
-        return () => {
-            clearInterval(myInterval);
-        };
-    }, [seconds, minutes]);
 
-    const reset = () => {
-        setMinutes(initialMinutes);
-        setSeconds(initialSeconds);
-    }
+        return () => clearInterval(myInterval);
+    }, [minutes, seconds]);
 
     return { minutes, seconds, reset };
 }

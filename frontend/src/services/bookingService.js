@@ -1,8 +1,10 @@
 import { api } from "./api";
 
-export async function createBookingSession() {
+export async function createBookingSession(projectionId) {
     try {
-        const response = await api.post("/booking");
+        const response = await api.post("/booking", null, {
+            params: { projectionId }
+        });
         return response.data;
     } catch (error) {
         console.log("Error creating booking session:", error);
@@ -30,6 +32,16 @@ export async function reserve(bookingId) {
         return response.data;
     } catch (error) {
         console.error("Reservation error:", error);
+        throw error;
+    }
+}
+
+export async function getBookingDetails(bookingId) {
+    try {
+        const response = await api.get(`/booking/${bookingId}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching booking details:", error);
         throw error;
     }
 }

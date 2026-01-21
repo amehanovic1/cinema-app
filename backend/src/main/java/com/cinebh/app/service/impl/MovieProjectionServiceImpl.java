@@ -1,10 +1,8 @@
 package com.cinebh.app.service.impl;
 
 import com.cinebh.app.dto.MovieProjectionDetailsDto;
-import com.cinebh.app.dto.CinemaHallDto;
 import com.cinebh.app.dto.MovieProjectionDto;
 import com.cinebh.app.entity.*;
-import com.cinebh.app.enums.ImageType;
 import com.cinebh.app.mapper.CinemaHallMapper;
 import com.cinebh.app.mapper.MovieProjectionMapper;
 import com.cinebh.app.repository.MovieProjectionRepository;
@@ -45,28 +43,6 @@ public class MovieProjectionServiceImpl implements MovieProjectionService {
         MovieProjection movieProjection = movieProjectionRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Movie projection not found"));
 
-        Movie movie = movieProjection.getMovie();
-        CinemaHall cinemaHall = movieProjection.getCinemaHall();
-
-        String posterUrl = movie.getImages().stream()
-                .filter(img -> img.getType() == ImageType.poster)
-                .findFirst()
-                .map(MovieImage::getUrl)
-                .orElse(null);
-
-
-        CinemaHallDto cinemaHallDto = cinemaHallMapper.toDto(cinemaHall);
-
-        return new MovieProjectionDetailsDto(
-                movieProjection.getId(),
-                movieProjection.getProjectionDate(),
-                movieProjection.getProjectionTime(),
-                movie.getTitle(),
-                movie.getPgRating(),
-                movie.getLanguage(),
-                movie.getDurationInMinutes(),
-                posterUrl,
-                cinemaHallDto
-        );
+        return movieProjectionMapper.toDetailsDto(movieProjection);
     }
 }

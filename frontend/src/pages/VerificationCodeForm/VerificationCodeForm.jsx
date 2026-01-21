@@ -46,7 +46,7 @@ const VerificationCodeForm = ({ setView, email }) => {
             await resendCode({ email: email });
             setServerError("");
             setOtp("");
-            reset();
+            reset(2, 0);
             setIsDisabled(false);
             setIsExpired(false)
         } catch (err) {
