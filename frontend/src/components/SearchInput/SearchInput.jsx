@@ -19,7 +19,7 @@ const SearchInput = ({ text, selectedValue, onChange }) => {
 
             <FontAwesomeIcon
                 icon={faMagnifyingGlass}
-                data-testid="search-icon"
+                data-testid="search-input-icon"
                 className={`absolute left-3 top-1/2 -translate-y-1/2 justify-center
                             ${selectedValue ? "text-dark-red" : "text-neutral-400"}`}
             />
