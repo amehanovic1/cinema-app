@@ -20,18 +20,18 @@ const SuccessView = ({ text, icon, onClose, navigateTo = null, navigateToText, a
     return (
         <div className="flex flex-col items-center justify-center gap-16" data-testid="success-view-container">
             {text &&
-                <p data-testid="success-text" className="font-normal text-center text-xs md:text-sm text-neutral-300 w-1/2">
+                <p data-testid="success-view-text" className="font-normal text-center text-xs md:text-sm text-neutral-300 w-1/2">
                     {text}
                 </p>
             }
 
-            <div data-testid="success-icon-wrapper">
+            <div data-testid="success-view-icon-wrapper">
                 <SuccessIcon icon={icon} />
             </div>
 
             {navigateTo && (
                 <button
-                    data-testid="success-navigate-button"
+                    data-testid="success-view-navigate-button"
                     onClick={() => navigate(navigateTo)}
                     className="py-2 text-base font-semibold w-full rounded-lg bg-dark-red text-neutral-25">
                     {navigateToText}
