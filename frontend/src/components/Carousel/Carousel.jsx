@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 const Carousel = ({ items, getImage, renderItem = [], autoSlide = false, autoSlideInterval = 3000 }) => {
-    
+
     const [activeIndex, setActiveIndex] = useState(0)
 
     const gotToNextSlide = () => {
@@ -16,19 +16,24 @@ const Carousel = ({ items, getImage, renderItem = [], autoSlide = false, autoSli
     }, [autoSlide, autoSlideInterval, items.length]);
 
     return (
-        <div className='relative w-full h-full overflow-hidden'>
+        <div className='relative w-full h-full overflow-hidden' data-testid="carousel-container">
             <>
                 <div className={`flex  h-full
                     ${activeIndex === 0 ? "" : "transition-transform duration-800 ease-in-out"}`}
                     style={{ transform: `translateX(-${activeIndex * 100}%)` }}
+                    data-testid="carousel-track"
                 >
 
                     {items.map((item, index) => (
-                        <div key={index} className={`w-full flex-shrink-0 relative h-full`}>
+                        <div
+                            key={index}
+                            className={`w-full flex-shrink-0 relative h-full`}
+                        >
                             <img
                                 src={getImage(item)}
-                                alt=""
-                                className="w-full h-full object-cover">
+                                alt={item.title}
+                                className="w-full h-full object-cover"
+                            >
                             </img>
 
                             {renderItem && renderItem(item)}
@@ -38,7 +43,10 @@ const Carousel = ({ items, getImage, renderItem = [], autoSlide = false, autoSli
 
                 </div>
 
-                <div className='absolute bottom-4 sm:bottom-6 w-full flex justify-center gap-1.5 sm:gap-2 md:gap-3 lg:gap-4 z-20'>
+                <div
+                    className='absolute bottom-4 sm:bottom-6 w-full flex justify-center gap-1.5 sm:gap-2 md:gap-3 lg:gap-4 z-20'
+                    data-testid="carousel-indicators"
+                >
                     {items?.map((_, index) =>
                         <button
                             key={index}
