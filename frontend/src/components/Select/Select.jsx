@@ -15,9 +15,10 @@ const Select = ({ items, selectText, icon, selectedValue, onChange }) => {
     }
 
     return (
-        <div className="w-full font-base relative overflow-visible bg-neutral-0 shadow-input">
+        <div className="w-full font-base relative overflow-visible bg-neutral-0 shadow-input" data-testid="select-container">
 
             <div
+                data-testid="select-trigger"
                 onClick={() => setIsSelectorOpen(!isSelectorOpen)}
                 className={`w-full p-2 flex items-center justify-between border rounded cursors-ppinter
                          ${isSelectorOpen ? "border-dark-red" : "border-neutral-200 "}`}
@@ -30,7 +31,10 @@ const Select = ({ items, selectText, icon, selectedValue, onChange }) => {
                             ${isSelectorOpen ? "text-dark-red" : "text-neutral-400 "}`}
                     />
 
-                    <span className="justify-start text-xs md:text-sm lg:text-base font-normal text-neutral-500">
+                    <span
+                        data-testid="select-display-value"
+                        className="justify-start text-xs md:text-sm lg:text-base font-normal text-neutral-500"
+                    >
                         {selectedItem}
                     </span>
                 </div>
@@ -43,6 +47,7 @@ const Select = ({ items, selectText, icon, selectedValue, onChange }) => {
             </div>
 
             <ul
+                data-testid="select-options-list"
                 className={`absolute left-0 right-0 z-40 mt-0 w-full bg-neutral-0 mt-2 
                         overflow-y-auto transition-all duration-300 rounded  
                         ${isSelectorOpen ? "max-h-60 opacity-100" : "max-h-0"}`}>
