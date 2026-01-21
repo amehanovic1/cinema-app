@@ -63,11 +63,11 @@ const VerificationCodeForm = ({ setView, email }) => {
     }
 
     return (
-        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6" data-testid="verification-form">
+        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6" data-testid="verification-form-wrapper">
 
             {email && (
-                <p className="mx-auto text-center font-normal text-neutral-400 text-sm w-1/2">
-                    We have sent code to your email <span data-testid="hidden-email-display">
+                <p className="mx-auto text-center font-normal text-neutral-400 text-sm w-1/2" data-testid="verification-instruction-text">
+                    We have sent code to your email <span data-testid="verification-email-hidden">
                         {hideEmail(email)}
                     </span>. Please, enter the code below to verify.
                 </p>
@@ -80,17 +80,19 @@ const VerificationCodeForm = ({ setView, email }) => {
                 {(minutes === 0 && seconds === 0) || isExpired ? (
                     <button
                         type="button"
-                        data-testid="resend-email-button"
+                        ddata-testid="verification-resend-btn"
                         onClick={resendEmail}
                         className="text-neutral-25 underline">Resend email</button>
                 ) : (
-                    <p data-testid="countdown-timer">
+                    <p data-testid="verification-timer-container">
                         You can resend email in <span className="font-semibold text-neutral-0">
                             {getFormattedTime()} </span> {minutes === 0 && " seconds"}
                     </p>
                 )}
 
-                <span data-testid="otp-server-error" className="text-left block h-4 mb-1 text-error-300 text-sm">
+                <span
+                    data-testid="verification-error-message"
+                    className="text-left block h-4 mb-1 text-error-300 text-sm">
                     {serverError || ""}
                 </span>
 
@@ -98,7 +100,7 @@ const VerificationCodeForm = ({ setView, email }) => {
 
             <button
                 type="submit"
-                data-testid="verify-continue-button"
+                data-testid="verification-submit-btn"
                 disabled={isDisabled}
                 className={`py-2 text-base font-semibold w-full rounded-lg
                         ${isDisabled ? "bg-dark-red/50 text-neutral-25/50" : "bg-dark-red text-neutral-25"}`}>
