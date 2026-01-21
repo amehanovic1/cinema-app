@@ -149,11 +149,15 @@ const UpcomingMovies = () => {
     }
 
     return (
-        <div className="flex flex-col gap-4 px-6 md:px-14 py-4 md:py-5 bg-neutral-25">
+        <div className="flex flex-col gap-4 px-6 md:px-14 py-4 md:py-5 bg-neutral-25" data-testid="upcoming-movies-page">
             <h1
-                className="font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl text-neutral-800">
+                className="font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl text-neutral-800"
+                data-testid="upcoming-movies-title"
+            >
                 Upcoming Movies
-                {upcomingMovies.content.length > 0 ? ("(" + upcomingMovies.totalElements + ")") : ""}
+                {upcomingMovies.content.length > 0 ? (
+                    <span data-testid="total-count">({upcomingMovies.totalElements})</span>
+                ) : ""}
             </h1>
 
             <SearchInput
@@ -163,29 +167,39 @@ const UpcomingMovies = () => {
             />
 
             <div
+                data-testid="filters-section"
                 className="flex flex-col gap-4 items-center justify-center 
                             sm:grid sm:grid-cols-2 sm:gap-4 lg:flex lg:flex-row lg:gap-6">
-                <Select
-                    items={cities}
-                    selectText="All cities"
-                    icon={faLocationDot}
-                    selectedValue={selectedCity}
-                    onChange={(value) => { updateParam({ city: value, venue: "" }) }}
-                />
-                <Select
-                    items={venues}
-                    selectText="All cinemas"
-                    icon={faBuilding}
-                    selectedValue={selectedVenue}
-                    onChange={(value) => { updateParam({ venue: value }) }}
-                />
-                <Select
-                    items={genres}
-                    selectText="All genres"
-                    icon={faVideo}
-                    selectedValue={selectedGenre}
-                    onChange={(value) => { updateParam({ genre: value }) }}
-                />
+
+                <div data-testid="city-filter-wrapper" className="w-full">
+                    <Select
+                        items={cities}
+                        selectText="All cities"
+                        icon={faLocationDot}
+                        selectedValue={selectedCity}
+                        onChange={(value) => { updateParam({ city: value, venue: "" }) }}
+                    />
+                </div>
+
+                <div data-testid="cinema-filter-wrapper" className="w-full">
+                    <Select
+                        items={venues}
+                        selectText="All cinemas"
+                        icon={faBuilding}
+                        selectedValue={selectedVenue}
+                        onChange={(value) => { updateParam({ venue: value }) }}
+                    />
+                </div>
+
+                <div data-testid="genre-filter-wrapper" className="w-full">
+                    <Select
+                        items={genres}
+                        selectText="All genres"
+                        icon={faVideo}
+                        selectedValue={selectedGenre}
+                        onChange={(value) => { updateParam({ genre: value }) }}
+                    />
+                </div>
 
                 <DateRangePicker
                     initialStartDate={selectedStartDate}
@@ -195,7 +209,7 @@ const UpcomingMovies = () => {
             </div>
 
             {isLoading || upcomingMovies.content.length > 0
-                ? (<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                ? (<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4" data-testid="movies-grid">
                     {isLoading
                         ? Array.from({ length: 4 }).map((_, i) => (
                             <div key={i} className="bg-neutral-0 border border-neutral-200 rounded-2xl shadow-card p-2">
@@ -203,7 +217,10 @@ const UpcomingMovies = () => {
                             </div>
                         ))
                         : upcomingMovies.content.map((movie) =>
-                            <div key={movie.id} className="bg-neutral-0 border border-neutral-200 rounded-2xl shadow-card flex justify-center p-2">
+                            <div
+                                key={movie.id}
+                                className="bg-neutral-0 border border-neutral-200 rounded-2xl shadow-card flex justify-center p-2"
+                            >
 
                                 <Card
                                     title={movie.title}
@@ -229,6 +246,7 @@ const UpcomingMovies = () => {
 
             {upcomingMovies.hasNext && upcomingMovies.content.length > 0 &&
                 <button
+                    data-testid="load-more-button"
                     onClick={handleLoadMore}
                     className="flex justify-center text-urbanist text-dark-red 
                                 text-semibold text-sm sm:text-base md:text-lg lg:text-lg underline">

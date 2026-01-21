@@ -1,6 +1,6 @@
 const MovieDetailsSkeleton = () => {
     return (
-        <div className="flex flex-col gap-2 m-4 sm:m-6 md:m-8 lg:m-12 animate-pulse">
+        <div className="flex flex-col gap-2 m-4 sm:m-6 md:m-8 lg:m-12 animate-pulse" data-testid="movie-details-skeleton">
 
             <div className="w-48 h-6 bg-neutral-200 rounded-md mb-2" />
 
