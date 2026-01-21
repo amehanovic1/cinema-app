@@ -1,16 +1,9 @@
 import { useEffect, useState } from 'react';
+import { formatForId } from "../../utils/testUtils";
 
 const Carousel = ({ items, getImage, renderItem = [], autoSlide = false, autoSlideInterval = 3000 }) => {
 
     const [activeIndex, setActiveIndex] = useState(0)
-
-    const getFormattedId = (title, index) => {
-        return (title || `slide-${index}`)
-            .toLowerCase()
-            .trim()
-            .replace(/\s+/g, '-')
-            .replace(/[^a-z0-9-]/g, "");
-    };
 
     const gotToNextSlide = () => {
         setActiveIndex((prevIndex) => prevIndex === items.length - 1 ? 0 : prevIndex + 1)
@@ -34,7 +27,7 @@ const Carousel = ({ items, getImage, renderItem = [], autoSlide = false, autoSli
 
                     {items.map((item, index) => {
 
-                        const slideId = getFormattedId(item.title, index);
+                        const slideId = formatForId(item.title);
 
                         return (
                             <div

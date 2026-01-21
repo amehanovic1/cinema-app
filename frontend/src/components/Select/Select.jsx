@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import { formatForId } from "../../utils/testUtils";
 
 const Select = ({ items, selectText, icon, selectedValue, onChange }) => {
 
@@ -8,14 +9,6 @@ const Select = ({ items, selectText, icon, selectedValue, onChange }) => {
     const selectedItem = selectedValue === "" ? selectText : selectedValue
     const allOption = { id: "all", name: selectText }
     const allItems = [allOption, ...items]
-
-    const formatForId = (text) => {
-        return (text || "")
-            .toLowerCase()
-            .trim()
-            .replace(/\s+/g, '-')
-            .replace(/[^a-z0-9-]/g, "");
-    };
 
     const formattedSelectName = formatForId(selectText);
 

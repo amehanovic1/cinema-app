@@ -1,6 +1,8 @@
+import { formatForId } from "../../utils/testUtils";
+
 const Card = ({ title, imageUrl, details = null, badge = null, onClick = null }) => {
     
-    const formattedTitle = (title || "").toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, "");
+    const formattedTitle = formatForId(title);
 
     return (
         <div

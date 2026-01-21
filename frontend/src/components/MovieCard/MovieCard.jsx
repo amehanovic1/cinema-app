@@ -1,6 +1,7 @@
 import NoDataFound from "../NoDataFound/NoDataFound";
 import { formatDate, formatTime } from "../../utils/dateTimeFormatter";
 import { faFilm } from "@fortawesome/free-solid-svg-icons";
+import { formatForId } from "../../utils/testUtils";
 
 const MovieCard = ({ movies, projections, onClick }) => {
 
@@ -9,19 +10,11 @@ const MovieCard = ({ movies, projections, onClick }) => {
         return displayNames.of(languageCode);
     }
 
-    const getFormattedId = (title) => {
-        return (title || "")
-            .toLowerCase()
-            .trim()
-            .replace(/\s+/g, '-')
-            .replace(/[^a-z0-9-]/g, "");
-    };
-
     return (
         <>
             {movies.length > 0 ? (
                 movies.map(movie => {
-                    const formattedTitle = getFormattedId(movie.title);
+                    const formattedTitle = formatForId(movie.title);
 
                     return (<div
                         key={movie.id}
@@ -62,7 +55,7 @@ const MovieCard = ({ movies, projections, onClick }) => {
                                         {movie.genres?.map(genre => (
                                             <button
                                                 key={genre.id}
-                                                data-testid={`movie-card-genre-${formattedTitle}-${getFormattedId(genre.name)}`}
+                                                data-testid={`movie-card-genre-${formattedTitle}-${formatForId(genre.name)}`}
                                                 className="bg-neutral-200 text-sm px-2 py-1 rounded-lg" >
                                                 {genre.name}
                                             </button>))

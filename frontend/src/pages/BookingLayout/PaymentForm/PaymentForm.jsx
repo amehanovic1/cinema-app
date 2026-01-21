@@ -57,11 +57,9 @@ const PaymentForm = ({ clientSecret, bookingData }) => {
                         ? <span data-testid="payment-processing-status">Processing...</span>
                         :
                         <>
-                            Make Payment -
-                            <span data-testid="payment-amount-display">
+                            Make Payment - <span data-testid="payment-amount-display">
                                 {bookingData.totalPrice?.toFixed(2)}
-                            </span>
-                            KM
+                            </span> KM
                         </>
                     }
                 </button>
