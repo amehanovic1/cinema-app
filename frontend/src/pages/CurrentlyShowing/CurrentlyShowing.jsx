@@ -183,7 +183,7 @@ const CurrentlyShowing = () => {
                 className="font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl text-neutral-800">
                 Currently Showing
                 {currentMovies.content.length > 0 ? (
-                    <span data-testid="movies-count">({currentMovies.totalElements})</span>
+                    <span data-testid="currently-showing-total-count">({currentMovies.totalElements})</span>
                 ) : ""}
             </h1>
 
@@ -242,7 +242,7 @@ const CurrentlyShowing = () => {
                 onChange={(value) => { updateParam({ date: value }) }}
             />
 
-            <h1 className="font-normal italic text-neutral-500 text-xs md:text-sm lg:text-base">
+            <h1 className="font-normal italic text-neutral-500 text-xs md:text-sm lg:text-base" data-testid="currently-showing-reminder">
                 Quick reminder that our cinema schedule is on a ten-day update cycle.
             </h1>
 
@@ -257,7 +257,7 @@ const CurrentlyShowing = () => {
             {currentMovies.hasNext && currentMovies.content.length > 0 &&
                 <button
                     onClick={handleLoadMore}
-                    data-testid="load-more-button"
+                    data-testid="currently-showing-load-more-button"
                     className="flex justify-center text-urbanist text-dark-red 
                         text-semibold text-sm sm:text-base md:text-lg lg:text-lg underline">
                     Load more

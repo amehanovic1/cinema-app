@@ -156,7 +156,7 @@ const UpcomingMovies = () => {
             >
                 Upcoming Movies
                 {upcomingMovies.content.length > 0 ? (
-                    <span data-testid="total-count">({upcomingMovies.totalElements})</span>
+                    <span data-testid="upcoming-total-count">({upcomingMovies.totalElements})</span>
                 ) : ""}
             </h1>
 
@@ -209,7 +209,7 @@ const UpcomingMovies = () => {
             </div>
 
             {isLoading || upcomingMovies.content.length > 0
-                ? (<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4" data-testid="movies-grid">
+                ? (<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4" data-testid="upcoming-movies-grid">
                     {isLoading
                         ? Array.from({ length: 4 }).map((_, i) => (
                             <div key={i} className="bg-neutral-0 border border-neutral-200 rounded-2xl shadow-card p-2">
@@ -246,7 +246,7 @@ const UpcomingMovies = () => {
 
             {upcomingMovies.hasNext && upcomingMovies.content.length > 0 &&
                 <button
-                    data-testid="load-more-button"
+                    data-testid="upcoming-load-more-button"
                     onClick={handleLoadMore}
                     className="flex justify-center text-urbanist text-dark-red 
                                 text-semibold text-sm sm:text-base md:text-lg lg:text-lg underline">
