@@ -103,7 +103,7 @@ const BookingLayout = () => {
     return (
         <div className="booking-container" data-testid="booking-layout-container">
             <div className="flex justify-between m-4 md:m-8 text-neutral-800">
-                <h1 className="font-bold text-2xl" data-testid="booking-step-title">
+                <h1 className="font-bold text-2xl" data-testid="booking-layout-title">
                     {isCheckout ? "Payment Details" : "Seat Options"}
                 </h1>
 
@@ -111,20 +111,19 @@ const BookingLayout = () => {
                     <div className="relative cursor-pointer"
                         onMouseEnter={() => setShowSessionInfo(true)}
                         onMouseLeave={() => setShowSessionInfo(false)}
-                        data-testid="session-info"
+                        data-testid="booking-layout-session-info"
                     >
                         <FontAwesomeIcon
                             icon={faInfoCircle}
-                            data-testid="session-info-icon"
+                            data-testid="booking-layout-session-info-icon"
                             className="text-neutral-400 hover:text-dark-red transition-colors"
                         />
                         {showSessionInfo && (
                             <div
                                 className="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-64 p-3 bg-neutral-800 text-center 
                                             text-neutral-0 text-xs rounded-lg shadow-xl z-50"
-                                data-testid="session-info-message"
                             >
-                                <p data-testid="session-info-text">
+                                <p data-testid="booking-layout-session-info-text">
                                     Session will expire in 5 minutes and selected seats will be refreshed
                                 </p>
                             </div>
@@ -132,22 +131,22 @@ const BookingLayout = () => {
                     </div>
                     <h1
                         className="font-regular text-sm md:text-base text-center"
-                        data-testid="session-duration-text">
+                        data-testid="booking-layout-session-duration-text">
                         Session duration
                     </h1>
                     <div className="text-center font-bold px-2 py-1 bg-neutral-0 border rounded-md border-neutral-200 w-16"
-                        data-testid="session-timer">
+                        data-testid="booking-layout-session-timer">
                         {getFormattedTime()}
                     </div>
                 </div>
             </div>
 
-            <div className="w-full h-1 flex rounded bg-neutral-200 overflow-hidden" data-testid="progress-bar">
+            <div className="w-full h-1 flex rounded bg-neutral-200 overflow-hidden" data-testid="booking-layout-progress-bar">
                 {isCheckout ? (
-                    <div className="bg-dark-red w-full h-full transition-all duration-700 ease-in-out" data-testid="progress-full"></div>
+                    <div className="bg-dark-red w-full h-full transition-all duration-700 ease-in-out" data-testid="booking-layout-progress-full"></div>
                 ) : (
                     <>
-                        <div className="bg-dark-red w-1/2 h-full transition-all duration-500" data-testid="progress-half"></div>
+                        <div className="bg-dark-red w-1/2 h-full transition-all duration-500" data-testid="booking-layout-progress-half"></div>
                         <div className="bg-neutral-200 w-1/2 h-full"></div>
                     </>
                 )}
@@ -171,11 +170,11 @@ const BookingLayout = () => {
                 <Modal>
                     <Modal.Header description={"Session Expired"} />
                     <Modal.Body>
-                        <p data-testid="session-expired-message">Your session expired and seats have been refreshed and updated.</p>
+                        <p data-testid="booking-layout-session-expired-message">Your session expired and seats have been refreshed and updated.</p>
                     </Modal.Body>
                     <Modal.Footer>
                         <button
-                            data-testid="session-expired-ok-button"
+                            data-testid="booking-layout-session-expired-ok-button"
                             className="px-2 py-1 border rounded-md bg-dark-red text-neutral-0 font-bold text-xs md:text-sm"
                             onClick={() => {
                                 setIsSessionExpired(false);

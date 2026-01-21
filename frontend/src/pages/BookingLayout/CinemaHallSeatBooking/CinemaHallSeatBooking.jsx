@@ -80,9 +80,9 @@ const CinemaHallSeatBooking = ({
     return (
         <div
             className="grid grid-cols-1 md:grid-cols-2 gap-12 m-8 items-stretch"
-            data-testid="seat-booking-container">
+            data-testid="seat-booking-main-wrapper">
 
-            <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center gap-4" data-testid="seat-map-section">
                 <h1
                     className="text-neutral-800 font-regular text-sm md:text-base"
                     data-testid="cinema-screen-text">
@@ -95,7 +95,7 @@ const CinemaHallSeatBooking = ({
                 </svg>
 
                 <div className="w-full overflow-x-auto pb-4">
-                    <div className="grid grid-cols-9 gap-2 min-w-[600px] items-center" data-testid="seat-grid">
+                    <div className="grid grid-cols-9 gap-2 min-w-[600px] items-center" data-testid="seat-layout-grid">
                         {seats.map((seat, index) => {
                             const isLoveSeat = seat.seatType.category === "Love";
 
@@ -107,12 +107,12 @@ const CinemaHallSeatBooking = ({
                                 <React.Fragment key={seat.id}>
                                     <div
                                         data-testid={`seat-${seat.seatCode}`}
-                                        data-seat-type={seat.seatType.category}
+                                        data-seat-type={seat.seatType.category.toLowerCase()}
                                         className={getSeatClassName(seat)}
                                         onClick={() => handleSeatClick(seat)}
                                     >
                                         {seat.seatType.category === "VIP" && (
-                                            <FontAwesomeIcon icon={faStar} className="mr-1 w-3 h-3" data-testid="vip-icon" />
+                                            <FontAwesomeIcon icon={faStar} className="mr-1 w-3 h-3" data-testid="seat-vip-star-icon" />
                                         )}
                                         {seat.seatCode}
                                     </div>

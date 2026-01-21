@@ -120,7 +120,7 @@ const MovieTicketBooking = ({ projectionDetails, bookingData, mode, onContinue }
     return (
         <>
             {projectionDetails && (
-                <div data-testid="seat-selection-content">
+                <div data-testid="movie-ticket-booking-selection-wrapper">
 
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-8 py-6 m-4 md:m-8">
 
@@ -129,30 +129,30 @@ const MovieTicketBooking = ({ projectionDetails, bookingData, mode, onContinue }
                                 src={projectionDetails.posterUrl}
                                 alt={projectionDetails.title}
                                 className="w-full h-full object-cover rounded-xl"
-                                data-testid="movie-poster"
+                                data-testid="booking-movie-poster"
                             />
                         </div>
 
                         <div className="md:col-span-3 flex flex-col justify-between text-neutral-800">
                             <div>
-                                <h1 className="font-bold text-lg md:text-xl mb-1" data-testid="movie-title">
+                                <h1 className="font-bold text-lg md:text-xl mb-1" data-testid="booking-movie-title">
                                     {projectionDetails.title}
                                 </h1>
 
-                                <div className="flex flex-wrap gap-3 font-normal text-sm md:text-base" data-testid="movie-details-summary-row">
-                                    <span data-testid="movie-rating">
+                                <div className="flex flex-wrap gap-3 font-normal text-sm md:text-base" data-testid="booking-movie-info-row">
+                                    <span data-testid="booking-movie-rating">
                                         {projectionDetails.pgRating}
                                     </span>
 
                                     <span className="text-dark-red">|</span>
 
-                                    <span data-testid="movie-language">
+                                    <span data-testid="booking-movie-language">
                                         {getLanguageName(projectionDetails.language)}
                                     </span>
 
                                     <span className="text-dark-red">|</span>
 
-                                    <span data-testid="movie-duration">
+                                    <span data-testid="booking-movie-duration">
                                         {projectionDetails.durationInMinutes} Min
                                     </span>
                                 </div>
@@ -162,14 +162,14 @@ const MovieTicketBooking = ({ projectionDetails, bookingData, mode, onContinue }
 
                         <div className="md:col-span-7 flex flex-col">
                             <h1 className="text-neutral-800 font-bold text-lg md:text-xl">Booking Details</h1>
-                            <div className="flex flex-col gap-2 flex-wrap mt-2" data-testid="booking-info-summary">
-                                <p data-testid="projection-date-time">
+                            <div className="flex flex-col gap-2 flex-wrap mt-2" data-testid="booking-projection-summary">
+                                <p data-testid="booking-projection-date-time">
                                     {format(projectionDetails.projectionDate, 'EEEE, MMM d')} at {formatTime(projectionDetails.projectionTime)}
                                 </p>
-                                <p data-testid="venue-location">
+                                <p data-testid="booking-projection-venue">
                                     {venueName} : {street} {streetNumber},  {city.name}
                                 </p>
-                                <p className="mb-2" data-testid="hall-name">{hallName}</p>
+                                <p className="mb-2" data-testid="booking-projection-hall">{hallName}</p>
                             </div>
                         </div>
 
