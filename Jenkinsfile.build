@@ -17,11 +17,6 @@ pipeline {
             defaultValue: 'https://cinema-api.p1.praksa.abhapp.com/api',
             description: 'Backend API URL for frontend build'
         )
-        string(
-            name: 'STRIPE_PUBLISHABLE_KEY',
-            defaultValue: '',
-            description: 'Stripe publishable key (pk_test_... or pk_live_...)'
-        )
         booleanParam(
             name: 'RUN_TESTS',
             defaultValue: true,
@@ -47,6 +42,8 @@ pipeline {
 
         BACKEND_IMAGE = "${DOCKER_REGISTRY}/cinema-backend"
         FRONTEND_IMAGE = "${DOCKER_REGISTRY}/cinema-frontend"
+
+        STRIPE_PUBLISHABLE_KEY = credentials('stripe-publishable-key')
     }
 
     options {
@@ -239,7 +236,7 @@ pipeline {
                                         --build-arg BUILD_NUMBER=${BUILD_NUMBER} \
                                         --build-arg GIT_COMMIT=${GIT_COMMIT_SHORT} \
                                         --build-arg REACT_APP_API_URL=${params.FRONTEND_API_URL} \
-                                        --build-arg REACT_APP_STRIPE_PUBLISHABLE_KEY=${params.STRIPE_PUBLISHABLE_KEY} \
+                                        --build-arg REACT_APP_STRIPE_PUBLISHABLE_KEY=${STRIPE_PUBLISHABLE_KEY} \
                                         -f Dockerfile.prod .
                                 """
                             }
