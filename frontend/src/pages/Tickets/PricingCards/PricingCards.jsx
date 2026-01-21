@@ -7,6 +7,7 @@ const PricingCards = ({ seats }) => {
 
                 <div
                     key={seat.id}
+                    data-testid={`pricing-card-${seat.name.toLowerCase()}`}
                     className={`relative border rounded-lg w-full max-w-[90%] sm:w-5/12 md:w-1/3 lg:w-1/4
                         ${seat.name === "Love"
                             ? "py-8 sm:py-10 shadow-card"
@@ -16,6 +17,7 @@ const PricingCards = ({ seats }) => {
                         <SeatType  {...seat} />
 
                         <button
+                            data-testid="explore-movies-btn"
                             className={`border p-2 rounded-lg w-1/2 sm:w-40 mt-2 sm:mt-3 md:mt-4 lg:mt-5
                                 ${seat.name === "Love"
                                     ? "bg-dark-red border-neutral-25 text-neutral-25"
