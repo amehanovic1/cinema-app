@@ -7,12 +7,15 @@ import { formatTime } from "../../../utils/dateTimeFormatter";
 import PaymentForm from "../PaymentForm/PaymentForm";
 import PaymentDetailsSkeleton from "./PaymentDetailsSkeleton";
 
-const SummaryRow = ({ label, value }) => (
-    <div>
-        <h3 className="text-neutral-400 text-sm md:text-base font-regular">
+const SummaryRow = ({ label, value, testId }) => (
+    <div data-testid={testId}>
+        <h3 className="text-neutral-400 text-sm md:text-base font-regular" data-testid="label">
             {label}
         </h3>
-        <p className="text-neutral-25 font-semibold text-sm md:text-base whitespace-pre-line">
+        <p
+            className="text-neutral-25 font-semibold text-sm md:text-base whitespace-pre-line"
+            data-testid="value"
+        >
             {value}
         </p>
     </div>
@@ -64,8 +67,8 @@ const PaymentDetails = ({ bookingData }) => {
 
     return (
         <>
-            <div className="m-4 md:m-8 flex gap-8 justify-start">
-                <div className="flex flex-col flex-1">
+            <div className="m-4 md:m-8 flex gap-8 justify-start" data-testid="payment-details-container">
+                <div className="flex flex-col flex-1" data-testid="stripe-payment-section">
                     <h1 className="text-neutral-500 font-bold text-lg md:text-xl">
                         Payment Method
                     </h1>
@@ -79,29 +82,30 @@ const PaymentDetails = ({ bookingData }) => {
                     )}
                 </div>
 
-                <div className="flex flex-col flex-1 max-w-md">
+                <div className="flex flex-col flex-1 max-w-md" data-testid="booking-summary-section">
                     <h1 className="text-neutral-500 font-bold text-lg md:text-xl">
                         Booking Summary
                     </h1>
                     <div className="flex flex-col gap-4 bg-neutral-800 rounded-2xl shadow-lg overflow-hidden p-4">
 
-                        <div className="flex gap-2">
+                        <div className="flex gap-2" data-testid="summary-movie-header">
                             <img
                                 src={posterUrl}
                                 alt={title}
                                 className="w-32 h-32 object-cover aspect-square rounded-lg shadow-md"
+                                data-testid="summary-movie-poster"
                             />
 
                             <div className="flex flex-col gap-2 text-neutral-25">
-                                <h1 className="font-bold text-lg md:text-xl">
+                                <h1 className="font-bold text-lg md:text-xl" data-testid="summary-movie-title">
                                     {title}
                                 </h1>
-                                <div className="flex flex-wrap gap-3 font-normal text-sm md:text-base">
-                                    {pgRating}
+                                <div className="flex flex-wrap gap-3 font-normal text-sm md:text-base" data-testid="summary-movie-specs-row">
+                                    <span data-testid="summary-movie-rating">{pgRating}</span>
                                     <span className="text-dark-red">|</span>
-                                    {getLanguageName(language)}
+                                    <span data-testid="summary-movie-language">{getLanguageName(language)}</span>
                                     <span className="text-dark-red">|</span>
-                                    {durationInMinutes} Min
+                                    <span data-testid="summary-movie-duration">{durationInMinutes} Min</span>
                                 </div>
                             </div>
 
@@ -112,21 +116,25 @@ const PaymentDetails = ({ bookingData }) => {
                         <SummaryRow
                             label="Date and Time"
                             value={`${format(new Date(projectionDate), 'EEEE, MMM d')} at ${formatTime(projectionTime)}`}
+                            testId="summary-date-time"
                         />
 
                         <SummaryRow
                             label="Cinema Details"
                             value={`${venueName} : ${street} ${streetNumber},  ${city.name} \n ${hallName}`}
+                            testId="summary-cinema-details"
                         />
 
                         <SummaryRow
                             label="Seat(s)"
                             value={formattedSeats}
+                            testId="summary-seats"
                         />
 
                         <SummaryRow
                             label="Price Details"
                             value={totalPrice.toFixed(2)}
+                            testId="summary-total-price"
                         />
 
                     </div>

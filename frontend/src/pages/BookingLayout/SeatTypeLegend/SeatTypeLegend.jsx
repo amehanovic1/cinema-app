@@ -9,12 +9,15 @@ const SeatTypeLegend = ({ seatTypes }) => {
     ];
 
     return (
-        <div className="flex gap-6 mt-4 justify-between">
+        <div className="flex gap-6 mt-4 justify-between" data-testid="seat-legend-container">
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2" data-testid="legend-status-list">
                 {seatStatus.map((status) => (
                     <div key={status.label} className="flex items-center gap-2 text-xs md:text-sm">
-                        <span className={`w-8 h-6 md:w-10 md:h-8 px-2 py-1 flex items-center justify-center ${status.bg} border ${status.border} rounded ${status.text}`}>
+                        <span
+                            className={`w-8 h-6 md:w-10 md:h-8 px-2 py-1 flex items-center justify-center ${status.bg} border ${status.border} rounded ${status.text}`}
+                            data-testid={`legend-status-icon-${status.label.toLowerCase()}`}
+                        >
                             XY
                         </span>
                         <span className="text-neutral-700">{status.label}</span>
@@ -22,10 +25,14 @@ const SeatTypeLegend = ({ seatTypes }) => {
                 ))}
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2" data-testid="legend-type-list">
 
                 {seatTypes.map((type) => (
-                    <div key={type.category} className="flex items-center gap-2 text-sm">
+                    <div
+                        key={type.category}
+                        className="flex items-center gap-2 text-sm"
+                        data-testid={`legend-type-item-${type.category.toLowerCase()}`}
+                    >
                         <span
                             className={`h-6 md:h-8 px-2 py-1 flex items-center justify-center 
                                         bg-neutral-0 border border-neutral-200 rounded 
@@ -36,10 +43,14 @@ const SeatTypeLegend = ({ seatTypes }) => {
                             {type.category === "VIP" && (
                                 <FontAwesomeIcon
                                     icon={faStar}
-                                    className={"w-2 h-2 md:w-3 md:h-3 text-neutral-400"} />
+                                    className={"w-2 h-2 md:w-3 md:h-3 text-neutral-400"}
+                                    data-testid="legend-vip-star"
+                                />
                             )}
                             XY </span>
-                        <span className="text-sm text-neutral-700">{type.category} Seats ({type.price} BAM)</span>
+                        <span className="text-sm text-neutral-700">
+                            {type.category} Seats (<span data-testid={`price-${type.category.toLowerCase()}`}>{type.price}</span> BAM)
+                        </span>
                     </div>
                 ))}
             </div>

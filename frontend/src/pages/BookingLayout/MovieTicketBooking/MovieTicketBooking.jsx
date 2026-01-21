@@ -120,7 +120,7 @@ const MovieTicketBooking = ({ projectionDetails, bookingData, mode, onContinue }
     return (
         <>
             {projectionDetails && (
-                <div>
+                <div data-testid="seat-selection-content">
 
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-8 py-6 m-4 md:m-8">
 
@@ -129,21 +129,32 @@ const MovieTicketBooking = ({ projectionDetails, bookingData, mode, onContinue }
                                 src={projectionDetails.posterUrl}
                                 alt={projectionDetails.title}
                                 className="w-full h-full object-cover rounded-xl"
+                                data-testid="movie-poster"
                             />
                         </div>
 
                         <div className="md:col-span-3 flex flex-col justify-between text-neutral-800">
                             <div>
-                                <h1 className="font-bold text-lg md:text-xl mb-1">
+                                <h1 className="font-bold text-lg md:text-xl mb-1" data-testid="movie-title">
                                     {projectionDetails.title}
                                 </h1>
 
-                                <div className="flex flex-wrap gap-3 font-normal text-sm md:text-base">
-                                    {projectionDetails.pgRating}
+                                <div className="flex flex-wrap gap-3 font-normal text-sm md:text-base" data-testid="movie-details-summary-row">
+                                    <span data-testid="movie-rating">
+                                        {projectionDetails.pgRating}
+                                    </span>
+
                                     <span className="text-dark-red">|</span>
-                                    {getLanguageName(projectionDetails.language)}
+
+                                    <span data-testid="movie-language">
+                                        {getLanguageName(projectionDetails.language)}
+                                    </span>
+
                                     <span className="text-dark-red">|</span>
-                                    {projectionDetails.durationInMinutes} Min
+
+                                    <span data-testid="movie-duration">
+                                        {projectionDetails.durationInMinutes} Min
+                                    </span>
                                 </div>
 
                             </div>
@@ -151,10 +162,14 @@ const MovieTicketBooking = ({ projectionDetails, bookingData, mode, onContinue }
 
                         <div className="md:col-span-7 flex flex-col">
                             <h1 className="text-neutral-800 font-bold text-lg md:text-xl">Booking Details</h1>
-                            <div className="flex flex-col gap-2 flex-wrap mt-2">
-                                <p>{format(projectionDetails.projectionDate, 'EEEE, MMM d')} at {formatTime(projectionDetails.projectionTime)}</p>
-                                <p>{venueName} : {street} {streetNumber},  {city.name}</p>
-                                <p className="mb-2">{hallName}</p>
+                            <div className="flex flex-col gap-2 flex-wrap mt-2" data-testid="booking-info-summary">
+                                <p data-testid="projection-date-time">
+                                    {format(projectionDetails.projectionDate, 'EEEE, MMM d')} at {formatTime(projectionDetails.projectionTime)}
+                                </p>
+                                <p data-testid="venue-location">
+                                    {venueName} : {street} {streetNumber},  {city.name}
+                                </p>
+                                <p className="mb-2" data-testid="hall-name">{hallName}</p>
                             </div>
                         </div>
 
@@ -176,10 +191,13 @@ const MovieTicketBooking = ({ projectionDetails, bookingData, mode, onContinue }
                         <Modal>
                             <Modal.Header description={"Seats Reserved!"} />
                             <Modal.Body>
-                                <p>Your reservation confirmation has been sent to your email.</p>
+                                <p data-testid="reservation-success-message">
+                                    Your reservation confirmation has been sent to your email.
+                                </p>
                             </Modal.Body>
                             <Modal.Footer>
                                 <button
+                                    data-testid="reservation-back-home-button"
                                     className="px-2 py-1 border rounded-md border-dark-red text-dark-red font-bold text-xs md:text-sm"
                                     onClick={() => navigate(ROUTES.HOME)}>
                                     Back To Home

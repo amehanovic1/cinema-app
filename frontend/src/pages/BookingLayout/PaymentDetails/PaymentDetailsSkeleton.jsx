@@ -1,6 +1,9 @@
 const PaymentDetailsSkeleton = () => {
     return (
-        <div className="m-4 md:m-8 flex flex-col md:flex-row gap-8 animate-pulse">
+        <div
+            className="m-4 md:m-8 flex flex-col md:flex-row gap-8 animate-pulse"
+            data-testid="payment-details-skeleton"
+        >
 
             <div className="flex-1 space-y-6">
                 <div className="h-8 w-1/3 bg-neutral-200 rounded"></div>

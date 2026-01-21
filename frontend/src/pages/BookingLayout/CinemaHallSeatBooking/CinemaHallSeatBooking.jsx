@@ -78,25 +78,24 @@ const CinemaHallSeatBooking = ({
     }
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 m-8 items-stretch">
+        <div
+            className="grid grid-cols-1 md:grid-cols-2 gap-12 m-8 items-stretch"
+            data-testid="seat-booking-container">
 
             <div className="flex flex-col items-center gap-4">
-                <h1 className="text-neutral-800 font-regular text-sm md:text-base">Cinema Screen</h1>
+                <h1
+                    className="text-neutral-800 font-regular text-sm md:text-base"
+                    data-testid="cinema-screen-text">
+                    Cinema Screen
+                </h1>
 
-                <svg className="h-4">
-                    <ellipse
-                        cx="50%"
-                        cy="100%"
-                        rx="50%"
-                        ry="100%"
-                        fill="none"
-                        stroke="#B22222"
-                        strokeWidth="3"
+                <svg className="h-4" data-testid="cinema-screen-svg">
+                    <ellipse cx="50%" cy="100%" rx="50%" ry="100%" fill="none" stroke="#B22222" strokeWidth="3"
                     />
                 </svg>
 
                 <div className="w-full overflow-x-auto pb-4">
-                    <div className="grid grid-cols-9 gap-2 min-w-[600px] items-center">
+                    <div className="grid grid-cols-9 gap-2 min-w-[600px] items-center" data-testid="seat-grid">
                         {seats.map((seat, index) => {
                             const isLoveSeat = seat.seatType.category === "Love";
 
@@ -107,16 +106,18 @@ const CinemaHallSeatBooking = ({
                             return (
                                 <React.Fragment key={seat.id}>
                                     <div
+                                        data-testid={`seat-${seat.seatCode}`}
+                                        data-seat-type={seat.seatType.category}
                                         className={getSeatClassName(seat)}
                                         onClick={() => handleSeatClick(seat)}
                                     >
                                         {seat.seatType.category === "VIP" && (
-                                            <FontAwesomeIcon icon={faStar} className="mr-1 w-3 h-3" />
+                                            <FontAwesomeIcon icon={faStar} className="mr-1 w-3 h-3" data-testid="vip-icon" />
                                         )}
                                         {seat.seatCode}
                                     </div>
 
-                                    {isAisleSlot && <div className="col-span-1 h-10"></div>}
+                                    {isAisleSlot && <div className="col-span-1 h-10" data-testid="aisle-spacer"></div>}
                                 </React.Fragment>
                             );
                         })}
@@ -126,25 +127,27 @@ const CinemaHallSeatBooking = ({
             </div>
 
 
-            <div className="flex flex-col h-full justify-between py-6">
+            <div className="flex flex-col h-full justify-between py-6" data-testid="seat-booking-sidebar">
                 <div className="flex flex-col gap-2">
-                    <h1 className="font-regular text-sm md:text-base text-neutral-800 text-center">
+                    <h1 className="font-regular text-sm md:text-base text-neutral-800 text-center" data-testid="seat-guide-text">
                         Seat Guide
                     </h1>
 
-                    <SeatTypeLegend seatTypes={seatTypes} />
+                    <div data-testid="seat-legend-wrapper">
+                        <SeatTypeLegend seatTypes={seatTypes} />
+                    </div>
 
                     <hr className="bg-neutral-200" />
                 </div>
 
-                <div className="flex flex-col text-center">
-                    <h1 className="font-regular text-sm md:text-base text-neutral-800">
+                <div className="flex flex-col text-center" data-testid="selected-seats-summary">
+                    <h1 className="font-regular text-sm md:text-base text-neutral-800" data-testid="chosen-seats-text">
                         Chosen Seats
                     </h1>
 
                     <div className="flex justify-between text-sm text-neutral-500">
-                        <span>Seat(s)</span>
-                        <span>Total price</span>
+                        <span data-testid="seat-text">Seat(s)</span>
+                        <span data-testid="total-price-text">Total price</span>
                     </div>
 
                     <hr className="bg-neutral-200" />
@@ -152,8 +155,12 @@ const CinemaHallSeatBooking = ({
                     <div className="flex gap-4 w-full justify-between text-lg md:text-xl text-neutral-800 font-bold">
                         {getTotalPrice() !== 0 && (
                             <>
-                                <div className="w-1/2 text-left">{selectedSeats.map(seat => seat.seatCode).join(", ")}</div>
-                                <div className="w-1/2 text-right">{getTotalPrice()} KM</div>
+                                <div className="w-1/2 text-left" data-testid="selected-seats-list">
+                                    {selectedSeats.map(seat => seat.seatCode).join(", ")}
+                                </div>
+                                <div className="w-1/2 text-right">
+                                    <span data-testid="total-price-amount">{getTotalPrice()}</span> KM
+                                </div>
                             </>
                         )}
                     </div>
@@ -161,13 +168,18 @@ const CinemaHallSeatBooking = ({
 
                 <div className="justify-center">
                     <button
+                        data-testid="seat-booking-continue-button"
                         className={`
                             ${selectedSeats.length === 0
                                 ? "bg-neutral-300 cursor-not-allowed"
                                 : "bg-dark-red hover:bg-red-700 active:scale-95"
                             } text-neutral-25 font-semibold text-sm md:text-base rounded-lg w-full py-2 transition-all duration-200`}
-                        onClick={() => handleClick(selectedSeats)}>
-                        {mode === "payment" ? "Continue to Payment" : "Make Reservation"}
+                        onClick={() => handleClick(selectedSeats)}
+                        disabled={selectedSeats.length === 0}
+                    >
+                        <span data-testid="button-action-text">
+                            {mode === "payment" ? "Continue to Payment" : "Make Reservation"}
+                        </span>
                     </button>
                 </div>
 
