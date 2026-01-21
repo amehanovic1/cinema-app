@@ -5,16 +5,19 @@ import { ROUTES } from "../../routes/routes";
 const Footer = () => {
     return (
         <footer
-            data-testid="app-footer"
+            data-testid="footer-main-wrapper"
             className="bg-gradient-to-r from-dark-gray from-opacity-50 to-dark-red flex flex-col 
                         items-center justify-center gap-4 p-6 md:p-8 lg:p-10">
 
-            <div className="flex flex-row items-center justify-center gap-1 lg:gap-2" data-testid="footer-logo">
+            <div className="flex flex-row items-center justify-center gap-1 lg:gap-2" data-testid="footer-log-section">
                 <Logo />
-                <h1 className="font-bold text-2xl text-neutral-0">Cinebh.</h1>
+                <h1 className="font-bold text-2xl text-neutral-0" data-testid="footer-app-name">Cinebh.</h1>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 md:gap-3 lg:gap-4 font-bold text-sm text-neutral-25">
+            <div
+                className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 md:gap-3 lg:gap-4 font-bold text-sm text-neutral-25"
+                data-testid="footer-navigation"
+            >
                 <NavLink
                     to={ROUTES.ABOUT_US}
                     className="hover:underline"
@@ -32,7 +35,7 @@ const Footer = () => {
                 </NavLink>
             </div>
 
-            <p className="font-normal text-base text-light-rose" data-testid="footer-copyright">
+            <p className="font-normal text-base text-light-rose" data-testid="footer-copyright-text">
                 Copyright @Cinebh. Built with love in Sarajevo. All rights reserved.
             </p>
 
