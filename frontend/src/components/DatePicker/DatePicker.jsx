@@ -33,9 +33,12 @@ const DatePicker = ({ numberOfDays = 10, selectedValue, onChange }) => {
         );
     }
 
-    return ( 
-        <div className="overflow-x-auto">
-            <div className="flex justify-start min-w-full items-center justify-between gap-2 md:gap-4">
+    return (
+        <div className="overflow-x-auto" data-testid="date-picker-scroll-container">
+            <div
+                className="flex justify-start min-w-full items-center justify-between gap-2 md:gap-4"
+                data-testid="date-picker-list"
+            >
                 {dates.map((date, index) =>
                     <button
                         key={index}
