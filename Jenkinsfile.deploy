@@ -8,6 +8,8 @@ pipeline {
         CINEMA_MAIL_USERNAME = credentials('cinema-mail-username')
         CINEMA_MAIL_PASSWORD = credentials('cinema-mail-password')
         CINEMA_MAIL_FROM = credentials('cinema-mail-from')
+        STRIPE_SECRET_KEY = credentials('stripe-secret-key')
+        STRIPE_WEBHOOK_SECRET = credentials('stripe-webhook-secret')
     }
 
     stages {
