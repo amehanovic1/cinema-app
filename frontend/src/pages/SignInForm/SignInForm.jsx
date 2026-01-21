@@ -58,7 +58,7 @@ const SignInForm = ({ setView, setEmail }) => {
     }
 
     return (
-        <form onSubmit={handleSubmit} noValidate data-testid="sign-in-form">
+        <form onSubmit={handleSubmit} noValidate data-testid="signin-form-wrapper">
             <div className="flex flex-col gap-1">
                 <InputField
                     label="Email"
@@ -84,7 +84,7 @@ const SignInForm = ({ setView, setEmail }) => {
                 />
 
                 <span
-                    data-testid="server-error-message"
+                    data-testid="signin-server-error-message"
                     className="text-left block h-4 mb-1 text-error-300 text-sm text-normal"
                 >
                     {serverError || ""}
@@ -92,14 +92,14 @@ const SignInForm = ({ setView, setEmail }) => {
 
                 <button
                     type="submit"
-                    data-testid="sign-in-button"
+                    data-testid="signin-submit-btn"
                     className="py-2 text-base font-semibold w-full rounded-lg bg-dark-red text-neutral-25">
                     Sign In
                 </button>
 
                 <p className="text-center text-base font-normal text-neutral-25">
                     Don't have an account? <span
-                        data-testid="go-to-signup-link"
+                        data-testid="signin-switch-to-signup-link"
                         className="cursor-pointer underline"
                         onClick={() => setView("signUp")}
                     >Sign Up</span>
