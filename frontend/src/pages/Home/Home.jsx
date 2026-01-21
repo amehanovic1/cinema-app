@@ -24,7 +24,7 @@ const Home = () => {
     const [isLoadingCurrentMovies, setIsLoadingCurrentMovies] = useState(true)
     const [isLoadingUpcomingMovies, setIsLoadingUpcomingMovies] = useState(true)
     const [isLoadingVenues, setIsLoadingVenues] = useState(true)
-    
+
     const createPlaceholderItems = (count = 4) => ({
         content: [...Array(count)].map((_, i) => ({ id: i })),
         size: count,
@@ -86,21 +86,33 @@ const Home = () => {
 
     const renderCarouselItem = (movie) => {
         return (
-            <div className='absolute flex flex-col justify-start top-1/2 left-4 sm:left-6 md:left-8 lg:left-12 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg text-neutral-25 -translate-y-1/2 gap-3'>
+            <div
+                className='absolute flex flex-col justify-start top-1/2 left-4 sm:left-6 md:left-8 lg:left-12 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg text-neutral-25 -translate-y-1/2 gap-3'
+                data-testid="carousel-item-content"
+            >
 
                 <div className='flex gap-2'>
                     {movie.genres?.[0] && (
                         <button
                             disabled
-                            className='bg-neutral-0 text-neutral-800 text-xs md:text-sm lg:text-base rounded px-2 py-1 lg:px-3 lg:-2'>
+                            className='bg-neutral-0 text-neutral-800 text-xs md:text-sm lg:text-base rounded px-2 py-1 lg:px-3 lg:-2'
+                            data-testid="carousel-item-genre"
+                        >
                             {movie.genres[0].name}
                         </button>
                     )}
                 </div>
 
-                <h1 className='font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl'>{movie?.title}</h1>
+                <h1
+                    className='font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl'
+                    data-testid="carousel-item-title">
+                    {movie?.title}
+                </h1>
 
-                <p className='font-bold text-sm sm:text-base md:text-lg lg:text-xl mt-1 sm:mt-2 md:mt-3'>
+                <p
+                    className='font-bold text-sm sm:text-base md:text-lg lg:text-xl mt-1 sm:mt-2 md:mt-3'
+                    data-testid="carousel-item-synopsis"
+                >
                     {movie?.synopsis?.split('.')[0] + '.'}
                 </p>
             </div>
@@ -108,8 +120,8 @@ const Home = () => {
     }
 
     return (
-        <>
-            <div className='w-full h-[60vh] sm:h-[70vh] md:h-[80vh] lg:h-[90vh]'>
+        <div data-testid="home-page">
+            <div className='w-full h-[60vh] sm:h-[70vh] md:h-[80vh] lg:h-[90vh]' data-testid="home-carousel">
                 {isLoadingCurrentMovies
                     ? <CarouselSkeleton />
                     : carouselMovies?.length > 0
@@ -133,84 +145,89 @@ const Home = () => {
                 : <VenueButtonList />
             }
 
-            <div className='bg-neutral-25 flex flex-col gap-6 p-4 sm:p-6 md:p-8 lg:p-12'>
+            <div className='bg-neutral-25 flex flex-col gap-6 p-4 sm:p-6 md:p-8 lg:p-12' data-testid="movies-content-wrapper">
 
-                <ContentSection
-                    title="Currently Showing"
-                    linkTo={ROUTES.CURRENTLY_SHOWING}
-                    items={isLoadingCurrentMovies ? createPlaceholderItems(4) : currentMovies}
-                    getAll={fetchCurrentlyShowing}
-                    renderItem={(movie) =>
-                        isLoadingCurrentMovies
-                            ? <CardSkeleton />
-                            : <Card
-                                title={movie.title}
-                                imageUrl={getMovieImage(movie)}
-                                details={[`${movie.durationInMinutes} MIN |`, movie.genres?.[0]?.name]}
-                                onClick={() => navigate(ROUTES.MOVIE_DETAILS.replace(':movieId', movie.id))}
-                            />
-                    }
-                />
-
-
-                {!isLoadingCurrentMovies && (!currentMovies?.content || currentMovies.content.length === 0) &&
-                    <NoDataFound
-                        icon={faFilm}
-                        title={"No movies to preview"}
-                        text={"We are working on updating our schedule for currently showing movies. Stay tuned for amazing movie experience or explore our other exciting cinema features in the meantime!"}
+                <div data-testid="section-currently-showing">
+                    <ContentSection
+                        title="Currently Showing"
+                        linkTo={ROUTES.CURRENTLY_SHOWING}
+                        items={isLoadingCurrentMovies ? createPlaceholderItems(4) : currentMovies}
+                        getAll={fetchCurrentlyShowing}
+                        renderItem={(movie) =>
+                            isLoadingCurrentMovies
+                                ? <CardSkeleton />
+                                : <Card
+                                    title={movie.title}
+                                    imageUrl={getMovieImage(movie)}
+                                    details={[`${movie.durationInMinutes} MIN |`, movie.genres?.[0]?.name]}
+                                    onClick={() => navigate(ROUTES.MOVIE_DETAILS.replace(':movieId', movie.id))}
+                                />
+                        }
                     />
-                }
 
-                <ContentSection
-                    title="Upcoming Movies"
-                    linkTo={ROUTES.UPCOMING_MOVIES}
-                    items={isLoadingUpcomingMovies ? createPlaceholderItems(4) : upcomingMovies}
-                    getAll={fetchUpcoming}
-                    renderItem={(movie) =>
-                        isLoadingUpcomingMovies
-                            ? <CardSkeleton />
-                            : <Card
-                                title={movie.title}
-                                imageUrl={getMovieImage(movie)}
-                                details={[`${movie.durationInMinutes} MIN`, "|", movie.genres?.[0]?.name]}
-                                onClick={() => navigate(ROUTES.MOVIE_DETAILS.replace(':movieId', movie.id))}
-                            />
+                    {!isLoadingCurrentMovies && (!currentMovies?.content || currentMovies.content.length === 0) &&
+                        <NoDataFound
+                            icon={faFilm}
+                            title={"No movies to preview"}
+                            text={"We are working on updating our schedule for currently showing movies. Stay tuned for amazing movie experience or explore our other exciting cinema features in the meantime!"}
+                        />
                     }
-                />
+                </div>
 
-                {!isLoadingUpcomingMovies && (!upcomingMovies?.content || upcomingMovies.content.length === 0) &&
-                    <NoDataFound
-                        icon={faFilm}
-                        title={"No movies to preview"}
-                        text={"We are working on updating our schedule for upcoming movies. Stay tuned for amazing movie experience or explore our other exciting cinema features in the meantime!"}
+                <div data-testid="section-upcoming">
+                    <ContentSection
+                        title="Upcoming Movies"
+                        linkTo={ROUTES.UPCOMING_MOVIES}
+                        items={isLoadingUpcomingMovies ? createPlaceholderItems(4) : upcomingMovies}
+                        getAll={fetchUpcoming}
+                        renderItem={(movie) =>
+                            isLoadingUpcomingMovies
+                                ? <CardSkeleton />
+                                : <Card
+                                    title={movie.title}
+                                    imageUrl={getMovieImage(movie)}
+                                    details={[`${movie.durationInMinutes} MIN`, "|", movie.genres?.[0]?.name]}
+                                    onClick={() => navigate(ROUTES.MOVIE_DETAILS.replace(':movieId', movie.id))}
+                                />
+                        }
                     />
-                }
 
-                <ContentSection
-                    title="Venues"
-                    items={isLoadingVenues ? createPlaceholderItems(4) : venues}
-                    getAll={fetchVenues}
-                    renderItem={(venue) =>
-                        isLoadingVenues
-                            ? <CardSkeleton />
-                            : <Card
-                                title={venue.name}
-                                imageUrl={venue.imageUrl}
-                                details={[`${venue.street},`, venue.city.name]}
-                            />
+                    {!isLoadingUpcomingMovies && (!upcomingMovies?.content || upcomingMovies.content.length === 0) &&
+                        <NoDataFound
+                            icon={faFilm}
+                            title={"No movies to preview"}
+                            text={"We are working on updating our schedule for upcoming movies. Stay tuned for amazing movie experience or explore our other exciting cinema features in the meantime!"}
+                        />
                     }
-                />
+                </div>
 
-                {!isLoadingVenues && (!venues?.content || venues.content.length === 0) &&
-                    <NoDataFound
-                        icon={faFilm}
-                        title={"No venues to preview"}
-                        text={"We are working on updating venues. Stay tuned for amazing movie experience or explore our other exciting cinema features in the meantime!"}
+                <div data-testid="section-venues">
+                    <ContentSection
+                        title="Venues"
+                        items={isLoadingVenues ? createPlaceholderItems(4) : venues}
+                        getAll={fetchVenues}
+                        renderItem={(venue) =>
+                            isLoadingVenues
+                                ? <CardSkeleton />
+                                : <Card
+                                    title={venue.name}
+                                    imageUrl={venue.imageUrl}
+                                    details={[`${venue.street},`, venue.city.name]}
+                                />
+                        }
                     />
-                }
+
+                    {!isLoadingVenues && (!venues?.content || venues.content.length === 0) &&
+                        <NoDataFound
+                            icon={faFilm}
+                            title={"No venues to preview"}
+                            text={"We are working on updating venues. Stay tuned for amazing movie experience or explore our other exciting cinema features in the meantime!"}
+                        />
+                    }
+                </div>
 
             </div>
-        </>
+        </div>
     );
 }
 
