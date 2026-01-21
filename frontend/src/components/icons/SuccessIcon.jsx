@@ -2,12 +2,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const SuccessIcon = ({ icon }) => {
     return (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center" data-testid="success-icon-container">
             <div className="relative p-2">
                 <div className="bg-neutral-700 rounded-full flex items-center justify-center
                             h-12 w-12 sm:h-20 sm:w-20 md:h-24 md:w-24">
                     <FontAwesomeIcon
                         icon={icon}
+                        data-testid="success-font-awesome-icon"
                         className="text-neutral-400
                             w-4 h-4 sm:w-8 sm:h-8 md:w-10 md:h-10"
                     />

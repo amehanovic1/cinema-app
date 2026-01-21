@@ -20,7 +20,7 @@ const SignUpForm = ({ setView, setEmail }) => {
 
         const validationErrors = {};
         const emailError = validateEmail(formData.email);
-        const passwordError = validatePassword(formData.password, {confirm: formData.confirmPassword});
+        const passwordError = validatePassword(formData.password, { confirm: formData.confirmPassword });
         const confirmPasswordError = validateConfirmPassword(formData.password, formData.confirmPassword);
 
         if (emailError) validationErrors.email = emailError
@@ -60,7 +60,7 @@ const SignUpForm = ({ setView, setEmail }) => {
     }
 
     return (
-        <form onSubmit={handleSubmit} noValidate>
+        <form onSubmit={handleSubmit} noValidate data-testid="sign-up-form">
             <div className="flex flex-col gap-1">
 
                 <InputField
@@ -98,18 +98,23 @@ const SignUpForm = ({ setView, setEmail }) => {
                     hiddenInput={true}
                 />
 
-                <span className="text-left block h-4 mb-1 text-error-300 text-sm text-normal">
+                <span
+                    data-testid="signup-server-error"
+                    className="text-left block h-4 mb-1 text-error-300 text-sm text-normal"
+                >
                     {serverError || ""}
                 </span>
 
                 <button
                     type="submit"
+                    data-testid="sign-up-submit-button"
                     className="py-2 text-base font-semibold w-full rounded-lg bg-dark-red text-neutral-25">
                     Sign Up
                 </button>
 
                 <p className="text-center text-base font-normal text-neutral-25">
                     Already have an account? <span
+                        data-testid="switch-to-signin-link"
                         className="cursor-pointer underline"
                         onClick={() => setView("signIn")}
                     > Sign In

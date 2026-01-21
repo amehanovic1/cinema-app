@@ -18,23 +18,25 @@ const SuccessView = ({ text, icon, onClose, navigateTo = null, navigateToText, a
     }, [onClose, navigate, navigateTo, autoClose]);
 
     return (
-        <div className="flex flex-col items-center justify-center gap-16">
+        <div className="flex flex-col items-center justify-center gap-16" data-testid="success-view-container">
             {text &&
-                <p className="font-normal text-center text-xs md:text-sm text-neutral-300 w-1/2">
+                <p data-testid="success-text" className="font-normal text-center text-xs md:text-sm text-neutral-300 w-1/2">
                     {text}
                 </p>
             }
 
-            <div>
+            <div data-testid="success-icon-wrapper">
                 <SuccessIcon icon={icon} />
             </div>
 
-            {navigateTo && <button
-                onClick={() => navigate(navigateTo)}
-                className="py-2 text-base font-semibold w-full rounded-lg bg-dark-red text-neutral-25">
-                {navigateToText}
-            </button>
-            }
+            {navigateTo && (
+                <button
+                    data-testid="success-navigate-button"
+                    onClick={() => navigate(navigateTo)}
+                    className="py-2 text-base font-semibold w-full rounded-lg bg-dark-red text-neutral-25">
+                    {navigateToText}
+                </button>
+            )}
         </div>
     );
 }

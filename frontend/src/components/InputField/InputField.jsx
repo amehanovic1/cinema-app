@@ -16,9 +16,11 @@ const InputField = ({
     const [showInput, setShowInput] = useState(false);
 
     return (
-        <div>
-            <label className={`text-base font-semibold 
-                ${error ? "text-error-300" : "text-neutral-25"}`}>
+        <div data-testid={`input-field-wrapper-${name}`}>
+            <label
+                data-testid={`input-label-${name}`}
+                className={`text-base font-semibold ${error ? "text-error-300" : "text-neutral-25"}`}
+            >
                 {label}
             </label>
 
@@ -28,11 +30,13 @@ const InputField = ({
 
                 <FontAwesomeIcon
                     icon={icon}
+                    data-testid={`input-icon-${name}`}
                     className={`absolute left-3 top-1/2 -translate-y-1/2 justify-center
                                 ${value || error ? "text-error-500" : "text-neutral-400"}`}
                 />
 
                 <input
+                    data-testid={`input-control-${name}`}
                     type={hiddenInput ? (showInput ? "text" : "password") : type}
                     name={name}
                     value={value}
@@ -47,6 +51,7 @@ const InputField = ({
 
                 {hiddenInput && (
                     <FontAwesomeIcon
+                        data-testid={`input-toggle-visibility-${name}`}
                         icon={showInput ? faEye : faEyeSlash}
                         className={`absolute right-3 top-1/2 -translate-y-1/2 justify-center
                             ${error
@@ -58,7 +63,12 @@ const InputField = ({
 
             </div>
 
-            <span className="block h-4 text-error-300 text-sm font-normal">{error || ""}</span>
+            <span
+                data-testid={`input-error-${name}`}
+                className="block h-4 text-error-300 text-sm font-normal"
+            >
+                {error || ""}
+            </span>
 
         </div>
     )
