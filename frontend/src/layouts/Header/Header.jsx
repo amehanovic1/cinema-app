@@ -12,7 +12,7 @@ const Header = () => {
 
     const [userMenuOpen, setUserMenuOpen] = useState(false)
     const userMenuItems = [
-        { label: "Logout", onClick: logout }
+        { id: "logout", label: "Logout", onClick: logout }
     ]
 
     const [authDrawerOpen, setAuthDrawerOpen] = useState(false)
@@ -23,20 +23,20 @@ const Header = () => {
 
     return (
         <header
-            data-testid="app-header"
+            data-testid="header-main-container"
             className="w-full h-16 bg-neutral-800 border-b border-neutral-500 
                     grid grid-cols-3 items-center sticky top-0 z-50 px-6 md:px-14 py-4 md:py-5">
 
-            <div className="flex items-center ">
+            <div className="flex items-center" data-testid="header-logo-section">
                 <NavLink
                     to={ROUTES.HOME}
                     className="flex items-center gap-2"
-                    data-testid="header-logo-link"
+                    data-testid="header-logo-home-link"
                 >
 
                     <Logo />
 
-                    <h1 className="font-urbanist font-bold text-2xl">
+                    <h1 className="font-urbanist font-bold text-2xl" data-testid="header-app-name">
                         <span className="text-neutral-25">Cine</span>
                         <span className="text-dark-red">bh.</span>
                     </h1>
@@ -48,7 +48,7 @@ const Header = () => {
                             text-semibold shadow-text text-xs sm:text-sm md:text-base">
                 <NavLink
                     to={ROUTES.CURRENTLY_SHOWING}
-                    data-testid="nav-link-currently-showing"
+                    data-testid="header-nav-link-currently-showing"
                     className={({ isActive }) =>
                         isActive ? "text-neutral-0 underline" : "text-neutral-200"}>
                     Currently Showing
@@ -56,25 +56,25 @@ const Header = () => {
 
                 <NavLink
                     to={ROUTES.UPCOMING_MOVIES}
-                    data-testid="nav-link-upcoming-movies"
+                    data-testid="header-nav-link-upcoming-movies"
                     className={({ isActive }) =>
                         isActive ? "text-neutral-0 underline" : "text-neutral-200"}>
                     Upcoming Movies
                 </NavLink>
             </div>
 
-            <div className="flex justify-end items-center">
+            <div className="flex justify-end items-center" data-testid="header-auth-section">
                 {isLoading ? null : user ?
                     (
-                        <div className="relative" data-testid="user-profile-menu">
+                        <div className="relative" data-testid="header-user-menu-container">
                             <button
                                 onClick={() => setUserMenuOpen(prev => !prev)}
-                                data-testid="user-menu-button"
+                                data-testid="header-user-dropdown-trigger"
                                 className="flex items-center gap-1 text-neutral-0 
                                         text-semibold shadow-text text-xs sm:text-sm md:text-base 
                                         px-2 py-1 border rounded-lg rounded-neutral-0"
                             >
-                                <span data-testid="user-display-name">
+                                <span data-testid="header-user-name-display">
                                     {user.firstName && user.lastName
                                         ? `${user.firstName} ${user.lastName}`
                                         : user.email.split("@")[0]
@@ -89,14 +89,14 @@ const Header = () => {
 
 
                             <ul
-                                data-testid="user-dropdown-list"
+                                data-testid="header-user-dropdown-list"
                                 className={`absolute left-0 right-0 z-40 mt-0 w-full bg-neutral-0 mt-1 
                                             overflow-y-auto transition-all duration-300 rounded  
                                             ${userMenuOpen ? "max-h-60 opacity-100" : "max-h-0 opacity-0"}`}>
                                 {userMenuItems?.map((item, index) => (
                                     <li
                                         key={index}
-                                        data-testid={`user-menu-item-${item.label.toLowerCase()}`}
+                                        data-testid={`header-user-menu-item-${item.id}`}
                                         onClick={item.onClick}
                                         className="py-2 px-3 text-neutral-700 bg-neutral-200 
                                                 text-xs md:text-sm lg:text-base 
