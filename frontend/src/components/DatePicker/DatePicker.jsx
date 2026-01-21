@@ -37,11 +37,12 @@ const DatePicker = ({ numberOfDays = 10, selectedValue, onChange }) => {
         <div className="overflow-x-auto" data-testid="date-picker-scroll-container">
             <div
                 className="flex justify-start min-w-full items-center justify-between gap-2 md:gap-4"
-                data-testid="date-picker-list"
+                data-testid="date-picker-list-wrapper"
             >
                 {dates.map((date, index) =>
                     <button
                         key={index}
+                        data-testid={`date-picker-item-${index}`}
                         className={`
                         flex flex-col items-center justify-center
                         px-3 py-1 sm:px-4 sm:py-2 md:px-5 md:py-3
@@ -51,13 +52,17 @@ const DatePicker = ({ numberOfDays = 10, selectedValue, onChange }) => {
                                 ? "bg-dark-red text-white font-bold" : "bg-neutral-0"}`}
                         onClick={() => handleChange(date)}>
 
-                        <div className="flex gap-2 font-bold">
-                            <h1>{date.toLocaleDateString('en-US', { month: 'short' })} </h1>
-                            <h1>{date.toLocaleDateString('en-US', { day: 'numeric' })} </h1>
+                        <div className="flex gap-2 font-bold" data-testid={`date-picker-date-group-${index}`}>
+                            <h1 data-testid={`date-picker-month-${index}`}>
+                                {date.toLocaleDateString('en-US', { month: 'short' })}
+                            </h1>
+                            <h1 data-testid={`date-picker-day-${index}`}>
+                                {date.toLocaleDateString('en-US', { day: 'numeric' })}
+                            </h1>
                         </div>
 
-                        <div>
-                            <h1>{isSameDate(todayDate, date)
+                        <div data-testid={`date-picker-weekday-group-${index}`}>
+                            <h1 data-testid={`date-picker-weekday-${index}`}>{isSameDate(todayDate, date)
                                 ? "Today"
                                 : date.toLocaleDateString('en-US', { weekday: 'short' })}
                             </h1>
