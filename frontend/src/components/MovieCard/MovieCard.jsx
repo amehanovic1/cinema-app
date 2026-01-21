@@ -15,6 +15,7 @@ const MovieCard = ({ movies, projections, onClick }) => {
                 movies.map(movie => (
                     <div
                         key={movie.id}
+                        data-testid="movie-card"
                         className={`flex flex-col mb-6 bg-neutral-0 border border-neutral-200 
                                     rounded-3xl shadow-card ${onClick ? "cursor-pointer" : ""}`}
                         onClick={() => onClick && onClick(movie)}>
@@ -25,6 +26,7 @@ const MovieCard = ({ movies, projections, onClick }) => {
                                 <img
                                     src={movie.images?.find(img => img.type === "poster")?.url}
                                     alt={movie.title}
+                                    data-testid="movie-poster"
                                     className="w-full h-full object-cover rounded-xl"
                                 />
                             </div>
@@ -32,16 +34,21 @@ const MovieCard = ({ movies, projections, onClick }) => {
                             <div className="md:col-span-4 flex flex-col justify-between text-neutral-800 
                                             font-normal text-xs sm:text-sm md:text-base">
                                 <div>
-                                    <h1 className="font-bold text-lg md:text-xl lg:text-2xl mb-1">{movie.title}</h1>
-                                    <div className="flex flex-wrap gap-3">
-                                        <span>{movie.pgRating}</span>
+                                    <h1
+                                        data-testid="movie-title"
+                                        className="font-bold text-lg md:text-xl lg:text-2xl mb-1"
+                                    >
+                                        {movie.title}
+                                    </h1>
+                                    <div className="flex flex-wrap gap-3" data-testid="movie-info">
+                                        <span data-testid="movie-rating">{movie.pgRating}</span>
                                         <span className="text-dark-red">|</span>
-                                        <span>{getLanguageName(movie.language)}</span>
+                                        <span data-testid="movie-language">{getLanguageName(movie.language)}</span>
                                         <span className="text-dark-red">|</span>
-                                        <span>{movie.durationInMinutes} Min </span>
+                                        <span data-testid="movie-duration">{movie.durationInMinutes} Min </span>
                                     </div>
 
-                                    <div className="flex gap-4 mt-2 flex-wrap">
+                                    <div className="flex gap-4 mt-2 flex-wrap" data-testid="movie-genres">
                                         {movie.genres?.map(genre => (
                                             <button
                                                 key={genre.id}
@@ -52,12 +59,12 @@ const MovieCard = ({ movies, projections, onClick }) => {
                                     </div>
                                 </div>
 
-                                <h1 className="text-neutral-500 text-xs md:text-base italic">
+                                <h1 className="text-neutral-500 text-xs md:text-base italic" data-testid="movie-end-date">
                                     Playing in cinema until {formatDate(movie.projectionEndDate)}.
                                 </h1>
                             </div>
 
-                            <div className="md:col-span-5 flex flex-col">
+                            <div className="md:col-span-5 flex flex-col" data-testid="showtimes-section">
                                 <h1 className="text-dark-red font-bold text:base md:text-xl lg:text-xl">Showtimes</h1>
                                 <div className="flex gap-4 flex-wrap mt-2">
                                     {projections[movie.id]?.map(projection => (

@@ -2,7 +2,7 @@ const MovieCardSkeleton = ({ size = 3 }) => {
     const skeletons = Array.from({ length: size });
 
     return (
-        <>
+        <div data-testid="movie-card-skeleton">
             {skeletons.map((_, index) => (
                 <div
                     key={index}
@@ -42,7 +42,7 @@ const MovieCardSkeleton = ({ size = 3 }) => {
                     </div>
                 </div>
             ))}
-        </>
+        </div>
     );
 }
 
