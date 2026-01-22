@@ -254,12 +254,21 @@ const MovieDetails = () => {
                                     </span>
                                 </h1>
 
-                                <h1 className="text-neutral-500 font-regular text-base" data-testid="movie-details-writers-container">
-                                    Writers:{" "}
-                                    <span className="text-neutral-800 ml-2" data-testid="movie-details-writers-names">
-                                        {movie.writers
-                                            ?.map(w => `${w.firstName} ${w.lastName}`)
-                                            .join(", ")}
+                                <h1
+                                    className="text-neutral-500 font-regular text-base flex flex-wrap gap-x-2"
+                                    data-testid="movie-details-writers-container"
+                                >
+                                    Writers:
+                                    <span className="flex flex-wrap text-neutral-800" data-testid="movie-details-writers-names">
+                                        {movie.writers?.map((w, index) => (
+                                            <span
+                                                key={index}
+                                                data-testid={`writer-name-${formatForId(`${w.firstName} ${w.lastName}`)}`}
+                                                className="after:content-[','] last:after:content-[''] mr-1"
+                                            >
+                                                {w.firstName} {w.lastName}
+                                            </span>
+                                        ))}
                                     </span>
                                 </h1>
 
@@ -268,20 +277,23 @@ const MovieDetails = () => {
                                 </h1>
 
                                 <div className="grid gap-4 mt-2 grid-cols-3" data-testid="movie-details-cast-grid">
-                                    {movie.cast?.map(c => (
-                                        <div
-                                            key={c.id}
-                                            className="rounded-lg flex flex-col items-start"
-                                            data-testid={`cast-member-${formatForId(c.firstName + ' ' + c.lastName)}`}
-                                        >
-                                            <div className="font-semibold text-sm text-neutral-900">
-                                                {c.firstName} {c.lastName}
+                                    {movie.cast?.map(c => {
+                                        const castMemberId = formatForId(`${c.firstName} ${c.lastName}`);
+                                        return (
+                                            <div
+                                                key={c.id}
+                                                className="rounded-lg flex flex-col items-start"
+                                                data-testid={`cast-member-card-${castMemberId}`}
+                                            >
+                                                <div className="font-semibold text-sm text-neutral-900" data-testid={`cast-member-name-${castMemberId}`}>
+                                                    {c.firstName} {c.lastName}
+                                                </div>
+                                                <div className="font-regular text-xs text-neutral-700">
+                                                    {c.characterFullName}
+                                                </div>
                                             </div>
-                                            <div className="font-regular text-xs text-neutral-700">
-                                                {c.characterFullName}
-                                            </div>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
 
                                 <h1 className="text-neutral-500 font-bold text-xl">
@@ -289,19 +301,23 @@ const MovieDetails = () => {
                                 </h1>
 
                                 <div className="flex flex-wrap gap-4 mt-2" data-testid="movie-ratings-container">
-                                    {movie.ratings?.map(r => (
-                                        <div
-                                            key={r.id}
-                                            className="p-2 max-w-[140px] border border-neutral-200 rounded-lg flex items-center gap-2"
-                                            data-testid={`rating-source-${formatForId(r.source)}`}
-                                        >
-                                            <FontAwesomeIcon icon={faStar} className="text-dark-red" />
-                                            <div className="flex flex-col">
-                                                <div className="font-semibold text-sm" data-testid={`rating-value-${formatForId(r.source)}`}>{r.value}</div>
-                                                <div className="font-regular text-xs text-neutral-500">{r.source}</div>
+                                    {movie.ratings?.map(r => {
+                                        const sourceId = formatForId(r.source);
+
+                                        return (
+                                            <div
+                                                key={r.id}
+                                                className="p-2 max-w-[140px] border border-neutral-200 rounded-lg flex items-center gap-2"
+                                                data-testid={`rating-card-${sourceId}`}
+                                            >
+                                                <FontAwesomeIcon icon={faStar} className="text-dark-red" />
+                                                <div className="flex flex-col">
+                                                    <div className="font-semibold text-sm" data-testid={`rating-value-${formatForId(sourceId)}`}>{r.value}</div>
+                                                    <div className="font-regular text-xs text-neutral-500" data-testid={`rating-source-name-${sourceId}`}>{r.source}</div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
 
                             </div>
@@ -346,6 +362,7 @@ const MovieDetails = () => {
                                             {projections.map(projection => (
                                                 <button
                                                     key={projection.id}
+                                                    data-testid={`projection-time-${formatForId(formatTime(projection.projectionTime))}`}
                                                     onClick={() => setSelectedProjection(projection)}
                                                     className={`border rounded-lg px-3 py-2 font-bold text-sm lg:text-base transition 
                                                             ${projection.id === selectedProjection?.id
