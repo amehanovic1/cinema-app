@@ -1,6 +1,6 @@
 const BookingLayoutSkeleton = () => {
     return (
-        <div className="animate-pulse w-full">
+        <div className="animate-pulse w-full" data-testid="booking-layout-skeleton">
             <div className="flex justify-between m-4 md:m-8">
                 <div className="h-8 w-48 bg-neutral-200 rounded"></div>
                 <div className="flex items-center gap-2">

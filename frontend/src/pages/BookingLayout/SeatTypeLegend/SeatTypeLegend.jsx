@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { formatForId } from "../../../utils/testUtils";
 
 const SeatTypeLegend = ({ seatTypes }) => {
     const seatStatus = [
@@ -9,23 +10,35 @@ const SeatTypeLegend = ({ seatTypes }) => {
     ];
 
     return (
-        <div className="flex gap-6 mt-4 justify-between">
+        <div className="flex gap-6 mt-4 justify-between" data-testid="seat-legend-main-wrapper">
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2" data-testid="seat-legend-status-group">
                 {seatStatus.map((status) => (
                     <div key={status.label} className="flex items-center gap-2 text-xs md:text-sm">
-                        <span className={`w-8 h-6 md:w-10 md:h-8 px-2 py-1 flex items-center justify-center ${status.bg} border ${status.border} rounded ${status.text}`}>
+                        <span
+                            className={`w-8 h-6 md:w-10 md:h-8 px-2 py-1 flex items-center justify-center ${status.bg} border ${status.border} rounded ${status.text}`}
+                            data-testid={`seat-legend-status-icon-${formatForId(status.label)}`}
+                        >
                             XY
                         </span>
-                        <span className="text-neutral-700">{status.label}</span>
+                        <span
+                            className="text-neutral-700"
+                            data-testid={`seat-legend-status-label-${formatForId(status.label)}`}
+                        >
+                            {status.label}
+                        </span>
                     </div>
                 ))}
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2" data-testid="seat-legend-type-group">
 
                 {seatTypes.map((type) => (
-                    <div key={type.category} className="flex items-center gap-2 text-sm">
+                    <div
+                        key={type.category}
+                        className="flex items-center gap-2 text-sm"
+                        data-testid={`seat-legend-type-item-${formatForId(type.category)}`}
+                    >
                         <span
                             className={`h-6 md:h-8 px-2 py-1 flex items-center justify-center 
                                         bg-neutral-0 border border-neutral-200 rounded 
@@ -36,10 +49,15 @@ const SeatTypeLegend = ({ seatTypes }) => {
                             {type.category === "VIP" && (
                                 <FontAwesomeIcon
                                     icon={faStar}
-                                    className={"w-2 h-2 md:w-3 md:h-3 text-neutral-400"} />
+                                    className={"w-2 h-2 md:w-3 md:h-3 text-neutral-400"}
+                                    data-testid="seat-legend-vip-star-icon"
+                                />
                             )}
                             XY </span>
-                        <span className="text-sm text-neutral-700">{type.category} Seats ({type.price} BAM)</span>
+                        <span className="text-sm text-neutral-700">
+                            {type.category} Seats (<span data-testid={`seat-legend-price-${formatForId(type.category)}`}>
+                                {type.price}</span> BAM)
+                        </span>
                     </div>
                 ))}
             </div>

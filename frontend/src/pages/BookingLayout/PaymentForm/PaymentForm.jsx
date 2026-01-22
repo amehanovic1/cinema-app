@@ -43,13 +43,25 @@ const PaymentForm = ({ clientSecret, bookingData }) => {
 
     return (
         <>
-            <form onSubmit={handleSubmit}>
-                <PaymentElement />
+            <form onSubmit={handleSubmit} data-testid="stripe-payment-form">
+                <div data-testid="payment-element-wrapper">
+                    <PaymentElement />
+                </div>
+
                 <button
+                    data-testid="payment-submit-button"
                     className="w-full bg-dark-red rounded-lg text-neutral-25 mt-4 py-2 disabled:opacity-50"
                     disabled={!stripe || isProcessing}
                 >
-                    {isProcessing ? "Processing..." : `Make Payment - ${bookingData.totalPrice?.toFixed(2)} KM`}
+                    {isProcessing
+                        ? <span data-testid="payment-processing-status">Processing...</span>
+                        :
+                        <>
+                            Make Payment - <span data-testid="payment-amount-display">
+                                {bookingData.totalPrice?.toFixed(2)}
+                            </span> KM
+                        </>
+                    }
                 </button>
             </form>
 
@@ -57,10 +69,13 @@ const PaymentForm = ({ clientSecret, bookingData }) => {
                 <Modal>
                     <Modal.Header description={"Payment Successful!"} />
                     <Modal.Body>
-                        <p>The receipt and ticket have been sent to your email.</p>
+                        <p data-testid="payment-success-message">
+                            The receipt and ticket have been sent to your email.
+                        </p>
                     </Modal.Body>
                     <Modal.Footer>
                         <button
+                            data-testid="payment-success-home-button"
                             className="px-2 py-1 border rounded-md border-dark-red text-dark-red font-bold"
                             onClick={() => navigate(ROUTES.HOME)}>
                             Back To Home

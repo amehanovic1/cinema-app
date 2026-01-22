@@ -19,6 +19,7 @@ import { faFilm } from "@fortawesome/free-solid-svg-icons";
 import NoDataFound from "../../components/NoDataFound/NoDataFound";
 import AuthContext from "../../context/AuthContext";
 import AuthDrawer from "../AuthDrawer/AuthDrawer";
+import { formatForId } from "../../utils/testUtils";
 
 const MovieDetails = () => {
     const navigate = useNavigate()
@@ -172,16 +173,27 @@ const MovieDetails = () => {
         return movie?.images?.filter(img => img.type === type) || [];
     };
 
-    const extraImages = getMovieImagesByType("extra").slice(0, 4)
+    const extraImages = getMovieImagesByType("extra");
+
+    const renderExtraImages = () => {
+        return extraImages.map((img, index) => (
+            <img
+                key={img.id || index}
+                src={img.url}
+                alt={`Extra ${index + 1}`}
+                className={`w-full h-full object-cover ${index === 1 ? 'rounded-tr-xl' : index === 3 ? 'rounded-br-xl' : ''}`}
+            />
+        ));
+    };
 
     return (
         <>
             {(isLoadingInitialData || isLoadingMovie)
                 ? <MovieDetailsSkeleton />
                 : movie ? (
-                    <div className="flex flex-col gap-2 m-4 sm:m-6 md:m-8 lg:m-12">
+                    <div className="flex flex-col gap-2 m-4 sm:m-6 md:m-8 lg:m-12" data-testid="movie-details-container">
 
-                        <h1 className="text-neutral-800 font-bold text-2xl">
+                        <h1 className="text-neutral-800 font-bold text-2xl" data-testid="movie-details-header">
                             Movie Details
                         </h1>
 
@@ -189,6 +201,7 @@ const MovieDetails = () => {
 
                             <div className="col-span-1">
                                 <iframe
+                                    data-testid="movie-details-trailer-video"
                                     className="w-full h-full aspect-video rounded-tl-xl rounded-bl-xl"
                                     src={`https://www.youtube.com/embed/${movie.trailerUrl.split("v=")[1]}`}
                                     title="Trailer Url"
@@ -196,52 +209,66 @@ const MovieDetails = () => {
                                 </iframe>
                             </div>
 
-                            <div className="col-span-1 grid grid-cols-2 gap-2">
-                                <img src={extraImages[0]?.url} alt="Extra 1" className="w-full h-full object-cover" />
-                                <img src={extraImages[1]?.url} alt="Extra 2" className="w-full h-full object-cover rounded-tr-xl" />
-                                <img src={extraImages[2]?.url} alt="Extra 3" className="w-full h-full object-cover" />
-                                <img src={extraImages[3]?.url} alt="Extra 4" className="w-full h-full object-cover rounded-br-xl" />
+                            <div className="col-span-1 grid grid-cols-2 gap-2" data-testid="movie-details-image-gallery">
+                                {renderExtraImages()}
                             </div>
 
                             <div className="col-span-1 flex flex-col gap-4">
-                                <h1 className="font-bold text-neutral-800 text-3xl">
+                                <h1 className="font-bold text-neutral-800 text-3xl" data-testid="movie-details-title">
                                     {movie.title}
                                 </h1>
 
-                                <div className="flex flex-wrap gap-3 text-neutral-800 text-base font-normal">
-                                    <span>{movie.pgRating}</span>
+                                <div className="flex flex-wrap gap-3 text-neutral-800 text-base font-normal" data-testid="movie-details-info">
+                                    <span data-testid="movie-details-pg-rating">{movie.pgRating}</span>
                                     <span className="text-dark-red">|</span>
-                                    <span>{getLanguageName(movie.language)}</span>
+                                    <span data-testid="movie-details-language">{getLanguageName(movie.language)}</span>
                                     <span className="text-dark-red">|</span>
-                                    <span>{movie.durationInMinutes} Min </span>
+                                    <span data-testid="movie-details-duration">{movie.durationInMinutes} Min </span>
                                     <span className="text-dark-red">|</span>
-                                    Projection date: <span> {format(movie.projectionStartDate, "yyyy/MM/dd")} - {format(movie.projectionEndDate, "yyyy/MM/dd")} </span>
+                                    <div data-testid="movie-details-projection-dates">
+                                        Projection date:
+                                        <span data-testid="movie-details-start-date" className="ml-1"> {format(movie.projectionStartDate, "yyyy/MM/dd")} </span>
+                                        -
+                                        <span data-testid="movie-details-end-date"> {format(movie.projectionEndDate, "yyyy/MM/dd")} </span>
+                                    </div>
                                 </div>
 
-                                <div className="flex gap-4 mt-2 flex-wrap">
+                                <div className="flex gap-4 mt-2 flex-wrap" data-testid="movie-details-genres-list">
                                     {movie.genres?.map(genre => (
                                         <button
                                             key={genre.id}
+                                            data-testid={`genre-tag-${formatForId(genre.name)}`}
                                             className="bg-neutral-200 text-sm text-neutral-700 font-normal px-2 py-1 rounded-lg" >
                                             {genre.name}
                                         </button>))
                                     }
                                 </div>
 
-                                <p className="text-neutral-800 font-regular text-base">
+                                <p className="text-neutral-800 font-regular text-base" data-testid="movie-details-synopsis">
                                     {movie.synopsis}
                                 </p>
 
-                                <h1 className="text-neutral-500 font-regular text-base">
-                                    Director: <span className="text-neutral-800">{movie.directorFullName}</span>
+                                <h1 className="text-neutral-500 font-regular text-base" data-testid="movie-details-director-container">
+                                    Director: <span className="text-neutral-800" data-testid="movie-details-director-name">
+                                        {movie.directorFullName}
+                                    </span>
                                 </h1>
 
-                                <h1 className="text-neutral-500 font-regular text-base">
-                                    Writers:{" "}
-                                    <span className="text-neutral-800 ml-2">
-                                        {movie.writers
-                                            ?.map(w => `${w.firstName} ${w.lastName}`)
-                                            .join(", ")}
+                                <h1
+                                    className="text-neutral-500 font-regular text-base flex flex-wrap gap-x-2"
+                                    data-testid="movie-details-writers-container"
+                                >
+                                    Writers:
+                                    <span className="flex flex-wrap text-neutral-800" data-testid="movie-details-writers-names">
+                                        {movie.writers?.map((w, index) => (
+                                            <span
+                                                key={index}
+                                                data-testid={`writer-name-${formatForId(`${w.firstName} ${w.lastName}`)}`}
+                                                className="after:content-[','] last:after:content-[''] mr-1"
+                                            >
+                                                {w.firstName} {w.lastName}
+                                            </span>
+                                        ))}
                                     </span>
                                 </h1>
 
@@ -249,52 +276,75 @@ const MovieDetails = () => {
                                     <span className="text-dark-red">| </span>Cast
                                 </h1>
 
-                                <div className="grid gap-4 mt-2 grid-cols-3">
-                                    {movie.cast?.map(c => (
-                                        <div key={c.id} className="rounded-lg flex flex-col items-start">
-                                            <div className="font-semibold text-sm text-neutral-900">{c.firstName} {c.lastName}</div>
-                                            <div className="font-regular text-xs text-neutral-700">{c.characterFullName}</div>
-                                        </div>
-                                    ))}
+                                <div className="grid gap-4 mt-2 grid-cols-3" data-testid="movie-details-cast-grid">
+                                    {movie.cast?.map(c => {
+                                        const castMemberId = formatForId(`${c.firstName} ${c.lastName}`);
+                                        return (
+                                            <div
+                                                key={c.id}
+                                                className="rounded-lg flex flex-col items-start"
+                                                data-testid={`cast-member-card-${castMemberId}`}
+                                            >
+                                                <div className="font-semibold text-sm text-neutral-900" data-testid={`cast-member-name-${castMemberId}`}>
+                                                    {c.firstName} {c.lastName}
+                                                </div>
+                                                <div className="font-regular text-xs text-neutral-700">
+                                                    {c.characterFullName}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
 
                                 <h1 className="text-neutral-500 font-bold text-xl">
                                     <span className="text-dark-red">| </span>Rating
                                 </h1>
 
-                                <div className="flex flex-wrap gap-4 mt-2">
-                                    {movie.ratings?.map(r => (
-                                        <div key={r.id} className="p-2 max-w-[140px] border border-neutral-200 rounded-lg flex items-center gap-2">
-                                            <FontAwesomeIcon icon={faStar} className="text-dark-red" />
-                                            <div className="flex flex-col">
-                                                <div className="font-semibold text-sm">{r.value}</div>
-                                                <div className="font-regular text-xs text-neutral-500">{r.source}</div>
+                                <div className="flex flex-wrap gap-4 mt-2" data-testid="movie-ratings-container">
+                                    {movie.ratings?.map(r => {
+                                        const sourceId = formatForId(r.source);
+
+                                        return (
+                                            <div
+                                                key={r.id}
+                                                className="p-2 max-w-[140px] border border-neutral-200 rounded-lg flex items-center gap-2"
+                                                data-testid={`rating-card-${sourceId}`}
+                                            >
+                                                <FontAwesomeIcon icon={faStar} className="text-dark-red" />
+                                                <div className="flex flex-col">
+                                                    <div className="font-semibold text-sm" data-testid={`rating-value-${formatForId(sourceId)}`}>{r.value}</div>
+                                                    <div className="font-regular text-xs text-neutral-500" data-testid={`rating-source-name-${sourceId}`}>{r.source}</div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
 
                             </div>
 
 
-                            <div className="flex flex-col gap-4 p-4 border border-neutral-200 rounded-xl shadow-text">
+                            <div className="flex flex-col gap-4 p-4 border border-neutral-200 rounded-xl shadow-text" data-testid="movie-details-booking-section">
                                 <div
-                                    className="flex flex-col gap-4 items-center justify-center 
-                                    sm:grid sm:grid-cols-2 sm:gap-4 lg:flex lg:flex-row lg:gap-6">
-                                    <Select
-                                        items={cities}
-                                        selectText="Choose city"
-                                        icon={faLocationDot}
-                                        selectedValue={selectedCity}
-                                        onChange={(value) => setSelectedCity(value)}
-                                    />
-                                    <Select
-                                        items={venues}
-                                        selectText="Choose Cinema"
-                                        icon={faBuilding}
-                                        selectedValue={selectedVenue}
-                                        onChange={(value) => setSelectedVenue(value)}
-                                    />
+                                    className="flex flex-col gap-4 items-center justify-center sm:grid sm:grid-cols-2 sm:gap-4 lg:flex lg:flex-row lg:gap-6">
+                                    <div data-testid="city-select-wrapper" className="w-full">
+                                        <Select
+                                            items={cities}
+                                            selectText="Choose city"
+                                            icon={faLocationDot}
+                                            selectedValue={selectedCity}
+                                            onChange={(value) => setSelectedCity(value)}
+                                        />
+                                    </div>
+
+                                    <div data-testid="cinema-select-wrapper" className="w-full">
+                                        <Select
+                                            items={venues}
+                                            selectText="Choose Cinema"
+                                            icon={faBuilding}
+                                            selectedValue={selectedVenue}
+                                            onChange={(value) => setSelectedVenue(value)}
+                                        />
+                                    </div>
                                 </div>
 
                                 <DatePicker
@@ -303,15 +353,16 @@ const MovieDetails = () => {
                                 />
 
                                 {projections.length > 0 ? (
-                                    <>
+                                    <div data-testid="movie-details-projection-list-section">
                                         <h1 className="text-neutral-800 font-bold text:base md:text-xl lg:text-xl">
                                             Standard
                                         </h1>
 
-                                        <div className="flex gap-4 flex-wrap mt-2">
+                                        <div className="flex gap-4 flex-wrap mt-2" data-testid="movie-details-projection-list">
                                             {projections.map(projection => (
                                                 <button
                                                     key={projection.id}
+                                                    data-testid={`projection-time-${formatForId(formatTime(projection.projectionTime))}`}
                                                     onClick={() => setSelectedProjection(projection)}
                                                     className={`border rounded-lg px-3 py-2 font-bold text-sm lg:text-base transition 
                                                             ${projection.id === selectedProjection?.id
@@ -323,9 +374,9 @@ const MovieDetails = () => {
                                                 </button>
                                             ))}
                                         </div>
-                                    </>
+                                    </div>
                                 ) : (
-                                    <p className="text-neutral-600 italic">
+                                    <p className="text-neutral-600 italic" data-testid="movie-details-no-projections-message">
                                         No projections available for the selected date.
                                     </p>
                                 )}
@@ -335,22 +386,26 @@ const MovieDetails = () => {
                                     <hr className="mt-auto mb-2 bg-neutral-700" />
 
                                     <div className="flex gap-2">
-                                        <button className={`w-1/2 mb-4 font-bold py-2 px-2 border border-dark-red rounded-lg transition
-                                            ${selectedCity && selectedVenue && selectedProjection
-                                                ? "bg-neutral-0 text-dark-red"
-                                                : "border-neutral-200 bg-neutral-200 text-neutral-500 cursor-not-allowed"
-                                            }`}
+                                        <button
+                                            data-testid="movie-details-reserve-ticket-button"
+                                            className={`w-1/2 mb-4 font-bold py-2 px-2 border border-dark-red rounded-lg transition
+                                                    ${selectedCity && selectedVenue && selectedProjection
+                                                    ? "bg-neutral-0 text-dark-red"
+                                                    : "border-neutral-200 bg-neutral-200 text-neutral-500 cursor-not-allowed"
+                                                }`}
                                             disabled={!(selectedCity && selectedVenue && selectedProjection)}
                                             onClick={() => handleContinueToBooking("reserve")}
                                         >
                                             Reserve Ticket
                                         </button>
 
-                                        <button className={`w-1/2 mb-4 font-bold py-2 px-2 border border-dark-red rounded-lg transition
-                                            ${selectedCity && selectedVenue && selectedProjection
-                                                ? "bg-dark-red text-neutral-0"
-                                                : "border-neutral-200 bg-neutral-200 text-neutral-500 cursor-not-allowed"
-                                            }`}
+                                        <button
+                                            data-testid="movie-details-buy-ticket-button"
+                                            className={`w-1/2 mb-4 font-bold py-2 px-2 border border-dark-red rounded-lg transition
+                                                    ${selectedCity && selectedVenue && selectedProjection
+                                                    ? "bg-dark-red text-neutral-0"
+                                                    : "border-neutral-200 bg-neutral-200 text-neutral-500 cursor-not-allowed"
+                                                }`}
                                             disabled={!(selectedCity && selectedVenue && selectedProjection)}
                                             onClick={() => handleContinueToBooking("payment")}
                                         >
@@ -365,7 +420,7 @@ const MovieDetails = () => {
 
                         </div>
 
-                        <div className="mt-4">
+                        <div className="mt-4" data-testid="movie-details-see-also-section">
                             <ContentSection
                                 title="See Also"
                                 items={currentMovies}
@@ -381,7 +436,9 @@ const MovieDetails = () => {
                         </div>
 
                         {authDrawerOpen &&
-                            <AuthDrawer onClose={() => setAuthDrawerOpen(false)} />
+                            <div data-testid="auth-drawer-wrapper">
+                                <AuthDrawer onClose={() => setAuthDrawerOpen(false)} />
+                            </div>
                         }
                     </div>
                 ) : (

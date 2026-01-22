@@ -75,10 +75,11 @@ const OtpInput = ({ value, valueLength, onChange }) => {
     }
 
     return (
-        <div className="flex justify-center gap-2 mt-4 max-w-xs mx-auto">
+        <div className="flex justify-center gap-2 mt-4 max-w-xs mx-auto" data-testid="otp-input-container">
             {valueItems.map((_, idx) => (
                 <input
                     key={idx}
+                    data-testid={`otp-input-field-${idx}`}
                     type="text"
                     inputMode="numeric"
                     autoComplete="one-time-code"

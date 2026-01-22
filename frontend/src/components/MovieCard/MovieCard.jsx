@@ -1,6 +1,7 @@
 import NoDataFound from "../NoDataFound/NoDataFound";
 import { formatDate, formatTime } from "../../utils/dateTimeFormatter";
 import { faFilm } from "@fortawesome/free-solid-svg-icons";
+import { formatForId } from "../../utils/testUtils";
 
 const MovieCard = ({ movies, projections, onClick }) => {
 
@@ -12,9 +13,12 @@ const MovieCard = ({ movies, projections, onClick }) => {
     return (
         <>
             {movies.length > 0 ? (
-                movies.map(movie => (
-                    <div
+                movies.map(movie => {
+                    const formattedTitle = formatForId(movie.title);
+
+                    return (<div
                         key={movie.id}
+                        data-testid={`movie-card-${formattedTitle}`}
                         className={`flex flex-col mb-6 bg-neutral-0 border border-neutral-200 
                                     rounded-3xl shadow-card ${onClick ? "cursor-pointer" : ""}`}
                         onClick={() => onClick && onClick(movie)}>
@@ -25,6 +29,7 @@ const MovieCard = ({ movies, projections, onClick }) => {
                                 <img
                                     src={movie.images?.find(img => img.type === "poster")?.url}
                                     alt={movie.title}
+                                    data-testid={`movie-card-poster-${formattedTitle}`}
                                     className="w-full h-full object-cover rounded-xl"
                                 />
                             </div>
@@ -32,19 +37,25 @@ const MovieCard = ({ movies, projections, onClick }) => {
                             <div className="md:col-span-4 flex flex-col justify-between text-neutral-800 
                                             font-normal text-xs sm:text-sm md:text-base">
                                 <div>
-                                    <h1 className="font-bold text-lg md:text-xl lg:text-2xl mb-1">{movie.title}</h1>
-                                    <div className="flex flex-wrap gap-3">
-                                        <span>{movie.pgRating}</span>
+                                    <h1
+                                        data-testid={`movie-card-title-${formattedTitle}`}
+                                        className="font-bold text-lg md:text-xl lg:text-2xl mb-1"
+                                    >
+                                        {movie.title}
+                                    </h1>
+                                    <div className="flex flex-wrap gap-3" data-testid={`movie-card-info-${formattedTitle}`}>
+                                        <span data-testid={`movie-card-rating-${formattedTitle}`}>{movie.pgRating}</span>
                                         <span className="text-dark-red">|</span>
-                                        <span>{getLanguageName(movie.language)}</span>
+                                        <span data-testid={`movie-card-language-${formattedTitle}`}>{getLanguageName(movie.language)}</span>
                                         <span className="text-dark-red">|</span>
-                                        <span>{movie.durationInMinutes} Min </span>
+                                        <span data-testid={`movie-card-duration-${formattedTitle}`}>{movie.durationInMinutes} Min </span>
                                     </div>
 
-                                    <div className="flex gap-4 mt-2 flex-wrap">
+                                    <div className="flex gap-4 mt-2 flex-wrap" data-testid={`movie-card-genres-${formattedTitle}`}>
                                         {movie.genres?.map(genre => (
                                             <button
                                                 key={genre.id}
+                                                data-testid={`movie-card-genre-${formattedTitle}-${formatForId(genre.name)}`}
                                                 className="bg-neutral-200 text-sm px-2 py-1 rounded-lg" >
                                                 {genre.name}
                                             </button>))
@@ -52,17 +63,18 @@ const MovieCard = ({ movies, projections, onClick }) => {
                                     </div>
                                 </div>
 
-                                <h1 className="text-neutral-500 text-xs md:text-base italic">
+                                <h1 className="text-neutral-500 text-xs md:text-base italic" data-testid={`movie-card-end-date-${formattedTitle}`}>
                                     Playing in cinema until {formatDate(movie.projectionEndDate)}.
                                 </h1>
                             </div>
 
-                            <div className="md:col-span-5 flex flex-col">
+                            <div className="md:col-span-5 flex flex-col" data-testid={`movie-card-showtimes-${formattedTitle}`}>
                                 <h1 className="text-dark-red font-bold text:base md:text-xl lg:text-xl">Showtimes</h1>
                                 <div className="flex gap-4 flex-wrap mt-2">
-                                    {projections[movie.id]?.map(projection => (
+                                    {projections[movie.id]?.map((projection, index) => (
                                         <button
                                             key={projection.id}
+                                            data-testid={`movie-card-showtime-btn-${formattedTitle}-${index}`}
                                             className="border border-neutral-200 rounded-lg px-3 py-2 
                                                         hover:bg-dark-red hover:text-neutral-0 transition 
                                                         font-bold text-sm lg:text-base"
@@ -74,7 +86,8 @@ const MovieCard = ({ movies, projections, onClick }) => {
                             </div>
 
                         </div>
-                    </div>))
+                    </div>)
+                })
             ) : (
                 <NoDataFound
                     icon={faFilm}

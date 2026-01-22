@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 import { validateEmail, validatePassword } from "../../utils/validatorUtils";
 import AuthContext from "../../context/AuthContext";
 
-const SignInForm = ({ setView, setEmail}) => {
+const SignInForm = ({ setView, setEmail }) => {
     const [formData, setFormData] = useState({
         email: "",
         password: ""
@@ -21,7 +21,7 @@ const SignInForm = ({ setView, setEmail}) => {
 
         const validationErrors = {};
         const emailError = validateEmail(formData.email);
-        const passwordError = validatePassword(formData.password, {requiredOnly: true});
+        const passwordError = validatePassword(formData.password, { requiredOnly: true });
 
         if (emailError) validationErrors.email = emailError
         if (passwordError) validationErrors.password = passwordError
@@ -38,7 +38,7 @@ const SignInForm = ({ setView, setEmail}) => {
                         setView("verify");
                         setEmail(formData.email);
                     }
-                    
+
                     setServerError(res.message);
                     setHasServerError(true);
                 }
@@ -58,7 +58,7 @@ const SignInForm = ({ setView, setEmail}) => {
     }
 
     return (
-        <form onSubmit={handleSubmit} noValidate>
+        <form onSubmit={handleSubmit} noValidate data-testid="signin-form-wrapper">
             <div className="flex flex-col gap-1">
                 <InputField
                     label="Email"
@@ -83,18 +83,23 @@ const SignInForm = ({ setView, setEmail}) => {
                     hiddenInput={true}
                 />
 
-                <span className="text-left block h-4 mb-1 text-error-300 text-sm text-normal">
+                <span
+                    data-testid="signin-server-error-message"
+                    className="text-left block h-4 mb-1 text-error-300 text-sm text-normal"
+                >
                     {serverError || ""}
                 </span>
 
                 <button
                     type="submit"
+                    data-testid="signin-submit-btn"
                     className="py-2 text-base font-semibold w-full rounded-lg bg-dark-red text-neutral-25">
                     Sign In
                 </button>
 
                 <p className="text-center text-base font-normal text-neutral-25">
                     Don't have an account? <span
+                        data-testid="signin-switch-to-signup-link"
                         className="cursor-pointer underline"
                         onClick={() => setView("signUp")}
                     >Sign Up</span>

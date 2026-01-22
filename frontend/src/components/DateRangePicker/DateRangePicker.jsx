@@ -46,8 +46,12 @@ const DateRangePicker = ({ initialStartDate, initialEndDate, onChangeSet }) => {
 
     return (
 
-        <div className="w-full font-base relative overflow-visible bg-neutral-0 shadow-input">
+        <div
+            className="w-full font-base relative overflow-visible bg-neutral-0 shadow-input"
+            data-testid="date-range-picker-container"
+        >
             <div
+                data-testid="date-range-picker-display"
                 onClick={() => setIsSelectorOpen(!isSelectorOpen)}
                 className={`w-full p-2 flex items-center justify-between border rounded cursors-pointer
                         ${isSelectorOpen ? "border-dark-red" : "border-neutral-200 "}`}
@@ -56,47 +60,64 @@ const DateRangePicker = ({ initialStartDate, initialEndDate, onChangeSet }) => {
                 <div className="flex gap-2 w-full items-center">
                     <FontAwesomeIcon
                         icon={faCalendarDays}
+                        data-testid="date-range-picker-calendar-icon"
                         className={`w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4
                                 ${isSelectorOpen ? "text-dark-red" : "text-neutral-400 "}`}
                     />
 
-                    <span className="justify-start text-xs md:text-sm lg:text-base font-normal text-neutral-500">
+                    <span
+                        data-testid="date-range-picker-selected-text"
+                        className="justify-start text-xs md:text-sm lg:text-base font-normal text-neutral-500"
+                    >
                         {dateRange ? dateRange : "Date Range"}
                     </span>
                 </div>
 
                 <FontAwesomeIcon
                     icon={faAngleDown}
+                    data-testid="date-range-picker-arrow-icon"
                     className={`w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 transition 
                             ${isSelectorOpen ? "rotate-180 text-dark-red" : "text-neutral-400 "}`}
                 />
             </div>
 
-            <div className={`absolute left-0 rigth-0 z-40 p-4 w-full bg-neutral-0 mt-1 shadow-card
-                            overflow-y-auto transition-all duration-300 rounded flex flex-col items-center gap-2 
+            <div
+                data-testid="date-range-picker-dropdown"
+                className={`absolute left-0 rigth-0 z-40 p-4 w-full bg-neutral-0 mt-1 shadow-card
+                        overflow-y-auto transition-all duration-300 rounded flex flex-col items-center gap-2 
                         ${isSelectorOpen ? "opacity-100" : "hidden"}`}>
                 <div className="grid grid-cols-2 gap-2">
 
                     <div className="flex flex-col">
-                        <label className="text-xs text-neutral-600 mb-1">Start date</label>
+                        <label
+                            data-testid="date-range-picker-start-label"
+                            className="text-xs text-neutral-600 mb-1">
+                            Start date
+                        </label>
                         <input
                             type="text"
                             readOnly
+                            data-testid="date-range-picker-start-input-preview"
                             value={startDate ? format(startDate, "yyyy/MM/dd") : ""}
                             className="border border-neutral-300 rounded-xl px-2 py-1" />
                     </div>
 
                     <div className="flex flex-col">
-                        <label className="text-xs text-neutral-600 mb-1">End date</label>
+                        <label
+                            data-testid="date-range-picker-end-label"
+                            className="text-xs text-neutral-600 mb-1">
+                            End date
+                        </label>
                         <input
                             type="text"
                             readOnly
+                            data-testid="date-range-picker-end-input-preview"
                             value={endDate ? format(endDate, "yyyy/MM/dd") : ""}
                             className="border border-neutral-300 rounded-xl px-2 py-1" />
                     </div>
                 </div>
 
-                <div className="flex justify-center">
+                <div className="flex justify-center" data-testid="date-range-picker-calendar-container">
                     <DatePicker
                         onChange={onChange}
                         startDate={startDate}
@@ -109,14 +130,15 @@ const DateRangePicker = ({ initialStartDate, initialEndDate, onChangeSet }) => {
 
                 <div className="w-full flex justify-end items-center gap-2">
                     <button
+                        data-testid="date-range-picker-cancel-button"
                         className="font-semibold text-sm border border-dark-red rounded-lg 
                                 bg-neutral-25 text-dark-red px-2 py-2"
                         onClick={handleCancel}>
                         Cancel
                     </button>
                     <button
-                        className="font-semibold text-sm border rounded-lg bg-dark-red text-neutral-25
-                                    px-2 py-2"
+                        data-testid="date-range-picker-apply-button"
+                        className="font-semibold text-sm border rounded-lg bg-dark-red text-neutral-25 px-2 py-2"
                         onClick={handleApply}>
                         Apply
                     </button>

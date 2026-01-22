@@ -177,12 +177,14 @@ const CurrentlyShowing = () => {
     }
 
     return (
-        <div className="flex flex-col gap-4 px-6 md:px-14 py-4 md:py-5 bg-neutral-25">
+        <div className="flex flex-col gap-4 px-6 md:px-14 py-4 md:py-5 bg-neutral-25" data-testid="currently-showing-page">
 
             <h1
                 className="font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl text-neutral-800">
                 Currently Showing
-                {currentMovies.content.length > 0 ? ("(" + currentMovies.totalElements + ")") : ""}
+                {currentMovies.content.length > 0 ? (
+                    <span data-testid="currently-showing-total-count">({currentMovies.totalElements})</span>
+                ) : ""}
             </h1>
 
             <SearchInput
@@ -193,33 +195,46 @@ const CurrentlyShowing = () => {
             <div
                 className="flex flex-col gap-4 items-center justify-center 
                             sm:grid sm:grid-cols-2 sm:gap-4 lg:flex lg:flex-row lg:gap-6">
-                <Select
-                    items={cities}
-                    selectText="All cities"
-                    icon={faLocationDot}
-                    selectedValue={selectedCity}
-                    onChange={(value) => { updateParam({ city: value, venue: "" }) }}
-                />
-                <Select
-                    items={venues}
-                    selectText="All cinemas"
-                    icon={faBuilding}
-                    selectedValue={selectedVenue}
-                    onChange={(value) => { updateParam({ venue: value }) }}
-                />
-                <Select
-                    items={genres}
-                    selectText="All genres"
-                    icon={faVideo}
-                    selectedValue={selectedGenre}
-                    onChange={(value) => { updateParam({ genre: value }) }}
-                />
-                <Select
-                    items={times.map(time => ({ id: time, name: time }))}
-                    selectText="All projections"
-                    icon={faClock}
-                    selectedValue={selectedTime}
-                    onChange={(value) => { updateParam({ time: value }) }} />
+
+                <div data-testid="city-select-wrapper" className="w-full">
+                    <Select
+                        items={cities}
+                        selectText="All cities"
+                        icon={faLocationDot}
+                        selectedValue={selectedCity}
+                        onChange={(value) => { updateParam({ city: value, venue: "" }) }}
+                    />
+                </div>
+
+                <div data-testid="cinema-select-wrapper" className="w-full">
+                    <Select
+                        items={venues}
+                        selectText="All cinemas"
+                        icon={faBuilding}
+                        selectedValue={selectedVenue}
+                        onChange={(value) => { updateParam({ venue: value }) }}
+                    />
+                </div>
+
+                <div data-testid="genre-select-wrapper" className="w-full">
+                    <Select
+                        items={genres}
+                        selectText="All genres"
+                        icon={faVideo}
+                        selectedValue={selectedGenre}
+                        onChange={(value) => { updateParam({ genre: value }) }}
+                    />
+                </div>
+
+                <div data-testid="time-select-wrapper" className="w-full">
+                    <Select
+                        items={times.map(time => ({ id: time, name: time }))}
+                        selectText="All projections"
+                        icon={faClock}
+                        selectedValue={selectedTime}
+                        onChange={(value) => { updateParam({ time: value }) }}
+                    />
+                </div>
             </div>
 
             <DatePicker
@@ -227,7 +242,7 @@ const CurrentlyShowing = () => {
                 onChange={(value) => { updateParam({ date: value }) }}
             />
 
-            <h1 className="font-normal italic text-neutral-500 text-xs md:text-sm lg:text-base">
+            <h1 className="font-normal italic text-neutral-500 text-xs md:text-sm lg:text-base" data-testid="currently-showing-reminder">
                 Quick reminder that our cinema schedule is on a ten-day update cycle.
             </h1>
 
@@ -242,6 +257,7 @@ const CurrentlyShowing = () => {
             {currentMovies.hasNext && currentMovies.content.length > 0 &&
                 <button
                     onClick={handleLoadMore}
+                    data-testid="currently-showing-load-more-button"
                     className="flex justify-center text-urbanist text-dark-red 
                         text-semibold text-sm sm:text-base md:text-lg lg:text-lg underline">
                     Load more

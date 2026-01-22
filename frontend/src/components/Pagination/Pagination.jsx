@@ -6,13 +6,18 @@ const Pagination = ({ number, totalElements, size, hasNext, hasPrevious, onPageC
     const end = Math.min((number + 1) * size, totalElements)
 
     return (
-        <div className="w-full flex flex-col sm:flex-row justify-end items-center gap-1 sm:gap-2 md:gap-4 lg:gap-5">
-            <p className="font-regular text-neutral-800 text-xs sm:text-sm md:text-base lg:text-lg">Showing
+        <div
+            className="w-full flex flex-col sm:flex-row justify-end items-center gap-1 sm:gap-2 md:gap-4 lg:gap-5"
+            data-testid="pagination-main-nav"
+        >
+            <p className="font-regular text-neutral-800 text-xs sm:text-sm md:text-base lg:text-lg"
+                data-testid="pagination-summary-text"
+            > Showing
                 <span
-                    className="font-semibold"> {end}
+                    className="font-semibold" data-testid="pagination-count-current"> {end}
                 </span> out of
                 <span
-                    className="font-semibold"> {totalElements}
+                    className="font-semibold" data-testid="pagination-count-total"> {totalElements}
                 </span>
             </p>
 
@@ -20,6 +25,7 @@ const Pagination = ({ number, totalElements, size, hasNext, hasPrevious, onPageC
                 <button
                     onClick={() => onPageChange(number - 1)}
                     disabled={!hasPrevious}
+                    data-testid="pagination-btn-prev"
                     className="inline-flex items-center justify-center bg-neutral-0 disabled:opacity-50 border border-neutral-200 rounded-lg p-1 sm:p-1.5 md:p-2 lg:p-3 group">
                     <FontAwesomeIcon
                         icon={faArrowLeft}
@@ -30,6 +36,7 @@ const Pagination = ({ number, totalElements, size, hasNext, hasPrevious, onPageC
                 <button
                     onClick={() => onPageChange(number + 1)}
                     disabled={!hasNext}
+                    data-testid="pagination-btn-next"
                     className="inline-flex items-center justify-center bg-neutral-0 disabled:opacity-50 border border-neutral-200 rounded-lg p-1 sm:p-1.5 md:p-2 lg:p-3 group">
                     <FontAwesomeIcon
                         icon={faArrowRight}

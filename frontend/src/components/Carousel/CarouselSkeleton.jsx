@@ -1,5 +1,5 @@
 export const CarouselSkeleton = () => (
-    <div className="w-full h-full bg-neutral-200 animate-pulse relative">
+    <div className="w-full h-full bg-neutral-200 animate-pulse relative" data-testid="carousel-skeleton">
 
         <div className="absolute top-1/2 left-12 -translate-y-1/2 space-y-3">
             <div className="h-6 w-24 bg-neutral-300 rounded" />
