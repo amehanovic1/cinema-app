@@ -12,6 +12,7 @@ import { VenueButtonListSkeleton } from './VenueButtonList/VenueButtonListSkelet
 import { faFilm } from "@fortawesome/free-solid-svg-icons";
 import { CardSkeleton } from '../../components/Card/CardSkeleton';
 import NoDataFound from '../../components/NoDataFound/NoDataFound';
+import { formatForId } from '../../utils/testUtils';
 
 const Home = () => {
     const navigate = useNavigate()
@@ -85,10 +86,12 @@ const Home = () => {
     }
 
     const renderCarouselItem = (movie) => {
+        const movieId = formatForId(movie.title);
+
         return (
             <div
                 className='absolute flex flex-col justify-start top-1/2 left-4 sm:left-6 md:left-8 lg:left-12 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg text-neutral-25 -translate-y-1/2 gap-3'
-                data-testid="carousel-item-content"
+                data-testid={`carousel-item-${movieId}`}
             >
 
                 <div className='flex gap-2'>
@@ -96,7 +99,7 @@ const Home = () => {
                         <button
                             disabled
                             className='bg-neutral-0 text-neutral-800 text-xs md:text-sm lg:text-base rounded px-2 py-1 lg:px-3 lg:-2'
-                            data-testid="carousel-item-genre"
+                            data-testid={`carousel-genre-${movieId}`}
                         >
                             {movie.genres[0].name}
                         </button>
@@ -105,13 +108,14 @@ const Home = () => {
 
                 <h1
                     className='font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl'
-                    data-testid="carousel-item-title">
+                    data-testid={`carousel-title-${movieId}`}
+                >
                     {movie?.title}
                 </h1>
 
                 <p
                     className='font-bold text-sm sm:text-base md:text-lg lg:text-xl mt-1 sm:mt-2 md:mt-3'
-                    data-testid="carousel-item-synopsis"
+                    data-testid={`carousel-synopsis-${movieId}`}
                 >
                     {movie?.synopsis?.split('.')[0] + '.'}
                 </p>
