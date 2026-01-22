@@ -3,11 +3,6 @@ pipeline {
 
     environment {
         COMPOSE_FILE = 'docker-compose.prod.yaml'
-        CINEMA_DB_PASSWORD = credentials('cinema-db-password')
-        CINEMA_JWT_SECRET = credentials('cinema-jwt-secret')
-        CINEMA_MAIL_USERNAME = credentials('cinema-mail-username')
-        CINEMA_MAIL_PASSWORD = credentials('cinema-mail-password')
-        CINEMA_MAIL_FROM = credentials('cinema-mail-from')
     }
 
     stages {
@@ -37,7 +32,28 @@ pipeline {
             steps {
                 script {
                     echo '[OK] Deploying Cinema application'
-                    sh 'docker-compose -f ${COMPOSE_FILE} up -d'
+                    
+                    withCredentials([
+                        string(credentialsId: 'cinema-db-password', variable: 'CINEMA_DB_PASSWORD'),
+                        string(credentialsId: 'cinema-jwt-secret', variable: 'CINEMA_JWT_SECRET'),
+                        string(credentialsId: 'cinema-mail-username', variable: 'CINEMA_MAIL_USERNAME'),
+                        string(credentialsId: 'cinema-mail-password', variable: 'CINEMA_MAIL_PASSWORD'),
+                        string(credentialsId: 'cinema-mail-from', variable: 'CINEMA_MAIL_FROM'),
+                        string(credentialsId: 'stripe-secret-key', variable: 'STRIPE_SECRET_KEY'),
+                        string(credentialsId: 'stripe-webhook-secret', variable: 'STRIPE_WEBHOOK_SECRET')
+                    ]) {
+                        sh '''
+                            export CINEMA_DB_PASSWORD="${CINEMA_DB_PASSWORD}"
+                            export CINEMA_JWT_SECRET="${CINEMA_JWT_SECRET}"
+                            export CINEMA_MAIL_USERNAME="${CINEMA_MAIL_USERNAME}"
+                            export CINEMA_MAIL_PASSWORD="${CINEMA_MAIL_PASSWORD}"
+                            export CINEMA_MAIL_FROM="${CINEMA_MAIL_FROM}"
+                            export STRIPE_SECRET_KEY="${STRIPE_SECRET_KEY}"
+                            export STRIPE_WEBHOOK_SECRET="${STRIPE_WEBHOOK_SECRET}"
+                            
+                            docker-compose -f ${COMPOSE_FILE} up -d
+                        '''
+                    }
                 }
             }
         }
@@ -45,7 +61,66 @@ pipeline {
         stage('Verify Deployment') {
             steps {
                 script {
-                    echo '[OK] Verifying deployment'
+                    echo '[OK] Waiting for services to become healthy...'
+
+                    sh '''
+                        MAX_RETRIES=30
+                        RETRY_INTERVAL=10
+
+                        echo "[OK] Waiting for database to be healthy..."
+                        for i in $(seq 1 $MAX_RETRIES); do
+                            if docker inspect cinema-db --format='{{.State.Health.Status}}' 2>/dev/null | grep -q "healthy"; then
+                                echo "[OK] Database is healthy"
+                                break
+                            fi
+                            if [ $i -eq $MAX_RETRIES ]; then
+                                echo "[ERROR] Database failed to become healthy"
+                                docker logs cinema-db --tail 50
+                                exit 1
+                            fi
+                            echo "Waiting for database... attempt $i/$MAX_RETRIES"
+                            sleep $RETRY_INTERVAL
+                        done
+
+                        echo "[OK] Waiting for backend to be healthy..."
+                        for i in $(seq 1 $MAX_RETRIES); do
+                            if docker inspect cinema-backend --format='{{.State.Health.Status}}' 2>/dev/null | grep -q "healthy"; then
+                                echo "[OK] Backend is healthy"
+                                break
+                            fi
+                            if [ $i -eq $MAX_RETRIES ]; then
+                                echo "[ERROR] Backend failed to become healthy"
+                                docker logs cinema-backend --tail 50
+                                exit 1
+                            fi
+                            echo "Waiting for backend... attempt $i/$MAX_RETRIES"
+                            sleep $RETRY_INTERVAL
+                        done
+                    '''
+
+                    echo '[OK] Testing application endpoints...'
+
+                    sh '''
+                        echo "[OK] Testing backend API endpoint..."
+                        HTTP_CODE=$(curl -sk -o /dev/null -w "%{http_code}" https://cinema-api.p1.praksa.abhapp.com/api/cities)
+                        if [ "$HTTP_CODE" != "200" ]; then
+                            echo "[ERROR] Backend API health check failed with HTTP $HTTP_CODE"
+                            docker logs cinema-backend --tail 50
+                            exit 1
+                        fi
+                        echo "[OK] Backend API returned HTTP $HTTP_CODE"
+
+                        echo "[OK] Testing frontend endpoint..."
+                        HTTP_CODE=$(curl -sk -o /dev/null -w "%{http_code}" https://cinema.p1.praksa.abhapp.com)
+                        if [ "$HTTP_CODE" != "200" ]; then
+                            echo "[ERROR] Frontend health check failed with HTTP $HTTP_CODE"
+                            docker logs cinema-frontend --tail 50
+                            exit 1
+                        fi
+                        echo "[OK] Frontend returned HTTP $HTTP_CODE"
+                    '''
+
+                    echo '[OK] All health checks passed'
                     sh 'docker-compose -f ${COMPOSE_FILE} ps'
                 }
             }

@@ -1,0 +1,294 @@
+pipeline {
+    agent any
+
+    parameters {
+        choice(
+            name: 'TEST_SUITE',
+            choices: ['smoke', 'all', 'api', 'ui'],
+            description: 'Test suite to run'
+        )
+        choice(
+            name: 'ENVIRONMENT',
+            choices: ['production', 'staging', 'local'],
+            description: 'Target environment'
+        )
+        string(
+            name: 'FRONTEND_URL',
+            defaultValue: 'https://cinema.p1.praksa.abhapp.com/',
+            description: 'Frontend URL'
+        )
+        string(
+            name: 'BRANCH_NAME',
+            defaultValue: 'main',
+            description: 'Git branch name'
+        )
+        string(
+            name: 'BACKEND_API_URL',
+            defaultValue: 'https://cinema-api.p1.praksa.abhapp.com/api/',
+            description: 'Backend API URL'
+        )
+        string(
+            name: 'DB_HOST',
+            defaultValue: 'cinema-db',
+            description: 'Database host'
+        )
+        string(
+            name: 'DB_PORT',
+            defaultValue: '5432',
+            description: 'Database port'
+        )
+        string(
+            name: 'DB_NAME',
+            defaultValue: 'cinebh',
+            description: 'Database name'
+        )
+        string(
+            name: 'DB_USER',
+            defaultValue: 'postgres',
+            description: 'Database user'
+        )
+        string(
+            name: 'EMAIL_HOST',
+            defaultValue: 'imap.gmail.com',
+            description: 'IMAP email host for verification tests'
+        )
+        string(
+            name: 'TARGET_EMAIL',
+            defaultValue: 'strsevicnejra@gmail.com',
+            description: 'Target email address for verification tests'
+        )
+    }
+
+    environment {
+        QA_REPO_URL = 'https://github.com/nejrastr/CinemaApplication-Automation.git'
+        QA_REPO_DIR = 'cinema-qa-automation'
+        QA_REPO_BRANCH = "${params.BRANCH_NAME}"
+
+        FRONTEND_URL = "${params.FRONTEND_URL}"
+        BACKEND_API_URL = "${params.BACKEND_API_URL}"
+
+        DB_HOST = "${params.DB_HOST}"
+        DB_PORT = "${params.DB_PORT}"
+        DB_NAME = "${params.DB_NAME}"
+        DB_USER = "${params.DB_USER}"
+
+        EMAIL_HOST = "${params.EMAIL_HOST}"
+        TARGET_EMAIL = "${params.TARGET_EMAIL}"
+
+        TEST_ENVIRONMENT = "${params.ENVIRONMENT}"
+        PYTEST_MAXFAIL = "5"
+
+        ALLURE_RESULTS = "${WORKSPACE}/reports/allure-results"
+    }
+
+    options {
+        timeout(time: 45, unit: 'MINUTES')
+        buildDiscarder(logRotator(numToKeepStr: '20'))
+        timestamps()
+        disableConcurrentBuilds()
+    }
+
+    stages {
+        stage('Checkout QA Repository') {
+            steps {
+                echo "[OK] Cloning QA automation repository"
+
+                dir("${QA_REPO_DIR}") {
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: "*/${QA_REPO_BRANCH}"]],
+                        userRemoteConfigs: [[
+                            url: "${QA_REPO_URL}",
+                            credentialsId: 'github-token'
+                        ]]
+                    ])
+                }
+
+                echo "[OK] QA repository cloned successfully"
+            }
+        }
+
+        stage('Setup Python Environment') {
+            steps {
+                echo "[OK] Setting up Python virtual environment"
+
+                dir("${QA_REPO_DIR}") {
+                    sh '''
+                        python3 --version
+                        python3 -m pip --version
+
+                        python3 -m venv venv
+                        . venv/bin/activate
+
+                        python3 -m pip install --upgrade pip
+                        python3 -m pip install -r requirements.txt
+
+                        playwright install chromium
+                        playwright install-deps chromium
+                    '''
+                }
+
+                echo "[OK] Python environment ready"
+            }
+        }
+
+        stage('Configure Test Environment') {
+            steps {
+                echo "[OK] Configuring test environment"
+                echo "Environment: ${params.ENVIRONMENT}"
+                echo "Frontend URL: ${params.FRONTEND_URL}"
+                echo "Backend API URL: ${params.BACKEND_API_URL}"
+                echo "Test Suite: ${params.TEST_SUITE}"
+
+                dir("${QA_REPO_DIR}") {
+                    sh '''
+                        mkdir -p reports/allure-results
+                        mkdir -p reports/screenshots
+                        mkdir -p reports/videos
+                    '''
+                }
+
+                echo "[OK] Environment configured"
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    def testPath = ''
+
+                    switch(params.TEST_SUITE) {
+                        case 'all':
+                            testPath = 'tests/'
+                            break
+                        case 'api':
+                            testPath = 'tests/api/'
+                            break
+                        case 'ui':
+                            testPath = 'tests/test_smoke_ui.py'
+                            break
+                        case 'smoke':
+                            testPath = 'tests/'
+                            break
+                        default:
+                            testPath = 'tests/'
+                    }
+
+                    echo "[OK] Running ${params.TEST_SUITE} tests from ${testPath}"
+
+                    dir("${QA_REPO_DIR}") {
+                        withCredentials([
+                            string(credentialsId: 'cinema-db-password', variable: 'DB_PASSWORD'),
+                            string(credentialsId: 'qa-test-email-user', variable: 'EMAIL_USER'),
+                            string(credentialsId: 'qa-test-email-password', variable: 'EMAIL_PASSWORD')
+                        ]) {
+                            sh """
+                                . venv/bin/activate
+
+                                export TEST_ENVIRONMENT="${params.ENVIRONMENT}"
+                                export FRONTEND_URL="${params.FRONTEND_URL}"
+                                export BACKEND_API_URL="${params.BACKEND_API_URL}"
+                                export BASE_URL="${params.FRONTEND_URL}"
+                                export BASE_API_URL="${params.BACKEND_API_URL}"
+
+                                export DB_HOST="${params.DB_HOST}"
+                                export DB_PORT="${params.DB_PORT}"
+                                export DB_NAME="${params.DB_NAME}"
+                                export DB_USER="${params.DB_USER}"
+                                export DB_PASSWORD="\${DB_PASSWORD}"
+
+                                export HOST="${EMAIL_HOST}"
+                                export TARGET_USER="${TARGET_EMAIL}"
+                                export EMAIL_USER="\${EMAIL_USER}"
+                                export GMAIL_APP_PASSWORD="\${EMAIL_PASSWORD}"
+
+                                pytest ${testPath} -v \\
+                                    --alluredir=./reports/allure-results \\
+                                    --maxfail=${PYTEST_MAXFAIL} \\
+                                    --tb=short \\
+                                    --capture=no \\
+                                    || true
+                            """
+                        }
+                    }
+
+                    echo "[OK] Test execution completed"
+                }
+            }
+        }
+
+        stage('Generate Allure Report') {
+            steps {
+                echo "[OK] Generating Allure test report"
+
+                script {
+                    dir("${QA_REPO_DIR}") {
+                        allure([
+                            includeProperties: false,
+                            jdk: '',
+                            commandline: 'allure',
+                            results: [[path: 'reports/allure-results']]
+                        ])
+                    }
+                }
+
+                echo "[OK] Allure report generated"
+            }
+        }
+
+        stage('Archive Artifacts') {
+            steps {
+                echo "[OK] Archiving test artifacts"
+
+                script {
+                    dir("${QA_REPO_DIR}") {
+                        sh """
+                            cat > test-run-info.txt << EOF
+Build Number: ${BUILD_NUMBER}
+Test Suite: ${params.TEST_SUITE}
+Environment: ${params.ENVIRONMENT}
+Frontend URL: ${params.FRONTEND_URL}
+Backend API URL: ${params.BACKEND_API_URL}
+Test Time: \$(date)
+EOF
+                        """
+
+                        archiveArtifacts artifacts: 'test-run-info.txt', fingerprint: true
+                        archiveArtifacts artifacts: 'reports/screenshots/**/*', allowEmptyArchive: true
+                        archiveArtifacts artifacts: 'reports/allure-results/**/*', allowEmptyArchive: true
+                    }
+                }
+
+                echo "[OK] Artifacts archived"
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "[OK] QA test execution completed successfully"
+            echo "Test Suite: ${params.TEST_SUITE}"
+            echo "Environment: ${params.ENVIRONMENT}"
+            echo "View Allure report in Jenkins for detailed results"
+        }
+
+        failure {
+            echo "[ERROR] QA test execution failed"
+        }
+
+        always {
+            echo "[OK] Cleaning up"
+
+            dir("${QA_REPO_DIR}") {
+                sh '''
+                    if [ -d "venv" ]; then
+                        rm -rf venv
+                    fi
+                '''
+            }
+
+            echo "[OK] Cleaning workspace"
+            cleanWs()
+        }
+    }
+}

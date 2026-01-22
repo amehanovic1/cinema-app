@@ -32,6 +32,8 @@ services:
       MAIL_PASSWORD: ${MAIL_PASSWORD:-}
       MAIL_FROM: ${MAIL_FROM:-noreply@cinebh.com}
       JWT_SECRET: ${JWT_SECRET:-yourjwtsecretkeychangeinproduction123456789}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
     ports:
       - "8443:8443"
     volumes:
@@ -47,6 +49,8 @@ services:
     container_name: cinebh-frontend
     environment:
       REACT_APP_API_URL: https://localhost:8443/api
+      REACT_APP_WS_URL: https://localhost:8443/ws-cinema
+      REACT_APP_STRIPE_PUBLISHABLE_KEY: ${STRIPE_PUBLISHABLE_KEY:-}
       HTTPS: "true"
       HOST: 0.0.0.0
       SSL_CRT_FILE: /app/.cert/cert.pem
