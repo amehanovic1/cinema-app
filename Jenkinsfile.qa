@@ -18,6 +18,11 @@ pipeline {
             description: 'Frontend URL'
         )
         string(
+            name: 'BRANCH_NAME',
+            defaultValue: 'main',
+            description: 'Git branch name'
+        )
+        string(
             name: 'BACKEND_API_URL',
             defaultValue: 'https://cinema-api.p1.praksa.abhapp.com/api/',
             description: 'Backend API URL'
@@ -57,6 +62,7 @@ pipeline {
     environment {
         QA_REPO_URL = 'https://github.com/nejrastr/CinemaApplication-Automation.git'
         QA_REPO_DIR = 'cinema-qa-automation'
+        QA_REPO_BRANCH = "${params.BRANCH_NAME}"
 
         FRONTEND_URL = "${params.FRONTEND_URL}"
         BACKEND_API_URL = "${params.BACKEND_API_URL}"
@@ -93,7 +99,7 @@ pipeline {
                 dir("${QA_REPO_DIR}") {
                     checkout([
                         $class: 'GitSCM',
-                        branches: [[name: '*/main']],
+                        branches: [[name: "*/${QA_REPO_BRANCH}"]],
                         userRemoteConfigs: [[
                             url: "${QA_REPO_URL}",
                             credentialsId: 'github-token'
