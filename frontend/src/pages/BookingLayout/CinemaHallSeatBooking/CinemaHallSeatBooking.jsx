@@ -3,6 +3,7 @@ import SeatTypeLegend from "../SeatTypeLegend/SeatTypeLegend";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { updateSeatSelection } from "../../../services/bookingService";
+import { formatForId } from "../../../utils/testUtils";
 
 const CinemaHallSeatBooking = ({
     bookingData,
@@ -97,8 +98,10 @@ const CinemaHallSeatBooking = ({
                 <div className="w-full overflow-x-auto pb-4">
                     <div className="grid grid-cols-9 gap-2 min-w-[600px] items-center" data-testid="seat-layout-grid">
                         {seats.map((seat, index) => {
-                            const isLoveSeat = seat.seatType.category === "Love";
+                            const formattedSeatCode = formatForId(seat.seatCode);
+                            const formattedCategory = formatForId(seat.seatType.category);
 
+                            const isLoveSeat = seat.seatType.category === "Love";
                             const isAisleSlot = isLoveSeat
                                 ? (index % 4 === 1)
                                 : (index % 8 === 3);
@@ -106,13 +109,13 @@ const CinemaHallSeatBooking = ({
                             return (
                                 <React.Fragment key={seat.id}>
                                     <div
-                                        data-testid={`seat-${seat.seatCode}`}
-                                        data-seat-type={seat.seatType.category.toLowerCase()}
+                                        data-testid={`seat-code-${formattedSeatCode}`}
+                                        data-seat-type={`seat-category-${formattedCategory}`}
                                         className={getSeatClassName(seat)}
                                         onClick={() => handleSeatClick(seat)}
                                     >
                                         {seat.seatType.category === "VIP" && (
-                                            <FontAwesomeIcon icon={faStar} className="mr-1 w-3 h-3" data-testid="seat-vip-star-icon" />
+                                            <FontAwesomeIcon icon={faStar} className="mr-1 w-3 h-3" data-testid={`seat-icon-vip-${formattedSeatCode}`} />
                                         )}
                                         {seat.seatCode}
                                     </div>
