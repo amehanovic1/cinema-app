@@ -80,7 +80,7 @@ const VerificationCodeForm = ({ setView, email }) => {
                 {(minutes === 0 && seconds === 0) || isExpired ? (
                     <button
                         type="button"
-                        ddata-testid="verification-resend-btn"
+                        data-testid="verification-resend-btn"
                         onClick={resendEmail}
                         className="text-neutral-25 underline">Resend email</button>
                 ) : (
