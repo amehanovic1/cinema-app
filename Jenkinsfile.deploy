@@ -3,13 +3,6 @@ pipeline {
 
     environment {
         COMPOSE_FILE = 'docker-compose.prod.yaml'
-        CINEMA_DB_PASSWORD = credentials('cinema-db-password')
-        CINEMA_JWT_SECRET = credentials('cinema-jwt-secret')
-        CINEMA_MAIL_USERNAME = credentials('cinema-mail-username')
-        CINEMA_MAIL_PASSWORD = credentials('cinema-mail-password')
-        CINEMA_MAIL_FROM = credentials('cinema-mail-from')
-        STRIPE_SECRET_KEY = credentials('stripe-secret-key')
-        STRIPE_WEBHOOK_SECRET = credentials('stripe-webhook-secret')
     }
 
     stages {
@@ -39,7 +32,28 @@ pipeline {
             steps {
                 script {
                     echo '[OK] Deploying Cinema application'
-                    sh 'docker-compose -f ${COMPOSE_FILE} up -d'
+                    
+                    withCredentials([
+                        string(credentialsId: 'cinema-db-password', variable: 'CINEMA_DB_PASSWORD'),
+                        string(credentialsId: 'cinema-jwt-secret', variable: 'CINEMA_JWT_SECRET'),
+                        string(credentialsId: 'cinema-mail-username', variable: 'CINEMA_MAIL_USERNAME'),
+                        string(credentialsId: 'cinema-mail-password', variable: 'CINEMA_MAIL_PASSWORD'),
+                        string(credentialsId: 'cinema-mail-from', variable: 'CINEMA_MAIL_FROM'),
+                        string(credentialsId: 'stripe-secret-key', variable: 'STRIPE_SECRET_KEY'),
+                        string(credentialsId: 'stripe-webhook-secret', variable: 'STRIPE_WEBHOOK_SECRET')
+                    ]) {
+                        sh '''
+                            export CINEMA_DB_PASSWORD="${CINEMA_DB_PASSWORD}"
+                            export CINEMA_JWT_SECRET="${CINEMA_JWT_SECRET}"
+                            export CINEMA_MAIL_USERNAME="${CINEMA_MAIL_USERNAME}"
+                            export CINEMA_MAIL_PASSWORD="${CINEMA_MAIL_PASSWORD}"
+                            export CINEMA_MAIL_FROM="${CINEMA_MAIL_FROM}"
+                            export STRIPE_SECRET_KEY="${STRIPE_SECRET_KEY}"
+                            export STRIPE_WEBHOOK_SECRET="${STRIPE_WEBHOOK_SECRET}"
+                            
+                            docker-compose -f ${COMPOSE_FILE} up -d
+                        '''
+                    }
                 }
             }
         }

@@ -42,8 +42,6 @@ pipeline {
 
         BACKEND_IMAGE = "${DOCKER_REGISTRY}/cinema-backend"
         FRONTEND_IMAGE = "${DOCKER_REGISTRY}/cinema-frontend"
-
-        STRIPE_PUBLISHABLE_KEY = credentials('stripe-publishable-key')
     }
 
     options {
@@ -228,17 +226,21 @@ pipeline {
                         script {
                             echo "[OK] Building frontend Docker image"
 
-                            dir('frontend') {
-                                sh """
-                                    docker build \
-                                        -t ${FRONTEND_IMAGE}:${IMAGE_TAG} \
-                                        -t ${FRONTEND_IMAGE}:latest \
-                                        --build-arg BUILD_NUMBER=${BUILD_NUMBER} \
-                                        --build-arg GIT_COMMIT=${GIT_COMMIT_SHORT} \
-                                        --build-arg REACT_APP_API_URL=${params.FRONTEND_API_URL} \
-                                        --build-arg REACT_APP_STRIPE_PUBLISHABLE_KEY=${STRIPE_PUBLISHABLE_KEY} \
-                                        -f Dockerfile.prod .
-                                """
+                            withCredentials([
+                                string(credentialsId: 'stripe-publishable-key', variable: 'STRIPE_PUBLISHABLE_KEY')
+                            ]) {
+                                dir('frontend') {
+                                    sh """
+                                        docker build \
+                                            -t ${FRONTEND_IMAGE}:${IMAGE_TAG} \
+                                            -t ${FRONTEND_IMAGE}:latest \
+                                            --build-arg BUILD_NUMBER=${BUILD_NUMBER} \
+                                            --build-arg GIT_COMMIT=${GIT_COMMIT_SHORT} \
+                                            --build-arg REACT_APP_API_URL=${params.FRONTEND_API_URL} \
+                                            --build-arg REACT_APP_STRIPE_PUBLISHABLE_KEY=${STRIPE_PUBLISHABLE_KEY} \
+                                            -f Dockerfile.prod .
+                                    """
+                                }
                             }
 
                             echo "[OK] Frontend image built successfully"

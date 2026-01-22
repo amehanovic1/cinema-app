@@ -71,12 +71,9 @@ pipeline {
         DB_PORT = "${params.DB_PORT}"
         DB_NAME = "${params.DB_NAME}"
         DB_USER = "${params.DB_USER}"
-        DB_PASSWORD = credentials('cinema-db-password')
 
         EMAIL_HOST = "${params.EMAIL_HOST}"
         TARGET_EMAIL = "${params.TARGET_EMAIL}"
-        EMAIL_USER = credentials('qa-test-email-user')
-        EMAIL_PASSWORD = credentials('qa-test-email-password')
 
         TEST_ENVIRONMENT = "${params.ENVIRONMENT}"
         PYTEST_MAXFAIL = "5"
@@ -180,33 +177,39 @@ pipeline {
                     echo "[OK] Running ${params.TEST_SUITE} tests from ${testPath}"
 
                     dir("${QA_REPO_DIR}") {
-                        sh """
-                            . venv/bin/activate
+                        withCredentials([
+                            string(credentialsId: 'cinema-db-password', variable: 'DB_PASSWORD'),
+                            string(credentialsId: 'qa-test-email-user', variable: 'EMAIL_USER'),
+                            string(credentialsId: 'qa-test-email-password', variable: 'EMAIL_PASSWORD')
+                        ]) {
+                            sh """
+                                . venv/bin/activate
 
-                            export TEST_ENVIRONMENT="${params.ENVIRONMENT}"
-                            export FRONTEND_URL="${params.FRONTEND_URL}"
-                            export BACKEND_API_URL="${params.BACKEND_API_URL}"
-                            export BASE_URL="${params.FRONTEND_URL}"
-                            export BASE_API_URL="${params.BACKEND_API_URL}"
+                                export TEST_ENVIRONMENT="${params.ENVIRONMENT}"
+                                export FRONTEND_URL="${params.FRONTEND_URL}"
+                                export BACKEND_API_URL="${params.BACKEND_API_URL}"
+                                export BASE_URL="${params.FRONTEND_URL}"
+                                export BASE_API_URL="${params.BACKEND_API_URL}"
 
-                            export DB_HOST="${params.DB_HOST}"
-                            export DB_PORT="${params.DB_PORT}"
-                            export DB_NAME="${params.DB_NAME}"
-                            export DB_USER="${params.DB_USER}"
-                            export DB_PASSWORD="${DB_PASSWORD}"
+                                export DB_HOST="${params.DB_HOST}"
+                                export DB_PORT="${params.DB_PORT}"
+                                export DB_NAME="${params.DB_NAME}"
+                                export DB_USER="${params.DB_USER}"
+                                export DB_PASSWORD="\${DB_PASSWORD}"
 
-                            export HOST="${EMAIL_HOST}"
-                            export TARGET_USER="${TARGET_EMAIL}"
-                            export EMAIL_USER="${EMAIL_USER}"
-                            export GMAIL_APP_PASSWORD="${EMAIL_PASSWORD}"
+                                export HOST="${EMAIL_HOST}"
+                                export TARGET_USER="${TARGET_EMAIL}"
+                                export EMAIL_USER="\${EMAIL_USER}"
+                                export GMAIL_APP_PASSWORD="\${EMAIL_PASSWORD}"
 
-                            pytest ${testPath} -v \\
-                                --alluredir=./reports/allure-results \\
-                                --maxfail=${PYTEST_MAXFAIL} \\
-                                --tb=short \\
-                                --capture=no \\
-                                || true
-                        """
+                                pytest ${testPath} -v \\
+                                    --alluredir=./reports/allure-results \\
+                                    --maxfail=${PYTEST_MAXFAIL} \\
+                                    --tb=short \\
+                                    --capture=no \\
+                                    || true
+                            """
+                        }
                     }
 
                     echo "[OK] Test execution completed"
