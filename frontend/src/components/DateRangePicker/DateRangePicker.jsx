@@ -1,17 +1,31 @@
 import "react-datepicker/dist/react-datepicker.css";
 import "./date-range-picker.css"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faCalendarDays } from "@fortawesome/free-solid-svg-icons";
 import { format } from "date-fns"
 import DatePicker from "react-datepicker";
 
 const DateRangePicker = ({ initialStartDate, initialEndDate, onChangeSet }) => {
-
     const [isSelectorOpen, setIsSelectorOpen] = useState(false)
+    const pickerRef = useRef(null)
+
     const [dateRange, setDateRange] = useState("")
     const [startDate, setStartDate] = useState(initialStartDate ? new Date(initialStartDate) : "")
     const [endDate, setEndDate] = useState(initialEndDate ? new Date(initialEndDate) : "")
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (isSelectorOpen && pickerRef.current && !pickerRef.current.contains(event.target)) {
+                setIsSelectorOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isSelectorOpen]);
 
     const onChange = (dates) => {
         const [start, end] = dates;
@@ -47,6 +61,7 @@ const DateRangePicker = ({ initialStartDate, initialEndDate, onChangeSet }) => {
     return (
 
         <div
+            ref={pickerRef}
             className="w-full font-base relative overflow-visible bg-neutral-0 shadow-input"
             data-testid="date-range-picker-container"
         >
