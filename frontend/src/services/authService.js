@@ -33,7 +33,6 @@ export async function verifyUser({ email, verificationCode }) {
         return response.data;
     }
     catch (error) {
-        console.log("Verification failed:", error);
         throw error;
     }
 }

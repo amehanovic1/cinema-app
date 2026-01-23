@@ -32,7 +32,10 @@ public class AuthController {
     public ResponseEntity<AuthResponseDto> verify (
             @Valid @RequestBody VerifyRequestDto request
     ) {
-        return ResponseEntity.ok(authenticationService.verify(request));
+        AuthResponseDto response = authenticationService.verify(request);
+        return response.getSuccess()
+                ? ResponseEntity.ok(response)
+                : ResponseEntity.badRequest().body(response);
     }
 
     @PostMapping("/resend-code")
