@@ -44,6 +44,8 @@ const CurrentlyShowing = () => {
     const selectedTime = searchParams.get("time") || ""
     const selectedDate = searchParams.get("date") || new Date().toLocaleDateString('sv-SE')
 
+    const [searchInput, setSearchInput] = useState(searchTitle);
+
     useEffect(() => {
         if (!searchParams.get("page")) {
             const newParams = new URLSearchParams(searchParams);
@@ -60,6 +62,14 @@ const CurrentlyShowing = () => {
         fetchCurrentlyShowing();
         fetchVenues();
     }, [searchParams]);
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            updateParam({ title: searchInput });
+        }, 400); 
+
+        return () => clearTimeout(handler);
+    }, [searchInput]);
 
     const fetchCurrentlyShowing = async () => {
         try {
@@ -189,8 +199,8 @@ const CurrentlyShowing = () => {
 
             <SearchInput
                 text={"Search movies"}
-                selectedValue={searchTitle}
-                onChange={(value) => { updateParam({ title: value }) }} />
+                selectedValue={searchInput}
+                onChange={(value) => setSearchInput(value)} />
 
             <div
                 className="flex flex-col gap-4 items-center justify-center 
