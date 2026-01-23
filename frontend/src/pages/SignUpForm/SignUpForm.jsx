@@ -4,7 +4,7 @@ import { registerUser } from "../../services/authService";
 import { useState } from "react";
 import { validateConfirmPassword, validateEmail, validatePassword } from "../../utils/validatorUtils";
 
-const SignUpForm = ({ setView, setEmail }) => {
+const SignUpForm = ({ setView, setEmail, onClose }) => {
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -120,6 +120,15 @@ const SignUpForm = ({ setView, setEmail }) => {
                     > Sign In
                     </span>
                 </p>
+
+                <button
+                    data-testid="signup-continue-without-signing-in"
+                    className="mt-2 text-center text-base font-normal text-neutral-25 cursor-pointer underline"
+                    onClick={onClose}
+                >
+                    Continue without Signing In
+
+                </button>
 
             </div>
         </form>

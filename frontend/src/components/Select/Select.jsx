@@ -1,16 +1,30 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import { formatForId } from "../../utils/testUtils";
 
 const Select = ({ items, selectText, icon, selectedValue, onChange }) => {
-
     const [isSelectorOpen, setIsSelectorOpen] = useState(false)
+    const selectRef = useRef(null)
+
     const selectedItem = selectedValue === "" ? selectText : selectedValue
     const allOption = { id: "all", name: selectText }
     const allItems = [allOption, ...items]
 
     const formattedSelectName = formatForId(selectText);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (isSelectorOpen && selectRef.current && !selectRef.current.contains(event.target)) {
+                setIsSelectorOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isSelectorOpen]);
 
     const handleChange = (item) => {
         setIsSelectorOpen(false);
@@ -19,6 +33,7 @@ const Select = ({ items, selectText, icon, selectedValue, onChange }) => {
 
     return (
         <div
+            ref={selectRef}
             className="w-full font-base relative overflow-visible bg-neutral-0 shadow-input"
             data-testid={`select-wrapper-${formattedSelectName}`}
         >

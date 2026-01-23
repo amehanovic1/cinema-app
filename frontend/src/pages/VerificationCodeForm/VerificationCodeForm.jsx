@@ -24,20 +24,25 @@ const VerificationCodeForm = ({ setView, email }) => {
                     verificationCode: otp
                 });
 
-            if (!res.success && !res.isVerified) {
-                if (res.errorCode === "MAX_ATTEMPTS" || res.errorCode === "CODE_EXPIRED")
-                    setIsDisabled(true);
+            if (res.success)
+                setView("signIn");
 
-                if (res.errorCode === "CODE_EXPIRED")
+        } catch (error) {
+            if (error?.response?.data) {
+                const res = error.response.data;
+
+                if (res.errorCode === "MAX_ATTEMPTS" || res.errorCode === "CODE_EXPIRED") {
+                    setIsDisabled(true);
+                }
+
+                if (res.errorCode === "CODE_EXPIRED") {
                     setIsExpired(true);
+                }
 
                 setServerError(res.message);
+            } else {
+                setServerError("Something went wrong. Please try again.");
             }
-            if (res.success) {
-                setView("signIn")
-            }
-        } catch (error) {
-            console.log(error)
         }
     }
 

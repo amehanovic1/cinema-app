@@ -43,6 +43,8 @@ const UpcomingMovies = () => {
     const selectedStartDate = searchParams.get("startDate") || ""
     const selectedEndDate = searchParams.get("endDate") || ""
 
+    const [searchInput, setSearchInput] = useState(searchTitle);
+
     useEffect(() => {
         if (!searchParams.get("page")) {
             const newParams = new URLSearchParams(searchParams);
@@ -59,6 +61,13 @@ const UpcomingMovies = () => {
         fetchVenues();
     }, [searchParams]);
 
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            updateParam({ title: searchInput });
+        }, 400); 
+
+        return () => clearTimeout(handler);
+    }, [searchInput]);
 
     const fetchUpcoming = async () => {
         try {
@@ -162,8 +171,8 @@ const UpcomingMovies = () => {
 
             <SearchInput
                 text={"Search movies"}
-                selectedValue={searchTitle}
-                onChange={(value) => { updateParam({ title: value }) }}
+                selectedValue={searchInput}
+                onChange={(value) => setSearchInput(value) }
             />
 
             <div
