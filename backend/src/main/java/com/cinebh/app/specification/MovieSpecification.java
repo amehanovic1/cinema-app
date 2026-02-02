@@ -16,6 +16,8 @@ public class MovieSpecification {
         return (root, criteriaQuery,criteriaBuilder) -> {
             LocalDate today = LocalDate.now();
             return criteriaBuilder.and(
+                    criteriaBuilder.isNull(
+                            root.get("archivedAt")),
                     criteriaBuilder.lessThanOrEqualTo(
                             root.get("projectionStartDate"), today),
                     criteriaBuilder.greaterThanOrEqualTo(
@@ -98,6 +100,8 @@ public class MovieSpecification {
                 criteriaBuilder.conjunction();
                 List<Predicate> predicates = new ArrayList<>();
 
+                predicates.add(criteriaBuilder.isNull(root.get("archivedAt")));
+
                 var projectionJoin = root.join("projections", JoinType.INNER);
                 var hallJoin = projectionJoin.join("cinemaHall", JoinType.INNER);
                 var venueJoin = hallJoin.join("venue", JoinType.INNER);
@@ -132,6 +136,14 @@ public class MovieSpecification {
 
                 return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
             }
+        };
+    }
+
+    public static Specification<Movie> isArchived() {
+        return (root, criteriaQuery,criteriaBuilder) -> {
+            return criteriaBuilder.and(
+                    criteriaBuilder.isNotNull(root.get("archivedAt"))
+            );
         };
     }
 }
