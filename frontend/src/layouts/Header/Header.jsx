@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Logo from "../../components/Logo/Logo";
 import { ROUTES } from "../../routes/routes";
 import { useContext, useEffect, useState } from "react";
@@ -8,14 +8,25 @@ import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import AuthDrawer from "../../pages/AuthDrawer/AuthDrawer";
 
 const Header = () => {
-    const { user, logout, isLoading } = useContext(AuthContext)
-
+    const { user, logout, isLoading, isAdmin} = useContext(AuthContext)
     const [userMenuOpen, setUserMenuOpen] = useState(false)
-    const userMenuItems = [
-        { id: "logout", label: "Logout", onClick: logout }
-    ]
-
     const [authDrawerOpen, setAuthDrawerOpen] = useState(false)
+    const navigate = useNavigate()
+
+    const userMenuItems = [];
+
+    if (isAdmin) {
+        userMenuItems.push({ 
+            id: "admin-panel", 
+            label: "Admin Panel", 
+            onClick: () => {
+                navigate(ROUTES.ADMIN_PANEL);
+                setUserMenuOpen(false);
+            }
+        });
+    }
+
+    userMenuItems.push({ id: "logout", label: "Logout", onClick: logout });
 
     useEffect(() => {
         setUserMenuOpen(false);
