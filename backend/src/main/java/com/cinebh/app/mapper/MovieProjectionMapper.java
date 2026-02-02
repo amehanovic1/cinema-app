@@ -13,7 +13,6 @@ import org.mapstruct.Named;
 @Mapper(componentModel = "spring", uses = {MovieMapper.class})
 public interface MovieProjectionMapper {
 
-    @Mapping(source = "movie", target = "movieDto")
     MovieProjectionDto toDto(MovieProjection movieProjection);
 
     @Mapping(target = "title", source = "movie.title")

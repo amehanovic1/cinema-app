@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.UUID;
 
 public interface MovieService {
@@ -19,4 +20,10 @@ public interface MovieService {
             LocalDate startDate, LocalDate endDate, Pageable pageable);
 
     MovieDto getMovieDetails(UUID movieId);
+
+    PageDto<MovieDto> getArchivedMovies(Pageable pageable);
+
+    void archive(List<UUID> movieIds);
+
+    void moveToDrafts(List<UUID> movieIds);
 }

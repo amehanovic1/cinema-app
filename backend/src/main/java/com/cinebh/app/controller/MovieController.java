@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -44,7 +45,7 @@ public class MovieController {
             @RequestParam(required = false) UUID venueId,
             @RequestParam(required = false) UUID genreId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-            @RequestParam(required = false) @DateTimeFormat (pattern = "HH:mm") LocalTime time,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime time,
             @PageableDefault(page = 0, size = 5, sort = "title", direction = Sort.Direction.ASC) Pageable pageable
     ) {
         return movieService.getCurrentlyShowingMovies(title, cityId, venueId, genreId, date, time, pageable);
@@ -53,5 +54,24 @@ public class MovieController {
     @GetMapping("/{movieId}")
     public ResponseEntity<MovieDto> getMovieDetails(@PathVariable UUID movieId) {
         return ResponseEntity.ok(movieService.getMovieDetails(movieId));
+    }
+
+    @GetMapping("/archived")
+    public PageDto<MovieDto> getArchivedMovies(
+            @PageableDefault(page = 0, size = 5, sort = "archivedAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return movieService.getArchivedMovies(pageable);
+    }
+
+    @PostMapping("/archive")
+    public ResponseEntity<Void> archive(@RequestBody List<UUID> movieIds) {
+        movieService.archive(movieIds);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/move-to-drafts")
+    public ResponseEntity<Void> moveToDrafts(@RequestBody List<UUID> movieIds) {
+        movieService.moveToDrafts(movieIds);
+        return ResponseEntity.noContent().build();
     }
 }

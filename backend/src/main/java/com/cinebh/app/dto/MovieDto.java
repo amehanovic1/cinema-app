@@ -22,6 +22,7 @@ public class MovieDto {
     private Integer durationInMinutes;
     private String trailerUrl;
 
+    private List<String> venues;
     private List<GenreDto> genres;
     private List<MovieImageDto> images;
     private List<MovieRatingDto> ratings;
