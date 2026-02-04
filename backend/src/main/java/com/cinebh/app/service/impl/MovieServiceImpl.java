@@ -104,17 +104,15 @@ public class MovieServiceImpl implements MovieService {
         if (movieIds == null || movieIds.isEmpty()) return;
 
         for (UUID id : movieIds) {
-            MovieDraft draft = prepareDraftFromMovie(id);
-            movieDraftRepository.save(draft);
-
-            movieRepository.deleteById(id);
+            movieRepository.findById(id).ifPresent(movie -> {
+                MovieDraft draft = prepareDraftFromMovie(movie);
+                movieDraftRepository.save(draft);
+                movieRepository.delete(movie);
+            });
         }
     }
 
-    private MovieDraft prepareDraftFromMovie(UUID movieId) {
-        Movie movie = movieRepository.findById(movieId)
-                .orElseThrow(() -> new EntityNotFoundException("Movie not found"));
-
+    private MovieDraft prepareDraftFromMovie(Movie movie) {
         MovieDto movieDto = movieMapper.toDto(movie);
         Map<String, Object> data = objectMapper.convertValue(movieDto, new TypeReference<>() {});
 

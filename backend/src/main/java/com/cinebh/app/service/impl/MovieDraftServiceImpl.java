@@ -14,6 +14,7 @@ import com.cinebh.app.util.PaginationUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class MovieDraftServiceImpl implements MovieDraftService {
@@ -67,9 +69,15 @@ public class MovieDraftServiceImpl implements MovieDraftService {
         if (draftIds == null || draftIds.isEmpty()) return;
 
         for (UUID id : draftIds) {
-            Movie movie = prepareMovieFromDraft(id);
-            movieRepository.save(movie);
-            movieDraftRepository.deleteById(id);
+            movieDraftRepository.findById(id).ifPresent(draft -> {
+                try {
+                    Movie movie = prepareMovieFromDraft(draft);
+                    movieRepository.save(movie);
+                    movieDraftRepository.delete(draft);
+                } catch (Exception e) {
+                    log.error("Failed to publish draft with ID {}: {}", id, e.getMessage());
+                }
+            });
         }
     }
 
@@ -79,25 +87,27 @@ public class MovieDraftServiceImpl implements MovieDraftService {
         if (draftIds == null || draftIds.isEmpty()) return;
 
         for (UUID id : draftIds) {
-            Movie movie = prepareMovieFromDraft(id);
-            movie.setArchivedAt(LocalDateTime.now());
-
-            movieRepository.save(movie);
-            movieDraftRepository.deleteById(id);
+            movieDraftRepository.findById(id).ifPresent(draft -> {
+                try {
+                    Movie movie = prepareMovieFromDraft(draft);
+                    movie.setArchivedAt(LocalDateTime.now());
+                    movieRepository.save(movie);
+                    movieDraftRepository.delete(draft);
+                } catch (Exception e) {
+                    log.error("Failed to archive draft with ID {}: {}", id, e.getMessage());
+                }
+            });
         }
     }
 
-    private Movie prepareMovieFromDraft(UUID draftId) {
-        MovieDraft draft = movieDraftRepository.findById(draftId)
-                .orElseThrow(() -> new EntityNotFoundException("Draft not found with id"));
-
+    private Movie prepareMovieFromDraft(MovieDraft draft) {
         if (draft.getStep() != MovieDraftStep.venues) {
             throw new IllegalStateException("Only drafts with completed venue steps can be processed.");
         }
 
         MovieDraftDto draftDto = movieDraftMapper.toDto(draft);
 
-        if(draftDto.getProjections() == null || draftDto.getProjections().isEmpty()) {
+        if (draftDto.getProjections() == null || draftDto.getProjections().isEmpty()) {
             throw new IllegalStateException("At least one projection is required to publish");
         }
 
