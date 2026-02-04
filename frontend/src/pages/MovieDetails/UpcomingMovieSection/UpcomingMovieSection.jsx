@@ -10,7 +10,7 @@ const UpcomingMovieSection = ({ movie }) => {
             </h1>
 
             <div className="mt-20">
-                <SuccessIcon icon={faBell} isLight={true} />
+                <SuccessIcon icon={faBell} type="light" />
             </div>
 
         </div>
