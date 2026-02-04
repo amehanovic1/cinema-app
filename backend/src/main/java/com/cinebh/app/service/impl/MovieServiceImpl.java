@@ -118,11 +118,9 @@ public class MovieServiceImpl implements MovieService {
         MovieDto movieDto = movieMapper.toDto(movie);
         Map<String, Object> data = objectMapper.convertValue(movieDto, new TypeReference<>() {});
 
-        if (movie.getGenres() != null) {
-            data.put("genres", movie.getGenres().stream()
-                    .map(Genre::getId)
-                    .toList());
-        }
+        data.put("genres", movie.getGenres().stream()
+                .map(Genre::getId)
+                .toList());
 
         if (movie.getProjections() != null) {
             var projections = movie.getProjections().stream().map(p -> {

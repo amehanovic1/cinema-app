@@ -2,6 +2,7 @@ package com.cinebh.app.service.impl;
 
 import com.cinebh.app.dto.MovieDraftDto;
 import com.cinebh.app.dto.MovieDraftSummaryDto;
+import com.cinebh.app.dto.MovieProjectionDto;
 import com.cinebh.app.dto.PageDto;
 import com.cinebh.app.entity.*;
 import com.cinebh.app.enums.MovieDraftStep;
@@ -95,46 +96,54 @@ public class MovieDraftServiceImpl implements MovieDraftService {
         }
 
         MovieDraftDto draftDto = movieDraftMapper.toDto(draft);
+
+        if(draftDto.getProjections() == null || draftDto.getProjections().isEmpty()) {
+            throw new IllegalStateException("At least one projection is required to publish");
+        }
+
+        for (MovieProjectionDto projectionDto : draftDto.getProjections()) {
+            if (projectionDto.getCinemaHallId() == null ||
+                    projectionDto.getProjectionDate() == null ||
+                    projectionDto.getProjectionTime() == null) {
+                throw new IllegalStateException("Each projection must have a hall, date and time");
+            }
+        }
+
         Movie movie = movieDraftMapper.toMovie(draftDto);
         movie.setId(null);
 
-        if (draftDto.getGenres() != null) {
-            movie.setGenres(draftDto.getGenres().stream()
-                    .map(id -> entityManager.getReference(Genre.class, id))
-                    .collect(Collectors.toSet()));
-        }
+        movie.setGenres(draftDto.getGenres().stream()
+                .map(id -> entityManager.getReference(Genre.class, id))
+                .collect(Collectors.toSet()));
 
-        if (draftDto.getProjections() != null) {
-            movie.setProjections(draftDto.getProjections().stream().map(dto -> {
-                MovieProjection p = new MovieProjection();
-                p.setProjectionDate(dto.getProjectionDate());
-                p.setProjectionTime(dto.getProjectionTime());
-                p.setMovie(movie);
-                if (dto.getCinemaHallId() != null) {
-                    p.setCinemaHall(entityManager.getReference(CinemaHall.class, dto.getCinemaHallId()));
-                }
-                return p;
-            }).collect(Collectors.toSet()));
-        }
-
-        if (movie.getCast() != null) movie.getCast().forEach(c -> {
+        movie.getCast().forEach(c -> {
             c.setId(null);
             c.setMovie(movie);
         });
-        if (movie.getImages() != null) movie.getImages().forEach(i -> {
+        movie.getImages().forEach(i -> {
             i.setId(null);
             i.setMovie(movie);
         });
-        if (movie.getWriters() != null) movie.getWriters().forEach(w -> {
+        movie.getWriters().forEach(w -> {
             w.setId(null);
             w.setMovie(movie);
         });
+
         if (movie.getRatings() != null) {
             movie.getRatings().forEach(r -> {
                 r.setId(null);
                 r.setMovie(movie);
             });
         }
+
+        movie.setProjections(draftDto.getProjections().stream().map(dto -> {
+            MovieProjection p = new MovieProjection();
+            p.setProjectionDate(dto.getProjectionDate());
+            p.setProjectionTime(dto.getProjectionTime());
+            p.setMovie(movie);
+            p.setCinemaHall(entityManager.getReference(CinemaHall.class, dto.getCinemaHallId()));
+            return p;
+        }).collect(Collectors.toSet()));
 
         return movie;
     }
