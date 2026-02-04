@@ -140,7 +140,7 @@ public class MovieServiceImpl implements MovieService {
         draft.setStep(MovieDraftStep.venues);
         draft.setCreatedAt(LocalDateTime.now());
         draft.setUpdatedAt(LocalDateTime.now());
-        draft.setAdmin(getCurrentUser());
+        draft.setUser(getCurrentUser());
 
         return draft;
     }

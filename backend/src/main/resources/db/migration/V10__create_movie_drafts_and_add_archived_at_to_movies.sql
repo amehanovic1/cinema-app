@@ -1,13 +1,13 @@
 CREATE TABLE "movie_drafts"
 (
     "id"         uuid PRIMARY KEY,
-    "admin_id"   uuid        NOT NULL,
+    "user_id"   uuid        NOT NULL,
     "step"       varchar     NOT NULL,
     "data"       jsonb       NOT NULL,
     "created_at" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" timestamptz          DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "fk_movie_draft_admin" FOREIGN KEY ("admin_id")
+    CONSTRAINT "fk_movie_draft_user" FOREIGN KEY ("user_id")
         REFERENCES "users" ("id") ON DELETE CASCADE
 );
 

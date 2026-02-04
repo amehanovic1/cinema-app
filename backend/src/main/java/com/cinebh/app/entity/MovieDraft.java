@@ -34,6 +34,6 @@ public class MovieDraft extends Auditable {
     private Map<String, Object> data;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin_id", nullable = false)
-    private User admin;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }
