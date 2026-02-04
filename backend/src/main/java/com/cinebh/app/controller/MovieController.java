@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -56,6 +57,7 @@ public class MovieController {
         return ResponseEntity.ok(movieService.getMovieDetails(movieId));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/archived")
     public PageDto<MovieDto> getArchivedMovies(
             @PageableDefault(page = 0, size = 5, sort = "archivedAt", direction = Sort.Direction.DESC) Pageable pageable
@@ -63,12 +65,14 @@ public class MovieController {
         return movieService.getArchivedMovies(pageable);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/archive")
     public ResponseEntity<Void> archive(@RequestBody List<UUID> movieIds) {
         movieService.archive(movieIds);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/move-to-drafts")
     public ResponseEntity<Void> moveToDrafts(@RequestBody List<UUID> movieIds) {
         movieService.moveToDrafts(movieIds);
