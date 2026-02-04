@@ -100,7 +100,7 @@ const MovieTable = ({ movies, loading, activeTab, selectedIds, setSelectedIds, t
                             const posterUrl = movie.images?.find(img => img.type === "poster")?.url;
 
                             return (
-                                <tr key={movie.id} className="text-sm md:text-base text-neutral-900 hover:bg-neutral-50">
+                                <tr key={movie.id} className="text-sm md:text-base text-neutral-900">
                                     <td className="px-4 py-2">
                                         <div className="flex items-center gap-2">
                                             {activeTab !== "currently" && (
@@ -120,8 +120,12 @@ const MovieTable = ({ movies, loading, activeTab, selectedIds, setSelectedIds, t
                                     <td className="px-4 py-2">
                                         {format(new Date(movie.projectionStartDate), 'd. MMM')} - {format(new Date(movie.projectionEndDate), 'd. MMM yyyy.')}
                                     </td>
-                                    <td className="px-4 py-2 text-xs md:text-sm text-neutral-600">
-                                        {movie.venues?.length === totalVenues ? "All Venues" : movie.venues?.slice(0, 2).join(", ") + (movie.venues?.length > 2 ? ` +${movie.venues.length - 2}` : "")}
+                                    <td className="px-4 py-2 text-sm md:text-base text-neutral-900">
+                                        {movie.venues?.length === 0
+                                            ? "No selected Venues"
+                                            : movie.venues.length === totalVenues
+                                                ? "All Venues"
+                                                : movie.venues?.slice(0, 2).join(", ") + (movie.venues?.length > 2 ? ` +${movie.venues.length - 2}` : "")}
                                     </td>
                                     <td className="px-4 py-2">{getStatusBadge(movie)}</td>
                                     {activeTab !== "currently" && (

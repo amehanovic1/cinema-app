@@ -200,7 +200,7 @@ const MovieManagement = () => {
                 <div
                     className="flex items-center justify-between mt-2 mb-16 text-xs md:text-sm text-neutral-500 font-regular">
                     <div>
-                        Showing <span className="font-semibold text-neutral-900">{movieData.content.length}
+                        Showing <span className="font-semibold text-neutral-900">{movieData.number === movieData.totalPages - 1 ? movieData.totalElements : (movieData.number + 1) * movieData.size}
                         </span> out of  <span className="font-semibold text-neutral-900"> {movieData.totalElements}
                         </span> items
                     </div>
