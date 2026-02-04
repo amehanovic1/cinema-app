@@ -158,16 +158,16 @@ pipeline {
                     def testPath = ''
 
                     switch(params.TEST_SUITE) {
-                        case 'all':
-                            testPath = 'tests/'
+                        case 'smoke':
+                            testPath = 'tests/ui/test_smoke_ui.py'
                             break
                         case 'api':
                             testPath = 'tests/api/'
                             break
                         case 'ui':
-                            testPath = 'tests/test_smoke_ui.py'
+                            testPath = 'tests/ui/'
                             break
-                        case 'smoke':
+                        case 'all':
                             testPath = 'tests/'
                             break
                         default:
@@ -198,8 +198,7 @@ pipeline {
                                 export DB_PASSWORD="\${DB_PASSWORD}"
 
                                 export HOST="${EMAIL_HOST}"
-                                export TARGET_USER="${TARGET_EMAIL}"
-                                export EMAIL_USER="\${EMAIL_USER}"
+                                export TARGET_USER="\${EMAIL_USER}"
                                 export GMAIL_APP_PASSWORD="\${EMAIL_PASSWORD}"
 
                                 pytest ${testPath} -v \\
