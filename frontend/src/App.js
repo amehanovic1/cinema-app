@@ -1,5 +1,5 @@
 import './App.css';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import AboutUs from './pages/AboutUs/AboutUs';
 import Tickets from './pages/Tickets/Tickets';
@@ -12,6 +12,8 @@ import { useContext } from 'react';
 import AuthContext from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import BookingLayout from './pages/BookingLayout/BookingLayout';
+import AdminPanel from './pages/AdminPanel/AdminPanel';
+import MovieManagement from './pages/AdminPanel/MovieManagement/MovieManagement';
 
 function App() {
   const { user, isLoading } = useContext(AuthContext)
@@ -33,6 +35,17 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path={ROUTES.ADMIN_PANEL}
+          element={
+            <ProtectedRoute isAuthenticated={user} isLoading={isLoading}>
+              <AdminPanel />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Navigate to={ROUTES.ADMIN_PANEL_MOVIES} replace />} />
+          <Route path="movies" element={<MovieManagement />} />
+        </Route>
       </Routes>
     </Layout>
   );

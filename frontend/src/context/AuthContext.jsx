@@ -8,6 +8,8 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
+    const isAdmin = user?.roles?.includes("ADMIN") || user?.role === "ADMIN";
+
     const fetchUser = async () => {
         try {
             const data = await getCurrentUser();
@@ -41,7 +43,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, isLoading }}>
+        <AuthContext.Provider value={{ user, login, logout, isLoading, isAdmin}}>
             {children}
         </AuthContext.Provider>
     );

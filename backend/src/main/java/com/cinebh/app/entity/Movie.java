@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -50,6 +51,9 @@ public class Movie extends Auditable {
 
     @Column(name = "trailer_url", nullable = false)
     private String trailerUrl;
+
+    @Column(name = "archived_at")
+    private LocalDateTime archivedAt;
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<MovieImage> images = new HashSet<>();

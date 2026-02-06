@@ -1,5 +1,6 @@
 package com.cinebh.app.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,10 +14,11 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MovieProjectionDto {
     private UUID id;
     private LocalDate projectionDate;
     private LocalTime projectionTime;
-    private MovieDto movieDto;
-    private CinemaHallDto cinemaHallDto;
+    private CinemaHallDto cinemaHall;
+    private UUID cinemaHallId;
 }

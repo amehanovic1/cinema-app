@@ -1,6 +1,10 @@
 package com.cinebh.app.dto;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,8 +14,11 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MovieDto {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class MovieDraftDto {
     private UUID id;
+    private String step;
+
     private String title;
     private String language;
     private LocalDate projectionStartDate;
@@ -22,10 +29,10 @@ public class MovieDto {
     private Integer durationInMinutes;
     private String trailerUrl;
 
-    private List<String> venues;
-    private List<GenreDto> genres;
+    private List<UUID> genres;
     private List<MovieImageDto> images;
     private List<MovieRatingDto> ratings;
+    private List<MovieProjectionDto> projections;
     private List<MovieCastDto> cast;
     private List<MovieWriterDto> writers;
 }

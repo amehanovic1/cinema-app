@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Logo from "../../components/Logo/Logo";
 import { ROUTES } from "../../routes/routes";
 import { useContext, useEffect, useState } from "react";
@@ -8,14 +8,25 @@ import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import AuthDrawer from "../../pages/AuthDrawer/AuthDrawer";
 
 const Header = () => {
-    const { user, logout, isLoading } = useContext(AuthContext)
-
+    const { user, logout, isLoading, isAdmin } = useContext(AuthContext)
     const [userMenuOpen, setUserMenuOpen] = useState(false)
-    const userMenuItems = [
-        { id: "logout", label: "Logout", onClick: logout }
-    ]
-
     const [authDrawerOpen, setAuthDrawerOpen] = useState(false)
+    const navigate = useNavigate()
+
+    const userMenuItems = [];
+
+    if (isAdmin) {
+        userMenuItems.push({
+            id: "admin-panel",
+            label: "Admin",
+            onClick: () => {
+                navigate(ROUTES.ADMIN_PANEL);
+                setUserMenuOpen(false);
+            }
+        });
+    }
+
+    userMenuItems.push({ id: "logout", label: "Logout", onClick: logout });
 
     useEffect(() => {
         setUserMenuOpen(false);
@@ -87,24 +98,22 @@ const Header = () => {
                                 />
                             </button>
 
-
-                            <ul
-                                data-testid="header-user-dropdown-list"
-                                className={`absolute left-0 right-0 z-40 mt-0 w-full bg-neutral-0 mt-1 
-                                            overflow-y-auto transition-all duration-300 rounded  
-                                            ${userMenuOpen ? "max-h-60 opacity-100" : "max-h-0 opacity-0"}`}>
-                                {userMenuItems?.map((item, index) => (
-                                    <li
-                                        key={index}
-                                        data-testid={`header-user-menu-item-${item.id}`}
-                                        onClick={item.onClick}
-                                        className="py-2 px-3 text-neutral-700 bg-neutral-200 
-                                                text-xs md:text-sm lg:text-base 
-                                                hover:bg-neutral-600 hover:text-white">
-                                        {item.label}
-                                    </li>
-                                ))}
-                            </ul>
+                            <div className={`absolute right-0 w-48 mt-1 z-50 mt-0 bg-neutral-0 overflow-y-auto transition-all duration-300 rounded-2xl shadow-card  
+                                            ${userMenuOpen ? "opacity-100 scale-100 translate-y-0 pointer-events-auto" : "opacity-0 scale-95 -translate-y-2 pointer-events-none"}`}>
+                                <ul
+                                    data-testid="header-user-dropdown-list">
+                                    {userMenuItems?.map((item, index) => (
+                                        <li
+                                            key={index}
+                                            data-testid={`header-user-menu-item-${item.id}`}
+                                            onClick={item.onClick}
+                                            className={`px-4 py-3 cursor-pointer text-xs md:text-sm lg:text-base hover:bg-neutral-50 
+                                                    ${item.id === "logout" ? "text-dark-red" : "text-neutral-700"}`}>
+                                            {item.label}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         </div>
 
                     ) : (

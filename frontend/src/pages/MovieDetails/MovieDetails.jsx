@@ -20,6 +20,7 @@ import NoDataFound from "../../components/NoDataFound/NoDataFound";
 import AuthContext from "../../context/AuthContext";
 import AuthDrawer from "../AuthDrawer/AuthDrawer";
 import { formatForId } from "../../utils/testUtils";
+import UpcomingMovieSection from "./UpcomingMovieSection/UpcomingMovieSection";
 
 const MovieDetails = () => {
     const navigate = useNavigate()
@@ -186,6 +187,8 @@ const MovieDetails = () => {
         ));
     };
 
+    const isUpcoming = movie && new Date(movie.projectionStartDate) > new Date();
+
     return (
         <>
             {(isLoadingInitialData || isLoadingMovie)
@@ -324,100 +327,102 @@ const MovieDetails = () => {
 
 
                             <div className="flex flex-col gap-4 p-4 border border-neutral-200 rounded-xl shadow-text" data-testid="movie-details-booking-section">
-                                <div
-                                    className="flex flex-col gap-4 items-center justify-center sm:grid sm:grid-cols-2 sm:gap-4 lg:flex lg:flex-row lg:gap-6">
-                                    <div data-testid="city-select-wrapper" className="w-full">
-                                        <Select
-                                            items={cities}
-                                            selectText="Choose city"
-                                            icon={faLocationDot}
-                                            selectedValue={selectedCity}
-                                            onChange={(value) => setSelectedCity(value)}
-                                        />
-                                    </div>
+                                {isUpcoming
+                                    ? <UpcomingMovieSection movie={movie}/>
+                                    : (<>
+                                        <div
+                                            className="flex flex-col gap-4 items-center justify-center sm:grid sm:grid-cols-2 sm:gap-4 lg:flex lg:flex-row lg:gap-6">
+                                            <div data-testid="city-select-wrapper" className="w-full">
+                                                <Select
+                                                    items={cities}
+                                                    selectText="Choose city"
+                                                    icon={faLocationDot}
+                                                    selectedValue={selectedCity}
+                                                    onChange={(value) => setSelectedCity(value)}
+                                                />
+                                            </div>
 
-                                    <div data-testid="cinema-select-wrapper" className="w-full">
-                                        <Select
-                                            items={venues}
-                                            selectText="Choose Cinema"
-                                            icon={faBuilding}
-                                            selectedValue={selectedVenue}
-                                            onChange={(value) => setSelectedVenue(value)}
-                                        />
-                                    </div>
-                                </div>
-
-                                <DatePicker
-                                    selectedValue={selectedDate}
-                                    onChange={(value) => setSelectedDate(value)}
-                                />
-
-                                {projections.length > 0 ? (
-                                    <div data-testid="movie-details-projection-list-section">
-                                        <h1 className="text-neutral-800 font-bold text:base md:text-xl lg:text-xl">
-                                            Standard
-                                        </h1>
-
-                                        <div className="flex gap-4 flex-wrap mt-2" data-testid="movie-details-projection-list">
-                                            {projections.map(projection => (
-                                                <button
-                                                    key={projection.id}
-                                                    data-testid={`projection-time-${formatForId(formatTime(projection.projectionTime))}`}
-                                                    onClick={() => setSelectedProjection(projection)}
-                                                    className={`border rounded-lg px-3 py-2 font-bold text-sm lg:text-base transition 
-                                                            ${projection.id === selectedProjection?.id
-                                                            ? "bg-dark-red text-white"
-                                                            : "border-neutral-200 hover:bg-dark-red hover:text-white"
-                                                        }`}
-                                                >
-                                                    {formatTime(projection.projectionTime)}
-                                                </button>
-                                            ))}
+                                            <div data-testid="cinema-select-wrapper" className="w-full">
+                                                <Select
+                                                    items={venues}
+                                                    selectText="Choose Cinema"
+                                                    icon={faBuilding}
+                                                    selectedValue={selectedVenue}
+                                                    onChange={(value) => setSelectedVenue(value)}
+                                                />
+                                            </div>
                                         </div>
-                                    </div>
-                                ) : (
-                                    <p className="text-neutral-600 italic" data-testid="movie-details-no-projections-message">
-                                        No projections available for the selected date.
-                                    </p>
-                                )}
 
-                                <div className="mt-auto">
+                                        <DatePicker
+                                            selectedValue={selectedDate}
+                                            onChange={(value) => setSelectedDate(value)}
+                                        />
 
-                                    <hr className="mt-auto mb-2 bg-neutral-700" />
+                                        {projections.length > 0 ? (
+                                            <div data-testid="movie-details-projection-list-section">
+                                                <h1 className="text-neutral-800 font-bold text:base md:text-xl lg:text-xl">
+                                                    Standard
+                                                </h1>
 
-                                    <div className="flex gap-2">
-                                        <button
-                                            data-testid="movie-details-reserve-ticket-button"
-                                            className={`w-1/2 mb-4 font-bold py-2 px-2 border border-dark-red rounded-lg transition
+                                                <div className="flex gap-4 flex-wrap mt-2" data-testid="movie-details-projection-list">
+                                                    {projections.map(projection => (
+                                                        <button
+                                                            key={projection.id}
+                                                            data-testid={`projection-time-${formatForId(formatTime(projection.projectionTime))}`}
+                                                            onClick={() => setSelectedProjection(projection)}
+                                                            className={`border rounded-lg px-3 py-2 font-bold text-sm lg:text-base transition 
+                                                            ${projection.id === selectedProjection?.id
+                                                                    ? "bg-dark-red text-white"
+                                                                    : "border-neutral-200 hover:bg-dark-red hover:text-white"
+                                                                }`}
+                                                        >
+                                                            {formatTime(projection.projectionTime)}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <p className="text-neutral-600 italic" data-testid="movie-details-no-projections-message">
+                                                No projections available for the selected date.
+                                            </p>
+                                        )}
+
+                                        <div className="mt-auto">
+
+                                            <hr className="mt-auto mb-2 bg-neutral-700" />
+
+                                            <div className="flex gap-2">
+                                                <button
+                                                    data-testid="movie-details-reserve-ticket-button"
+                                                    className={`w-1/2 mb-4 font-bold py-2 px-2 border border-dark-red rounded-lg transition
                                                     ${selectedCity && selectedVenue && selectedProjection
-                                                    ? "bg-neutral-0 text-dark-red"
-                                                    : "border-neutral-200 bg-neutral-200 text-neutral-500 cursor-not-allowed"
-                                                }`}
-                                            disabled={!(selectedCity && selectedVenue && selectedProjection)}
-                                            onClick={() => handleContinueToBooking("reserve")}
-                                        >
-                                            Reserve Ticket
-                                        </button>
+                                                            ? "bg-neutral-0 text-dark-red"
+                                                            : "border-neutral-200 bg-neutral-200 text-neutral-500 cursor-not-allowed"
+                                                        }`}
+                                                    disabled={!(selectedCity && selectedVenue && selectedProjection)}
+                                                    onClick={() => handleContinueToBooking("reserve")}
+                                                >
+                                                    Reserve Ticket
+                                                </button>
 
-                                        <button
-                                            data-testid="movie-details-buy-ticket-button"
-                                            className={`w-1/2 mb-4 font-bold py-2 px-2 border border-dark-red rounded-lg transition
+                                                <button
+                                                    data-testid="movie-details-buy-ticket-button"
+                                                    className={`w-1/2 mb-4 font-bold py-2 px-2 border border-dark-red rounded-lg transition
                                                     ${selectedCity && selectedVenue && selectedProjection
-                                                    ? "bg-dark-red text-neutral-0"
-                                                    : "border-neutral-200 bg-neutral-200 text-neutral-500 cursor-not-allowed"
-                                                }`}
-                                            disabled={!(selectedCity && selectedVenue && selectedProjection)}
-                                            onClick={() => handleContinueToBooking("payment")}
-                                        >
-                                            Buy Ticket
-                                        </button>
-                                    </div>
+                                                            ? "bg-dark-red text-neutral-0"
+                                                            : "border-neutral-200 bg-neutral-200 text-neutral-500 cursor-not-allowed"
+                                                        }`}
+                                                    disabled={!(selectedCity && selectedVenue && selectedProjection)}
+                                                    onClick={() => handleContinueToBooking("payment")}
+                                                >
+                                                    Buy Ticket
+                                                </button>
+                                            </div>
 
-                                </div>
-
-
+                                        </div>
+                                    </>)
+                                }
                             </div>
-
                         </div>
 
                         <div className="mt-4" data-testid="movie-details-see-also-section">
