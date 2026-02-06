@@ -114,6 +114,8 @@ pipeline {
 
                 dir("${QA_REPO_DIR}") {
                     sh '''
+                        apt-get update && apt-get install -y python3.13-venv python3-pip
+
                         python3 --version
 
                         python3 -m venv venv
