@@ -114,7 +114,7 @@ pipeline {
 
                 dir("${QA_REPO_DIR}") {
                     sh '''
-                        apt-get update && apt-get install -y python3.13-venv python3-pip xvfb
+                        apt-get update && apt-get install -y python3.13-venv python3-pip xvfb xauth
 
                         python3 --version
 
