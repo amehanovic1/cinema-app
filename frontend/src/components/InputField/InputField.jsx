@@ -15,17 +15,20 @@ const InputField = ({
 }) => {
     const [showInput, setShowInput] = useState(false);
 
+    const isAuthField = type === "password" || type === "email";
+    const labelColor = isAuthField ? "text-neutral-25" : "text-neutral-700";
+
     return (
         <div data-testid={`input-field-wrapper-${name}`}>
             <label
                 data-testid={`input-field-label-${name}`}
-                className={`text-base font-semibold ${error ? "text-error-300" : "text-neutral-25"}`}
+                className={`text-base font-semibold ${error ? "text-error-300" : labelColor}`}
             >
                 {label}
             </label>
 
             <div className={`w-full relative p-2 border rounded-lg bg-neutral-0 shadow-input
-                            text-xs md:text-sm lg:text-base font-normal
+                            text-xs md:text-sm font-normal
                             ${error ? "border-error-300" : "border-neutral-200"}`}>
 
                 <FontAwesomeIcon
