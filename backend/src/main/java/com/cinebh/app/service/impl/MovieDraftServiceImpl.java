@@ -111,7 +111,7 @@ public class MovieDraftServiceImpl implements MovieDraftService {
 
         movieDraft.setStep(MovieDraftStep.valueOf(draftDto.getStep()));
         movieDraft.setData(draftDto.getData());
-        movieDraft.setAdmin(user);
+        movieDraft.setUser(user);
 
         movieDraftRepository.save(movieDraft);
     }
@@ -122,10 +122,7 @@ public class MovieDraftServiceImpl implements MovieDraftService {
                 .getPrincipal();
     }
 
-    private Movie prepareMovieFromDraft(UUID draftId) {
-        MovieDraft draft = movieDraftRepository.findById(draftId)
-                .orElseThrow(() -> new EntityNotFoundException("Draft not found with id"));
-
+    private Movie prepareMovieFromDraft(MovieDraft draft) {
         if (draft.getStep() != MovieDraftStep.venues) {
             throw new IllegalStateException("Only drafts with completed venue steps can be processed.");
         }
@@ -137,10 +134,8 @@ public class MovieDraftServiceImpl implements MovieDraftService {
         }
 
         for (MovieProjectionDto projectionDto : draftDto.getProjections()) {
-            if (projectionDto.getCinemaHallId() == null ||
-                    projectionDto.getProjectionDate() == null ||
-                    projectionDto.getProjectionTime() == null) {
-                throw new IllegalStateException("Each projection must have a hall, date and time");
+            if (projectionDto.getVenueId() == null || projectionDto.getProjectionTime() == null) {
+                throw new IllegalStateException("Each projection must have a venue and time");
             }
         }
 
