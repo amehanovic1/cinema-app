@@ -31,3 +31,15 @@ export async function archiveDraft(draftIds) {
         throw error;
     }
 }
+
+export async function saveDraft({ step, data }) {
+    try {
+        await api.post("/movie-drafts", {
+            step: step, data: data
+        });
+        return true;
+    } catch (error) {
+        console.log("Error saving draft:", error);
+        throw error;
+    }
+}
