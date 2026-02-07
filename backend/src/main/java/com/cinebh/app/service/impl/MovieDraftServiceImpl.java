@@ -1,14 +1,13 @@
 package com.cinebh.app.service.impl;
 
-import com.cinebh.app.dto.MovieDraftDto;
-import com.cinebh.app.dto.MovieDraftSummaryDto;
-import com.cinebh.app.dto.MovieProjectionDto;
-import com.cinebh.app.dto.PageDto;
+import com.cinebh.app.dto.*;
 import com.cinebh.app.entity.*;
 import com.cinebh.app.enums.MovieDraftStep;
 import com.cinebh.app.mapper.MovieDraftMapper;
+import com.cinebh.app.repository.CinemaHallRepository;
 import com.cinebh.app.repository.MovieDraftRepository;
 import com.cinebh.app.repository.MovieRepository;
+import com.cinebh.app.repository.VenueRepository;
 import com.cinebh.app.service.MovieDraftService;
 import com.cinebh.app.util.PaginationUtil;
 import jakarta.persistence.EntityManager;
@@ -16,13 +15,13 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -34,6 +33,8 @@ public class MovieDraftServiceImpl implements MovieDraftService {
     private final MovieDraftMapper movieDraftMapper;
     private final MovieRepository movieRepository;
     private final EntityManager entityManager;
+    private final CinemaHallRepository cinemaHallRepository;
+    private final VenueRepository venueRepository;
 
     @Override
     public PageDto<MovieDraftSummaryDto> getAllDrafts(Pageable pageable) {
@@ -49,14 +50,15 @@ public class MovieDraftServiceImpl implements MovieDraftService {
                     summary.setProjectionEndDate(dto.getProjectionEndDate());
                     summary.setImages(dto.getImages());
                     if (dto.getProjections() != null) {
-                        List<String> venueNames = dto.getProjections().stream()
-                                .map(p -> entityManager.find(CinemaHall.class, p.getCinemaHallId()))
+                        var venueIds = dto.getProjections().stream()
+                                .map(MovieProjectionDto::getVenueId)
                                 .filter(Objects::nonNull)
-                                .map(hall -> hall.getVenue().getName())
                                 .distinct()
                                 .toList();
 
-                        summary.setVenues(venueNames);
+                        summary.setVenues(venueRepository.findAllById(venueIds).stream()
+                                .map(Venue::getName)
+                                .toList());
                     }
                     return summary;
                 })
@@ -100,7 +102,30 @@ public class MovieDraftServiceImpl implements MovieDraftService {
         }
     }
 
-    private Movie prepareMovieFromDraft(MovieDraft draft) {
+    @Transactional
+    @Override
+    public void save(MovieDraftRequestDto draftDto) {
+        User user = getCurrentUser();
+
+        MovieDraft movieDraft = new MovieDraft();
+
+        movieDraft.setStep(MovieDraftStep.valueOf(draftDto.getStep()));
+        movieDraft.setData(draftDto.getData());
+        movieDraft.setAdmin(user);
+
+        movieDraftRepository.save(movieDraft);
+    }
+
+    private User getCurrentUser() {
+        return (User) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+    }
+
+    private Movie prepareMovieFromDraft(UUID draftId) {
+        MovieDraft draft = movieDraftRepository.findById(draftId)
+                .orElseThrow(() -> new EntityNotFoundException("Draft not found with id"));
+
         if (draft.getStep() != MovieDraftStep.venues) {
             throw new IllegalStateException("Only drafts with completed venue steps can be processed.");
         }
@@ -146,14 +171,31 @@ public class MovieDraftServiceImpl implements MovieDraftService {
             });
         }
 
-        movie.setProjections(draftDto.getProjections().stream().map(dto -> {
-            MovieProjection p = new MovieProjection();
-            p.setProjectionDate(dto.getProjectionDate());
-            p.setProjectionTime(dto.getProjectionTime());
-            p.setMovie(movie);
-            p.setCinemaHall(entityManager.getReference(CinemaHall.class, dto.getCinemaHallId()));
-            return p;
-        }).collect(Collectors.toSet()));
+        if (draftDto.getProjections() != null ) {
+
+            Set<MovieProjection> generatedProjections = new HashSet<>();
+            LocalDate startDate = draftDto.getProjectionStartDate();
+            LocalDate endDate = draftDto.getProjectionEndDate();
+
+            for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+                for (MovieProjectionDto projDto : draftDto.getProjections()) {
+                    MovieProjection p = new MovieProjection();
+                    p.setProjectionDate(date);
+                    p.setProjectionTime(projDto.getProjectionTime());
+                    p.setMovie(movie);
+
+                    UUID hallId = cinemaHallRepository.findFirstByVenueIdOrderByNameAsc(projDto.getVenueId())
+                            .map(CinemaHall::getId)
+                            .orElse(null);
+
+                    if (hallId != null) {
+                        p.setCinemaHall(entityManager.getReference(CinemaHall.class, hallId));
+                        generatedProjections.add(p);
+                    }
+                }
+            }
+            movie.setProjections(generatedProjections);
+        }
 
         return movie;
     }

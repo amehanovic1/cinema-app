@@ -1,5 +1,6 @@
 package com.cinebh.app.controller;
 
+import com.cinebh.app.dto.MovieDraftRequestDto;
 import com.cinebh.app.dto.MovieDraftSummaryDto;
 import com.cinebh.app.dto.PageDto;
 import com.cinebh.app.service.MovieDraftService;
@@ -36,6 +37,12 @@ public class MovieDraftController {
     @PostMapping("/archive")
     public ResponseEntity<Void> archive(@RequestBody List<UUID> draftIds) {
         movieDraftService.archive(draftIds);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> save(@RequestBody MovieDraftRequestDto draftDto) {
+        movieDraftService.save(draftDto);
         return ResponseEntity.ok().build();
     }
 }

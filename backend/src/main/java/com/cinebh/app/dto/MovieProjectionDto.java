@@ -20,5 +20,5 @@ public class MovieProjectionDto {
     private LocalDate projectionDate;
     private LocalTime projectionTime;
     private CinemaHallDto cinemaHall;
-    private UUID cinemaHallId;
+    private UUID venueId;
 }

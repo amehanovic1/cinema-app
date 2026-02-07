@@ -1,5 +1,6 @@
 package com.cinebh.app.service;
 
+import com.cinebh.app.dto.MovieDraftRequestDto;
 import com.cinebh.app.dto.MovieDraftSummaryDto;
 import com.cinebh.app.dto.PageDto;
 import org.springframework.data.domain.Pageable;
@@ -14,4 +15,6 @@ public interface MovieDraftService {
     void publish(List<UUID> draftIds);
 
     void archive(List<UUID> draftIds);
+
+    void save(MovieDraftRequestDto draftDto);
 }

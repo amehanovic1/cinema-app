@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -121,16 +120,15 @@ public class MovieServiceImpl implements MovieService {
                 .toList());
 
         if (movie.getProjections() != null) {
-            var projections = movie.getProjections().stream().map(p -> {
-                Map<String, Object> proj = new HashMap<>();
-                proj.put("projectionDate", p.getProjectionDate().toString());
-                proj.put("projectionTime", p.getProjectionTime().toString());
-                proj.put("cinemaHallId", p.getCinemaHall().getId());
-                return proj;
-            }).toList();
-            data.put("projections", projections);
+            var uniqueProjections = movie.getProjections().stream()
+                    .map(p -> Map.of(
+                            "venueId", p.getCinemaHall().getVenue().getId(),
+                            "projectionTime", p.getProjectionTime().toString()
+                    ))
+                    .distinct()
+                    .toList();
+            data.put("projections", uniqueProjections);
         }
-
         MovieDraft draft = new MovieDraft();
         draft.setData(data);
         draft.setStep(MovieDraftStep.venues);
