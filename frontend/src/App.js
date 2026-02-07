@@ -14,6 +14,7 @@ import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import BookingLayout from './pages/BookingLayout/BookingLayout';
 import AdminPanel from './pages/AdminPanel/AdminPanel';
 import MovieManagement from './pages/AdminPanel/MovieManagement/MovieManagement';
+import AddMovieForm from './pages/AddMovieForm/AddMovieForm';
 
 function App() {
   const { user, isLoading } = useContext(AuthContext)
@@ -45,6 +46,7 @@ function App() {
         >
           <Route index element={<Navigate to={ROUTES.ADMIN_PANEL_MOVIES} replace />} />
           <Route path="movies" element={<MovieManagement />} />
+          <Route path="movies/add-movie" element={<AddMovieForm />} />
         </Route>
       </Routes>
     </Layout>

@@ -7,5 +7,6 @@ export const ROUTES = {
     MOVIE_DETAILS: "/movie-details/:movieId",
     MOVIE_TICKET_BOOKING: "/movie-ticket-booking/:projectionId/:step/:action",
     ADMIN_PANEL: "/admin/panel",
-    ADMIN_PANEL_MOVIES: "/admin/panel/movies"
+    ADMIN_PANEL_MOVIES: "/admin/panel/movies",
+    ADMIN_PANEL_ADD_MOVIE: "/admin/panel/movies/add-movie"
 }

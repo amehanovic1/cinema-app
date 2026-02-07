@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { archiveDraft, getMovieDrafts, publish } from "../../../services/movieDraftService";
 import { archiveMovies, getArchivedMovies, getCurrentlyShowingMovies, getUpcomingMovies, moveToDrafts } from "../../../services/movieService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,9 +7,11 @@ import { faAngleLeft, faAngleRight, faAngleDoubleLeft, faAngleDoubleRight } from
 import { getAllVenues } from "../../../services/venueService";
 import MovieTable from "../MovieTable/MovieTable";
 import Modal from "../../../components/Modal/Modal";
+import { ROUTES } from "../../../routes/routes";
 
 const MovieManagement = () => {
     const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
     const activeTab = searchParams.get("tab") || "drafts";
 
     const [showPublishWarning, setShowPublishWarning] = useState(false);
@@ -133,9 +135,18 @@ const MovieManagement = () => {
 
     return (
         <div className="flex flex-col">
-            <h1 className="text-neutral-800 font-bold text-lg md:text-xl mb-6">
-                Movies
-            </h1>
+            <div className="flex justify-between">
+                <h1 className="text-neutral-800 font-bold text-lg md:text-xl mb-4">
+                    Movies
+                </h1>
+                {activeTab === "drafts" &&
+                    <button
+                        onClick={() => navigate(ROUTES.ADMIN_PANEL_ADD_MOVIE)}
+                        className="px-4 rounded-lg bg-dark-red text-neutral-0">
+                        Add Movie
+                    </button>
+                }
+            </div>
 
             <div className="flex items-center gap-4 border-b border-neutral-200">
                 {tabs.map((tab) => (
@@ -156,6 +167,7 @@ const MovieManagement = () => {
                         }
                     </button>
                 ))}
+
             </div>
 
             <div className={`flex items-center justify-end p-4 rounded-lg mb-4 transition-all ${selectedIds.length > 0 ? "opacity-100 visible" : "opacity-0 invisible"}`}>
